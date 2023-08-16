@@ -313,6 +313,7 @@ cosimmr_ffvb <- function(simmr_in,
     theta = thetares,
     groupnames = simmr_in$group,
     lambdares = lambdares,
+    beta = beta,
     BUGSoutput = list(
       sims.list = list(
         p = p_sample,

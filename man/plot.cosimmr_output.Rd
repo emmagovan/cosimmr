@@ -2,71 +2,63 @@
 % Please edit documentation in R/plot.cosimmr_output.R
 \name{plot.cosimmr_output}
 \alias{plot.cosimmr_output}
-\title{Plot the \code{cosimmr_input} data created from \code{cosimmr_load}}
+\title{Plot different features of an object created from  \code{\link{cosimmr_ffvb}}.}
 \usage{
 \method{plot}{cosimmr_output}(
   x,
-  tracers = c(1, 2),
-  title = "Tracers plot",
-  xlab = colnames(x$input$mixtures)[tracers[1]],
-  ylab = colnames(x$inputmixtures)[tracers[2]],
-  sigmas = 1,
-  group = 1:x$input$n_groups,
-  mix_name = "Mixtures",
+  type = c("isospace", "histogram", "density", "matrix", "boxplot"),
+  group = 1,
+  binwidth = 0.05,
+  alpha = 0.5,
+  title = if (length(group) == 1) {
+     "simmr output plot"
+ } else {
+    
+    paste("simmr output plot: group", group)
+ },
   ggargs = NULL,
-  colour = TRUE,
   ...
 )
 }
 \arguments{
-\item{x}{An object created via the function \code{\link{cosimmr_load}}}
+\item{x}{An object of class \code{simmr_output} created via
+\code{\link{simmr_mcmc}} or \code{\link{simmr_ffvb}}.}
 
-\item{tracers}{The choice of tracers to plot. If there are more than two
-tracers, it is recommended to plot every pair of tracers to determine
-whether the mixtures lie in the mixing polygon defined by the sources}
+\item{type}{The type of plot required. Can be one or more of 'histogram',
+'density', 'matrix', or 'boxplot'}
 
-\item{title}{A title for the graph}
+\item{group}{Which group(s) to plot.}
 
-\item{xlab}{The x-axis label. By default this is assumed to be delta-13C but
-can be made richer if required. See examples below.}
+\item{binwidth}{The width of the bins for the histogram. Defaults to 0.05}
 
-\item{ylab}{The y-axis label. By default this is assumed to be delta-15N in
-per mil but can be changed as with the x-axis label}
+\item{alpha}{The degree of transparency of the plots. Not relevant for
+matrix plots}
 
-\item{sigmas}{The number of standard deviations to plot on the source
-values. Defaults to 1.}
-
-\item{group}{Which groups to plot. Can be a single group or multiple groups}
-
-\item{mix_name}{A optional string containing the name of the mixture
-objects, e.g. Geese.}
+\item{title}{The title of the plot.}
 
 \item{ggargs}{Extra arguments to be included in the ggplot (e.g. axis limits)}
 
-\item{colour}{If TRUE (default) creates a plot. If not, puts the plot in
-black and white}
-
-\item{...}{Not used}
-}
-\value{
-isospace plot
+\item{...}{Currently not used}
 }
 \description{
-This function creates iso-space (AKA tracer-space or delta-space) plots.
-They are vital in determining whether the data are suitable for running in a
-SIMM.
+This function allows for 4 different types of plots of the simmr output
+created from \code{\link{cosimmr_ffvb}}. The 
+types are: plot of beta values
 }
 \details{
-It is desirable to have the vast majority of the mixture observations to be
-inside the convex hull defined by the food sources. When there are more than
-two tracers (as in one of the examples below) it is recommended to plot all
-the different pairs of the food sources. See the vignette for further
-details of richer plots.
+The matrix plot should form a necessary part of any SIMM analysis since it
+allows the user to judge which sources are identifiable by the model.
+Further detail about these plots is provided in the vignette.
 }
 \examples{
 
-# A simple example with 10 observations, 4 food sources and 2 tracers
-data(geese_data_day1)
+\dontrun{
+# A simple example with 10 observations, 2 tracers and 4 sources
+
+# The data
+data(geese_data)
+
+# Load into simmr
 simmr_1 <- with(
   geese_data_day1,
   simmr_load(
@@ -79,63 +71,27 @@ simmr_1 <- with(
     concentration_means = concentration_means
   )
 )
-
 # Plot
 plot(simmr_1)
 
-### A more complicated example with 30 obs, 3 tracers and 4 sources
-data(simmr_data_2)
-simmr_3 <- with(
-  simmr_data_2,
-  simmr_load(
-    mixtures = mixtures,
-    source_names = source_names,
-    source_means = source_means,
-    source_sds = source_sds,
-    correction_means = correction_means,
-    correction_sds = correction_sds,
-    concentration_means = concentration_means
-  )
-)
 
-# Plot 3 times - first default d13C vs d15N
-plot(simmr_3)
-# Now plot d15N vs d34S
-plot(simmr_3, tracers = c(2, 3))
-# and finally d13C vs d34S
-plot(simmr_3, tracers = c(1, 3))
-# See vignette('simmr') for fancier x-axis labels
-
-# An example with multiple groups - the Geese data from Inger et al 2006
-data(geese_data)
-simmr_4 <- with(
-  geese_data,
-  simmr_load(
-    mixtures = mixtures,
-    source_names = source_names,
-    source_means = source_means,
-    source_sds = source_sds,
-    correction_means = correction_means,
-    correction_sds = correction_sds,
-    concentration_means = concentration_means,
-    group = groups
-  )
-)
-
-# Print
-simmr_4
+# MCMC run
+simmr_1_out <- simmr_mcmc(simmr_1)
 
 # Plot
-plot(simmr_4,
-  xlab = expression(paste(delta^13, "C (\u2030)", sep = "")),
-  ylab = expression(paste(delta^15, "N (\u2030)", sep = "")),
-  title = "Isospace plot of Inger et al Geese data"
-) #'
+plot(simmr_1_out) # Creates all 4 plots
+plot(simmr_1_out, type = "boxplot")
+plot(simmr_1_out, type = "histogram")
+plot(simmr_1_out, type = "density")
+plot(simmr_1_out, type = "matrix")
+}
 }
 \seealso{
-See \code{\link{plot.simmr_output}} for plotting the output of a
-simmr run. See \code{\link{simmr_mcmc}} for running a simmr object once the
-iso-space is deemed acceptable.
+See \code{\link{simmr_mcmc}} and \code{\link{simmr_ffvb}} for 
+creating objects suitable for this function, and many more examples. See 
+also \code{\link{simmr_load}} for creating simmr objects, 
+\code{\link{plot.simmr_input}} for creating isospace plots, 
+\code{\link{summary.simmr_output}} for summarising output.
 }
 \author{
 Andrew Parnell <andrew.parnell@mu.ie>

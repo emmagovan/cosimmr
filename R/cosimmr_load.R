@@ -99,6 +99,7 @@ cosimmr_load <- function(formula,
         scaled_mat = scale(model.matrix(formula)[,(2:ncol(model.matrix(formula)))])
         x_scaled = cbind(model.matrix(formula)[,1], 
                          scaled_mat)
+        colnames(x_scaled) = c(colnames(model.matrix(formula)))
         
         scaled_center = attr(scaled_mat, "scaled:center")
         
@@ -152,6 +153,10 @@ cosimmr_load <- function(formula,
   # Add column names if they're not there
   if (is.null(colnames(mixtures))) {
     colnames(mixtures) <- paste0("tracer", 1:n_tracers)
+  }
+  
+  if (is.null(colnames(x_scaled))) {
+    colnames(x_scaled) <- paste0("covariate", 1:n_tracers)
   }
   
   # source_names must be a character vector - the length of it is the number of sources

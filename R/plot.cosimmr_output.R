@@ -1,50 +1,47 @@
-#This needs to be edited - not sure how we want to go about plots
-
-
-#' Plot the \code{cosimmr_input} data created from \code{cosimmr_load}
+#' Plot different features of an object created from  \code{\link{cosimmr_ffvb}}.
 #'
-#' This function creates iso-space (AKA tracer-space or delta-space) plots.
-#' They are vital in determining whether the data are suitable for running in a
-#' SIMM.
+#' This function allows for 4 different types of plots of the simmr output
+#' created from \code{\link{cosimmr_ffvb}}. The 
+#' types are: plot of beta values
 #'
-#' It is desirable to have the vast majority of the mixture observations to be
-#' inside the convex hull defined by the food sources. When there are more than
-#' two tracers (as in one of the examples below) it is recommended to plot all
-#' the different pairs of the food sources. See the vignette for further
-#' details of richer plots.
+#' The matrix plot should form a necessary part of any SIMM analysis since it
+#' allows the user to judge which sources are identifiable by the model.
+#' Further detail about these plots is provided in the vignette.
 #'
-#' @param x An object created via the function \code{\link{cosimmr_load}}
-#' @param tracers The choice of tracers to plot. If there are more than two
-#' tracers, it is recommended to plot every pair of tracers to determine
-#' whether the mixtures lie in the mixing polygon defined by the sources
-#' @param title A title for the graph
-#' @param xlab The x-axis label. By default this is assumed to be delta-13C but
-#' can be made richer if required. See examples below.
-#' @param ylab The y-axis label. By default this is assumed to be delta-15N in
-#' per mil but can be changed as with the x-axis label
-#' @param sigmas The number of standard deviations to plot on the source
-#' values. Defaults to 1.
-#' @param group Which groups to plot. Can be a single group or multiple groups
-#' @param mix_name A optional string containing the name of the mixture
-#' objects, e.g. Geese.
-#' @param colour If TRUE (default) creates a plot. If not, puts the plot in
-#' black and white
+#' @param x An object of class \code{simmr_output} created via
+#' \code{\link{simmr_mcmc}} or \code{\link{simmr_ffvb}}.
+#' @param type The type of plot required. Can be one or more of 'histogram',
+#' 'density', 'matrix', or 'boxplot'
+#' @param group Which group(s) to plot.
+#' @param binwidth The width of the bins for the histogram. Defaults to 0.05
+#' @param alpha The degree of transparency of the plots. Not relevant for
+#' matrix plots
+#' @param title The title of the plot.
 #' @param ggargs Extra arguments to be included in the ggplot (e.g. axis limits)
-#' @param ...  Not used
-#' 
-#' @return isospace plot
+#' @param ...  Currently not used
 #'
 #' @import ggplot2
+#' @import graphics
 #' @import viridis
+#' @importFrom reshape2 "melt"
+#' @importFrom stats "cor"
 #'
 #' @author Andrew Parnell <andrew.parnell@@mu.ie>
-#' @seealso See \code{\link{plot.simmr_output}} for plotting the output of a
-#' simmr run. See \code{\link{simmr_mcmc}} for running a simmr object once the
-#' iso-space is deemed acceptable.
+#' @seealso See \code{\link{simmr_mcmc}} and \code{\link{simmr_ffvb}} for 
+#' creating objects suitable for this function, and many more examples. See 
+#' also \code{\link{simmr_load}} for creating simmr objects, 
+#' \code{\link{plot.simmr_input}} for creating isospace plots, 
+#' \code{\link{summary.simmr_output}} for summarising output.
+#' 
 #' @examples
 #'
-#' # A simple example with 10 observations, 4 food sources and 2 tracers
-#' data(geese_data_day1)
+#' \dontrun{
+#' # A simple example with 10 observations, 2 tracers and 4 sources
+#'
+#' # The data
+#' data(geese_data)
+#'
+#' # Load into simmr
 #' simmr_1 <- with(
 #'   geese_data_day1,
 #'   simmr_load(
@@ -57,197 +54,143 @@
 #'     concentration_means = concentration_means
 #'   )
 #' )
-#'
 #' # Plot
 #' plot(simmr_1)
 #'
-#' ### A more complicated example with 30 obs, 3 tracers and 4 sources
-#' data(simmr_data_2)
-#' simmr_3 <- with(
-#'   simmr_data_2,
-#'   simmr_load(
-#'     mixtures = mixtures,
-#'     source_names = source_names,
-#'     source_means = source_means,
-#'     source_sds = source_sds,
-#'     correction_means = correction_means,
-#'     correction_sds = correction_sds,
-#'     concentration_means = concentration_means
-#'   )
-#' )
 #'
-#' # Plot 3 times - first default d13C vs d15N
-#' plot(simmr_3)
-#' # Now plot d15N vs d34S
-#' plot(simmr_3, tracers = c(2, 3))
-#' # and finally d13C vs d34S
-#' plot(simmr_3, tracers = c(1, 3))
-#' # See vignette('simmr') for fancier x-axis labels
-#'
-#' # An example with multiple groups - the Geese data from Inger et al 2006
-#' data(geese_data)
-#' simmr_4 <- with(
-#'   geese_data,
-#'   simmr_load(
-#'     mixtures = mixtures,
-#'     source_names = source_names,
-#'     source_means = source_means,
-#'     source_sds = source_sds,
-#'     correction_means = correction_means,
-#'     correction_sds = correction_sds,
-#'     concentration_means = concentration_means,
-#'     group = groups
-#'   )
-#' )
-#'
-#' # Print
-#' simmr_4
+#' # MCMC run
+#' simmr_1_out <- simmr_mcmc(simmr_1)
 #'
 #' # Plot
-#' plot(simmr_4,
-#'   xlab = expression(paste(delta^13, "C (\u2030)", sep = "")),
-#'   ylab = expression(paste(delta^15, "N (\u2030)", sep = "")),
-#'   title = "Isospace plot of Inger et al Geese data"
-#' ) #'
+#' plot(simmr_1_out) # Creates all 4 plots
+#' plot(simmr_1_out, type = "boxplot")
+#' plot(simmr_1_out, type = "histogram")
+#' plot(simmr_1_out, type = "density")
+#' plot(simmr_1_out, type = "matrix")
+#' }
 #' @export
 plot.cosimmr_output <-
   function(x,
-           tracers = c(1, 2),
-           title = "Tracers plot",
-           xlab = colnames(x$input$mixtures)[tracers[1]],
-           ylab = colnames(x$inputmixtures)[tracers[2]],
-           sigmas = 1,
-           group = 1:x$input$n_groups,
-           mix_name = "Mixtures",
+           type = c(
+             "isospace",
+             "histogram",
+             "density",
+             "matrix",
+             "boxplot"
+           ),
+           group = 1,
+           binwidth = 0.05,
+           alpha = 0.5,
+           title = if (length(group) == 1) {
+             "simmr output plot"
+           } else {
+             paste("simmr output plot: group", group)
+           },
            ggargs = NULL,
-           colour = TRUE,
            ...) {
-    
-    if (inherits(x, "cosimmr_output") == TRUE) {
-    
-    # Get mixtures to match current group(s)
-    curr_rows <- which(x$input$group_int %in% group)
-    curr_mix <- x$input$mixtures[curr_rows, , drop = FALSE]
-    curr_n_groups <- length(group)
-    
-    # First get the mean corrected sources and the sd corrected sources
-    source_means_c <- x$input$source_means + x$input$correction_means
-    source_sds_c <- sqrt(x$input$source_sds^2 + x$input$correction_sds^2)
-    
-    # Set up data frame for ggplot - have to do it this stupid way because of cran
-    x2 <- unlist(c(source_means_c[, tracers[1]], curr_mix[, tracers[1]]))
-    x_lower <- unlist(c(source_means_c[, tracers[1]] - sigmas * source_sds_c[, tracers[1]], curr_mix[, tracers[1]]))
-    x_upper <- unlist(c(source_means_c[, tracers[1]] + sigmas * source_sds_c[, tracers[1]], curr_mix[, tracers[1]]))
-    
-    if (ncol(curr_mix) > 1) {
-      y <- unlist(c(source_means_c[, tracers[2]], curr_mix[, tracers[2]]))
-      y_lower <- unlist(c(source_means_c[, tracers[2]] - sigmas * source_sds_c[, tracers[2]], curr_mix[, tracers[2]]))
-      y_upper <- unlist(c(source_means_c[, tracers[2]] + sigmas * source_sds_c[, tracers[2]], curr_mix[, tracers[2]]))
-    }
-    
-    if (x$input$n_groups == 1) {
-      Source <- factor(c(x$input$source_names, rep(mix_name, nrow(curr_mix))), levels = c(mix_name, x$input$source_names))
-      p_means = matrix(NA, nrow = (x$input$n_obs + x$input$n_sources), ncol = x$input$n_sources)
-      # for(k in 1:x$input$n_sources){
-      #   p_means[k,] = c(rep(1, x$input$n_sources))
-      # }
-      p_means[1:x$input$n_sources,] = diag(x$input$n_sources)
-      for(k in 1:x$input$n_obs){
-        p_means[k+x$input$n_sources,] = c(colMeans(x$output[[group[i]]]$BUGSoutput$sims.list$p[k,,]))
-      }
-      colnames(p_means) = x$input$source_names
-    } else {
-      Source <- factor(c(x$input$source_names, paste(mix_name, x$input$group[curr_rows])), levels = c(paste(mix_name, unique(x$input$group[curr_rows])), x$source_names))
-      p_means = matrix(NA, nrow = (x$input$n_obs + x$input$n_sources), ncol = x$input$n_sources)
-      # for(k in 1:x$input$n_sources){
-      #   p_means[k,] = c(rep(1, x$input$n_sources))
-      # }
-      p_means[1:x$input$n_sources,] = diag(x$input$n_sources)
-      for(k in 1:x$input$n_obs){
-        p_means[k+x$input$n_sources,] = c(colMeans(x$output[[group[i]]]$BUGSoutput$sims.list$p[k,,]))
-      }
-      colnames(p_means) = x$input$source_names
-    }
-    size <- c(rep(0.5, x$input$n_sources), rep(0.5, nrow(curr_mix)))
-    
-    if (ncol(curr_mix) == 1) {
-      df <- cbind(data.frame(x = x2, x_lower, x_upper, Source, size, y = Source), p_means)
-    } else {
-      df <- cbind(data.frame(x = x2, y = y, x_lower, y_lower, x_upper, y_upper, Source, size), p_means)
-    }
-    
-    # Plot for bivariate mixtures
-    if (ncol(curr_mix) > 1) {
-      if (colour) {
-        g <- ggplot(data = df, aes(x = x, y = y, colour = Source)) +
-          geom_pie_glyph(slices = colnames(df[,(ncol(df) - x$input$n_sources +1):(ncol(df))]),
-                         inherit.aes = TRUE) +
-          scale_color_viridis(discrete = TRUE) +
-          theme_bw() +
-          labs(x = xlab, y = ylab, title = title) +
-          geom_errorbarh(aes(xmax = x_upper, xmin = x_lower, height = 0)) +
-          # geom_pointrange(aes(x=x,y=y,ymax=y_upper,ymin=y_lower,height=0.2,shape=Source)) +
-          geom_pointrange(aes(x = x, y = y, ymax = y_upper, ymin = y_lower, shape = Source)) +
-          scale_shape_manual(values = 1:nlevels(df$Source)) +
-          theme(legend.title = element_blank(), legend.key = element_blank()) +
-          guides(color = guide_legend(override.aes = list(linetype = c(rep(0, curr_n_groups), rep(1, x$input$n_sources))))) +
-          ggargs  #[(x$input$n_sources+1):(nrow(df)),])
-      } else {
-        g <- ggplot(data = df, aes(x = x, y = y, colour = Source)) +
-          geom_pie_glyph(slices = colnames(df[,(ncol(df) - x$input$n_sources +1):(ncol(df))]),
-                         inherit.aes = TRUE) +
-          scale_fill_manual(values = 1:nlevels(df$Source)) +
-          theme_bw() +
-          geom_pie_glyph(slices = colnames(df[,(ncol(df) - x$input$n_sources +1):(ncol(df))])) +
-          labs(x = xlab, y = ylab, title = title) +
-          geom_errorbarh(aes(xmax = x_upper, xmin = x_lower, height = 0)) +
-          # geom_pointrange(aes(x=x,y=y,ymax=y_upper,ymin=y_lower,height=0.2,shape=Source)) +
-          geom_pointrange(aes(x = x, y = y, ymax = y_upper, ymin = y_lower, shape = Source)) +
-          scale_shape_manual(values = 1:nlevels(df$Source)) +
-          theme(legend.title = element_blank(), legend.key = element_blank()) +
-          guides(color = guide_legend(override.aes = list(linetype = c(rep(0, curr_n_groups), rep(1, x$input$n_sources))))) +
-          scale_colour_grey() +
-          ggargs
-      }
-    }
-    
-    # Plot for univariate mixtures
-    if (ncol(curr_mix) == 1) {
-      if (colour) {
-        g <- ggplot(data = df, aes(x = x, y = y, colour = Source)) +
-          scale_color_viridis(discrete = TRUE) +
-          theme_bw() +
-          theme(axis.title.y = element_blank()) +
-          labs(x = xlab, title = title) +
-          geom_errorbarh(aes(xmax = x_upper, xmin = x_lower, height = 0)) +
-          # geom_pointrange(aes(x=x,y=y,ymax=y_upper,ymin=y_lower,height=0.2,shape=Source)) +
-          geom_point(aes(shape = Source)) +
-          scale_shape_manual(values = 1:nlevels(df$Source)) +
-          theme(legend.position = "None") +
-          guides(color = guide_legend(override.aes = list(linetype = c(rep(0, curr_n_groups), rep(1, x$n_sources))))) +
-          ggargs
-      } else {
-        g <- ggplot(data = df, aes(x = x, y = y, colour = Source)) +
-          scale_color_grey() +
-          theme_bw() +
-          theme(
-            axis.title.y = element_blank(),
-            axis.text.y = element_blank(),
-            axis.ticks.y = element_blank()
-          ) +
-          labs(x = xlab, title = title) +
-          geom_errorbarh(aes(xmax = x_upper, xmin = x_lower, height = 0)) +
-          # geom_pointrange(aes(x=x,y=y,ymax=y_upper,ymin=y_lower,height=0.2,shape=Source)) +
-          geom_point(aes(shape = Source)) +
-          scale_shape_manual(values = 1:nlevels(df$Source)) +
-          theme(legend.title = element_blank(), legend.key = element_blank()) +
-          guides(color = guide_legend(override.aes = list(linetype = c(rep(0, curr_n_groups), rep(1, x$n_sources))))) +
-          ggargs
+    if(inherits(x, "simmr_output") == TRUE){
+      # Get the specified type
+      type <- match.arg(type, several.ok = TRUE)
+      
+      # Iso-space plot is special as all groups go on one plot
+      # Add in extra dots here as they can be sent to this plot function
+      if ("isospace" %in% type) graphics::plot(x$input, group = group, title = title, ...)
+      
+      # Get group names
+      group_names <- levels(x$input$group)[group]
+      
+      for (i in 1:length(group)) {
         
+        # Prep data
+        out_all <- x$output[[group[i]]]$BUGSoutput$sims.list$p
+        colnames(out_all) <- x$input$source_names
+        df <- reshape2::melt(out_all)
+        colnames(df) <- c("Num", "Source", "Proportion")
+        if ("histogram" %in% type) {
+          g <- ggplot(df, aes_string(
+            x = "Proportion", y = "..density..",
+            fill = "Source"
+          )) +
+            scale_fill_viridis(discrete = TRUE) +
+            geom_histogram(binwidth = binwidth, alpha = alpha) +
+            theme_bw() +
+            ggtitle(title[i]) +
+            facet_wrap("~ Source") +
+            theme(legend.position = "none") +
+            ggargs
+          print(g)
+        }
+        
+        if ("density" %in% type) {
+          g <- ggplot(df, aes_string(
+            x = "Proportion", y = "..density..",
+            fill = "Source"
+          )) +
+            scale_fill_viridis(discrete = TRUE) +
+            geom_density(alpha = alpha, linetype = 0) +
+            theme_bw() +
+            theme(legend.position = "none") +
+            ggtitle(title[i]) +
+            ylab("Density") +
+            facet_wrap("~ Source") +
+            ggargs
+          print(g)
+        }
+        
+        if ("boxplot" %in% type) {
+          g <- ggplot(df, aes_string(
+            y = "Proportion", x = "Source",
+            fill = "Source", alpha = "alpha"
+          )) +
+            scale_fill_viridis(discrete = TRUE) +
+            geom_boxplot(alpha = alpha, notch = TRUE, outlier.size = 0) +
+            theme_bw() +
+            ggtitle(title[i]) +
+            theme(legend.position = "none") +
+            coord_flip() +
+            ggargs
+          print(g)
+        }
+        
+        # if ('convergence'%in%type) {
+        #   coda::gelman.plot(x$output[[group[i]]],transform=TRUE)
+        # }
+        
+        if ("matrix" %in% type) {
+          # These taken from the help(pairs) file
+          panel.hist <- function(x, ...) {
+            usr <- graphics::par("usr")
+            on.exit(graphics::par(usr))
+            graphics::par(usr = c(usr[1:2], 0, 1.5))
+            h <- graphics::hist(x, plot = FALSE)
+            breaks <- h$breaks
+            nB <- length(breaks)
+            y <- h$counts
+            y <- y / max(y)
+            graphics::rect(breaks[-nB], 0, breaks[-1], y, col = "lightblue", ...)
+          }
+          panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...) {
+            usr <- graphics::par("usr")
+            on.exit(graphics::par(usr))
+            graphics::par(usr = c(0, 1, 0, 1))
+            r <- stats::cor(x, y)
+            txt <- format(c(r, 0.123456789), digits = digits)[1]
+            txt <- paste0(prefix, txt)
+            if (missing(cex.cor)) cex.cor <- 0.8 / graphics::strwidth(txt)
+            graphics::text(0.5, 0.5, txt, cex = cex.cor * abs(r))
+          }
+          panel.contour <- function(x, y, ...) {
+            usr <- graphics::par("usr")
+            on.exit(graphics::par(usr))
+            graphics::par(usr = c(usr[1:2], 0, 1.5))
+            kd <- MASS::kde2d(x, y)
+            kdmax <- max(kd$z)
+            graphics::contour(kd, add = TRUE, drawlabels = FALSE, levels = c(kdmax * 0.1, kdmax * 0.25, kdmax * 0.5, kdmax * 0.75, kdmax * 0.9))
+          }
+          graphics::pairs(out_all, xlim = c(0, 1), ylim = c(0, 1), main = title[i], diag.panel = panel.hist, lower.panel = panel.cor, upper.panel = panel.contour)
+        }
       }
+      if (exists("g")) invisible(g)
     }
     
-    print(g)
-    invisible(g)
-    }
   }

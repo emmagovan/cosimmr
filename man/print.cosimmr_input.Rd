@@ -7,7 +7,7 @@
 \method{print}{cosimmr_input}(x, ...)
 }
 \arguments{
-\item{x}{An object of class \code{simmr_input}}
+\item{x}{An object of class \code{cosimmr_input}}
 
 \item{...}{Other arguments (not supported)}
 }

@@ -1,12 +1,13 @@
 #' Print simmr input object
 #'
-#' @param x An object of class \code{simmr_input}
+#' @param x An object of class \code{cosimmr_input}
 #' @param ... Other arguments (not supported)
 #'
 #' @return A neat presentation of your simmr object.
 #' @export print.cosimmr_input
 print.cosimmr_input <-
   function(x, ...) {
+    if(inherits(x, "cosimmr_input") == TRUE){
     message("This is a valid simmr input object with ")
     message(paste(x$n_obs, " observations, "))
     message(paste(ncol(x$x_scaled), " covariates, "))
@@ -22,3 +23,4 @@ print.cosimmr_input <-
     print(colnames(x$mixtures), sep = ", ")
     message("\n\n")
   }
+}

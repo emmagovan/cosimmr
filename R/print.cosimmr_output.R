@@ -8,9 +8,9 @@
 #' @seealso \code{\link{simmr_mcmc}} and \code{\link{simmr_ffvb}} for creating
 #' \code{simmr_output} objects
 #' @export
-print.simmr_output <-
+print.cosimmr_output <-
   function(x, ...) {
-    if (inherits(x, "simmr_output") == TRUE) {
+    if (inherits(x, "cosimmr_output") == TRUE) {
          if (inherits(x, "ffvb") == TRUE) {
         print(x$input)
         message("The input data has been run via simmr_ffvb and has produced ")

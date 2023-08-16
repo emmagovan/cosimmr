@@ -8,5 +8,17 @@ Maintainer: Your Name <your@email.com>
 Description: One paragraph description of what the package
       does as one or more full sentences.
 License: GPL (>= 2)
-Imports: Rcpp (>= 1.0.10)
-LinkingTo: Rcpp
+Imports: Rcpp (>= 1.0.10),
+         R2jags,
+         bayesplot,
+         checkmate,
+         ggplot2,
+         viridis
+LinkingTo: Rcpp,
+           RcppArmadillo,
+           RcppDist
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+RoxygenNote: 7.2.3
+Encoding: UTF-8

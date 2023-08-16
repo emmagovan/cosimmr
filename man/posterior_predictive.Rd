@@ -7,13 +7,13 @@
 posterior_predictive(simmr_out, group = 1, prob = 0.5, plot_ppc = TRUE)
 }
 \arguments{
-\item{simmr_out}{A run of the simmr model from \code{\link{cosimmr_ffvb}}.}
-
-\item{group}{Which group to run it for (currently only numeric rather than group names)}
-
 \item{prob}{The probability interval for the posterior predictives. The default is 0.5 (i.e. 50pc intervals)}
 
 \item{plot_ppc}{Whether to create a bayesplot of the posterior predictive or not.}
+
+\item{cosimmr_out}{A run of the simmr model from \code{\link{cosimmr_ffvb}}.}
+
+\item{covariate}{Which covariate to run it for}
 }
 \value{
 plot of posterior predictives and simulated values

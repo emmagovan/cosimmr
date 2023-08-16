@@ -6,28 +6,26 @@
 \usage{
 \method{plot}{cosimmr_output}(
   x,
-  type = c("isospace", "histogram", "density", "matrix", "boxplot"),
-  group = 1,
-  binwidth = 0.05,
+  type = c("isospace", "beta_hist"),
+  covariates = 1,
+  binwidth = 10,
   alpha = 0.5,
-  title = if (length(group) == 1) {
+  title = if (length(covariates) == 1) {
      "simmr output plot"
  } else {
     
-    paste("simmr output plot: group", group)
+    paste("simmr output plot: covariate", covariates)
  },
   ggargs = NULL,
   ...
 )
 }
 \arguments{
-\item{x}{An object of class \code{simmr_output} created via
-\code{\link{simmr_mcmc}} or \code{\link{simmr_ffvb}}.}
+\item{x}{An object of class \code{cosimmr_output} created via
+\code{\link{simmr_ffvb}}.}
 
-\item{type}{The type of plot required. Can be one or more of 'histogram',
-'density', 'matrix', or 'boxplot'}
-
-\item{group}{Which group(s) to plot.}
+\item{type}{The type of plot required. Can be one or more of 'isospace', 
+'betahistogram'}
 
 \item{binwidth}{The width of the bins for the histogram. Defaults to 0.05}
 
@@ -56,13 +54,13 @@ Further detail about these plots is provided in the vignette.
 # A simple example with 10 observations, 2 tracers and 4 sources
 
 # The data
-data(geese_data)
+data(geese_data_day1)
 
 # Load into simmr
 simmr_1 <- with(
   geese_data_day1,
-  simmr_load(
-    mixtures = mixtures,
+  cosimmr_load(
+    formula = mixtures ~ c(1,2,3,3,2,3,2,1,2),
     source_names = source_names,
     source_means = source_means,
     source_sds = source_sds,
@@ -75,23 +73,17 @@ simmr_1 <- with(
 plot(simmr_1)
 
 
-# MCMC run
-simmr_1_out <- simmr_mcmc(simmr_1)
+# FFVB run
+simmr_1_out <- cosimmr_ffvb(simmr_1)
 
-# Plot
-plot(simmr_1_out) # Creates all 4 plots
-plot(simmr_1_out, type = "boxplot")
-plot(simmr_1_out, type = "histogram")
-plot(simmr_1_out, type = "density")
-plot(simmr_1_out, type = "matrix")
+plot(simmr_1_out, type = c("isospace", "beta_hist"))
 }
 }
 \seealso{
-See \code{\link{simmr_mcmc}} and \code{\link{simmr_ffvb}} for 
+See  \code{\link{cosimmr_ffvb}} for 
 creating objects suitable for this function, and many more examples. See 
-also \code{\link{simmr_load}} for creating simmr objects, 
-\code{\link{plot.simmr_input}} for creating isospace plots, 
-\code{\link{summary.simmr_output}} for summarising output.
+also \code{\link{cosimmr_load}} for creating simmr objects, 
+\code{\link{plot.cosimmr_input}} for creating isospace plots.
 }
 \author{
 Andrew Parnell <andrew.parnell@mu.ie>

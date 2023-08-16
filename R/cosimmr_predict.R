@@ -34,7 +34,7 @@
 #' simmr_1 <- with(
 #'   geese_data_day1,
 #'   cosimmr_load(
-#'     mixtures = mixtures,
+#'     formula = mixtures ~ c(1,2,3,2,3,1,1,1,2),
 #'     source_names = source_names,
 #'     source_means = source_means,
 #'     source_sds = source_sds,
@@ -56,74 +56,29 @@
 #' # Print it
 #' print(simmr_1_out)
 #'
-#' # Summary
-#' summary(simmr_1_out, type = "correlations")
-#' summary(simmr_1_out, type = "statistics")
-#' ans <- summary(simmr_1_out, type = c("quantiles", "statistics"))
 #'
 #' # Plot
-#' plot(simmr_1_out, type = "boxplot")
-#' plot(simmr_1_out, type = "histogram")
-#' plot(simmr_1_out, type = "density")
-#' plot(simmr_1_out, type = "matrix")
+#' plot(simmr_1_out, type = "isospace")
+#' plot(simmr_1_out, type = "beta_hist")
 #'
-#' # Compare two sources
-#' compare_sources(simmr_1_out, source_names = c("Zostera", "Enteromorpha"))
-#'
-#' # Compare multiple sources
-#' compare_sources(simmr_1_out)
-#'
-#' #####################################################################################
-#'
-#' # A version with just one observation
-#' data(geese_data_day1)
-#' simmr_2 <- with(
-#'   geese_data_day1,
-#'   cosimmr_load(
-#'     formula = mixtures[1, , drop = FALSE] ~ c(1),
-#'     source_names = source_names,
-#'     source_means = source_means,
-#'     source_sds = source_sds,
-#'     correction_means = correction_means,
-#'     correction_sds = correction_sds,
-#'     concentration_means = concentration_means
-#'   )
-#' )
-#'
-#' # Plot
-#' plot(simmr_2)
-#'
-#' # FFVB run - automatically detects the single observation
-#' simmr_2_out <- cosimmr_ffvb(simmr_2)
-#'
-#' # Print it
-#' print(simmr_2_out)
-#'
-#' # Summary
-#' summary(simmr_2_out)
-#' ans <- summary(simmr_2_out, type = c("quantiles"))
-#'
-#' # Plot
-#' plot(simmr_2_out)
-#' plot(simmr_2_out, type = "boxplot")
-#' plot(simmr_2_out, type = "histogram")
-#' plot(simmr_2_out, type = "density")
-#' plot(simmr_2_out, type = "matrix")
+#'pred_array<-cosimmr_predict(simmr_out = simmr_1_out, x_pred = c(1,5))
 #'
 #' }
 #' @export
-simmrcov_predict <- function(simmr_out,
+cosimmr_predict <- function(simmr_out,
                           x_pred,
                           n_output = 3600) {
   
 
-  
+  if(inherits(simmr_out, "cosimmr_output") == TRUE){
  # x_pred_mat = matrix(x_pred, ncol = n_covariates)
   
   #Check x_pred has same number of columns as original x
   #This means they have to input x_pred as a matrix
   #Otherwise this wont work
-  x_pred_mat = x_pred 
+    if(class(x_pred) == "numeric"){
+  x_pred_mat = matrix(x_pred, nrow = 1) 
+    } else(x_pred_mat = x_pred)
   
 if(ncol(x_pred_mat) != ncol(simmr_out$input$x_scaled)) stop("The matrix of values you wish to make predictions for does not have the same number of entries as the original covariance matrix. Please fix and rerun.")
 
@@ -200,4 +155,6 @@ if(ncol(x_pred_mat) != ncol(simmr_out$input$x_scaled)) stop("The matrix of value
     }
   }
  return(p_sample)
+  } else (message("Can only predict using cosimmr_output object generated from
+                  cosimmr_ffvb function"))
 }

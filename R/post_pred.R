@@ -5,8 +5,8 @@
 #' The simulated posterior predicted values are returned as part of the object 
 #' and can be saved for external use
 #'
-#' @param simmr_out A run of the simmr model from \code{\link{cosimmr_ffvb}}.
-#' @param group Which group to run it for (currently only numeric rather than group names)
+#' @param cosimmr_out A run of the simmr model from \code{\link{cosimmr_ffvb}}.
+#' @param covariate Which covariate to run it for
 #' @param prob The probability interval for the posterior predictives. The default is 0.5 (i.e. 50pc intervals)
 #' @param plot_ppc Whether to create a bayesplot of the posterior predictive or not.
 #'
@@ -55,21 +55,6 @@ posterior_predictive.simmr_output <- function(simmr_out,
                                               group = 1,
                                               prob = 0.5,
                                               plot_ppc = TRUE) {
-  # Can't do more than 1 group for now
-  assert_int(group, lower = 1, upper = simmr_out$input$n_groups)
-  # 
-  #   # Get the original jags script
-  #   model_string_old <- simmr_out$output[[group]]$model$model()
-  #   
-  #   jags_file_old <- system.file("jags_models", "mcmc_post_pred.jags", package = "simmr")
-  # 
-  #   # Plug in y_pred
-  #   copy_lines <- model_string_old[6]
-  #   copy_lines <- sub("y\\[i", "y_pred\\[i", copy_lines)
-  #   model_string_new <- c(model_string_old[1:6], copy_lines, model_string_old[7:length(model_string_old)])
-  
-  jags_file <- system.file("jags_models", "mcmc_post_pred.jags", package = "simmr")
-  
   # Re-Run in JAGS
   output <- R2jags::jags(
     data = simmr_out$output[[group]]$model$data(),

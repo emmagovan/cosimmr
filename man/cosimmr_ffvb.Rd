@@ -78,10 +78,8 @@ summary(simmr_1_out, type = "statistics")
 ans <- summary(simmr_1_out, type = c("quantiles", "statistics"))
 
 # Plot
-plot(simmr_1_out, type = "boxplot")
-plot(simmr_1_out, type = "histogram")
-plot(simmr_1_out, type = "density")
-plot(simmr_1_out, type = "matrix")
+plot(simmr_1_out, type = "beta_boxplot")
+plot(simmr_1_out, type = "beta_histogram")
 
 # Compare two sources
 compare_sources(simmr_1_out, source_names = c("Zostera", "Enteromorpha"))

@@ -2,7 +2,7 @@
 
 S3method(plot,cosimmr_input)
 S3method(plot,cosimmr_output)
-S3method(posterior_predictive,simmr_output)
+S3method(posterior_predictive,cosimmr_output)
 S3method(print,cosimmr_output)
 export(cosimmr_ffvb)
 export(cosimmr_load)

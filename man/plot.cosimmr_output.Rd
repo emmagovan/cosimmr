@@ -6,7 +6,8 @@
 \usage{
 \method{plot}{cosimmr_output}(
   x,
-  type = c("isospace", "beta_histogram", "beta_boxplot"),
+  type = c("isospace", "beta_histogram", "beta_boxplot", "p_ind", "p_mean"),
+  ind = 1,
   covariates = 1,
   binwidth = 0.1,
   alpha = 0.5,
@@ -16,6 +17,7 @@
     
     paste("simmr output plot: covariate", covariates)
  },
+  n_output = 3600,
   ggargs = NULL,
   ...
 )

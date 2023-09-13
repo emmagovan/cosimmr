@@ -84,6 +84,61 @@ options available in the plot function
 plot(cosimmr_1_out, type = c("isospace", "beta_hist", "p_ind"), ind = c(1,7))
 ```
 
+Predictions
+```{r}
+cosimmr_predict(cosimmr_1_out, c(1,3))
+
+cosimmr_predict(cosimmr_1_out, c(1))
+
+newdata = matrix(c(1,3), ncol = 1)
+
+a<-cosimmr_predict(cosimmr_1_out, matrix(c(1,3), ncol = 1))
+
+cosimmr_predict(cosimmr_1_out, as.matrix(1))
+```
+
+
+
+
+
+
+
+Categorical variables also work
+```{r}
+colour_cat = c("red", "green", "blue", "red", "red", "red", "blue", "green", "blue")
+cosimmr_2 <- with(
+  geese_data_day1,
+  cosimmr_load(
+    formula = mixtures ~ colour_cat,
+    source_names = source_names,
+    source_means = source_means,
+    source_sds = source_sds,
+    correction_means = correction_means,
+    correction_sds = correction_sds,
+    concentration_means = concentration_means
+  )
+)
+
+cosimmr_2_out = cosimmr_ffvb(cosimmr_2)
+
+
+cosimmr_predict(cosimmr_1_out, as.matrix("red"))
+```
+
+
+
+## Mixsiar comparison
+
+
+
+
+
+
+
+
+
+
+
 
 
 

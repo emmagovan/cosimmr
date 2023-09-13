@@ -2,16 +2,21 @@
 % Please edit documentation in R/post_pred.R
 \name{posterior_predictive}
 \alias{posterior_predictive}
-\title{Plot the posterior predictive distribution for a simmr run}
+\title{Plot the posterior predictive distribution for a cosimmr run}
 \usage{
-posterior_predictive(simmr_out, group = 1, prob = 0.5, plot_ppc = TRUE)
+posterior_predictive(
+  cosimmr_out,
+  prob = 0.5,
+  plot_ppc = TRUE,
+  n_samples = 3600
+)
 }
 \arguments{
+\item{cosimmr_out}{A run of the simmr model from \code{\link{cosimmr_ffvb}}.}
+
 \item{prob}{The probability interval for the posterior predictives. The default is 0.5 (i.e. 50pc intervals)}
 
 \item{plot_ppc}{Whether to create a bayesplot of the posterior predictive or not.}
-
-\item{cosimmr_out}{A run of the simmr model from \code{\link{cosimmr_ffvb}}.}
 
 \item{covariate}{Which covariate to run it for}
 }

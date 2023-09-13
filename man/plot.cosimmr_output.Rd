@@ -6,9 +6,9 @@
 \usage{
 \method{plot}{cosimmr_output}(
   x,
-  type = c("isospace", "beta_hist"),
+  type = c("isospace", "beta_histogram", "beta_boxplot"),
   covariates = 1,
-  binwidth = 10,
+  binwidth = 0.1,
   alpha = 0.5,
   title = if (length(covariates) == 1) {
      "simmr output plot"
@@ -22,7 +22,7 @@
 }
 \arguments{
 \item{x}{An object of class \code{cosimmr_output} created via
-\code{\link{simmr_ffvb}}.}
+\code{\link{cosimmr_ffvb}}.}
 
 \item{type}{The type of plot required. Can be one or more of 'isospace', 
 'betahistogram'}

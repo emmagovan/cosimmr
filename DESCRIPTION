@@ -1,19 +1,27 @@
 Package: cosimmr
 Type: Package
-Title: What the Package Does in One 'Title Case' Line
+Title: A package for running Stable Isotope Mixing Models and including Covariates
 Version: 1.0
 Date: 2023-08-15
-Author: Your Name
-Maintainer: Your Name <your@email.com>
-Description: One paragraph description of what the package
-      does as one or more full sentences.
+Authors@R:c(person("Emma", "Govan", email = "emma.govan.2021@mumail.ie", role = c("cre","aut")),
+          person("Andrew", "Parnell", role = "aut"),
+          person("Brice", "Semmens", role = "ctb"),
+          person("Eric", "Ward", role = "ctb"),
+          person("Brian", "Stock", role = "ctb"),
+          person("Andrew", "Jackson", role = "ctb"),
+          person("Donald", "Phillips", role = "ctb"))
+Maintainer: Emma Govan <emma.govan.2021@mumail.ie>
+Description: cosimmr is a package for running Stable Isotope Mixing Models in R. It 
+             allows for the inclusion of covariates. The package also has built-in summary functions
+             and plot functions which allow for the creation of isospace plots.
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.10),
          R2jags,
          bayesplot,
          checkmate,
          ggplot2,
-         viridis
+         viridis,
+         reshape2
 LinkingTo: Rcpp,
            RcppArmadillo,
            RcppDist

@@ -89,24 +89,24 @@ cosimmr_load <- function(formula,
   # Function to load in data for simmr and check whether it's appropriate for running through simmr_mcmc
   
   # Go through each object and check that it matches the requirements
-  mixtures = as.matrix(model.frame(formula)[,1])
+  mixtures = as.matrix(stats::model.frame(formula)[,1])
   if(nrow(mixtures) == 1){
-    x_scaled == model.matrix(formula)
+    x_scaled == stats::model.matrix(formula)
   } else{
     if(scale_x == TRUE){
-      if(sd(model.matrix(formula)[,1]) == 0){
+      if(stats::sd(stats::model.matrix(formula)[,1]) == 0){
         intercept = TRUE
-        scaled_mat = scale(model.matrix(formula)[,(2:ncol(model.matrix(formula)))])
-        x_scaled = cbind(model.matrix(formula)[,1], 
+        scaled_mat = scale(stats::model.matrix(formula)[,(2:ncol(stats::model.matrix(formula)))])
+        x_scaled = cbind(stats::model.matrix(formula)[,1], 
                          scaled_mat)
-        colnames(x_scaled) = c(colnames(model.matrix(formula)))
+        colnames(x_scaled) = c(colnames(stats::model.matrix(formula)))
         
         scaled_center = attr(scaled_mat, "scaled:center")
         
         scaled_scale = attr(scaled_mat, "scaled:scale")
-      } else if(sd(model.matrix(formula)[,1]) != 0){
+      } else if(stats::sd(stats::model.matrix(formula)[,1]) != 0){
         intercept = FALSE
-        x_scaled = scale(model.matrix(formula))
+        x_scaled = scale(stats::model.matrix(formula))
         
         scaled_center = attr(x_scaled, "scaled:center")
         
@@ -114,7 +114,7 @@ cosimmr_load <- function(formula,
       }
       
     } else if(scale_x == FALSE){
-      x_scaled = model.matrix(formula)
+      x_scaled = stats::model.matrix(formula)
     }
   }
   # Write a function that generically tests for any 2D numeric data shape such as matrix, data frame or tibble

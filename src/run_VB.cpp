@@ -19,7 +19,6 @@ void inplace_tri_mat_mult(arma::rowvec &x, arma::mat const &trimat){
 }
 
 //dnorm 
-//' @export
 // [[Rcpp::export]]
 arma::vec dmvnrm_arma_fast(arma::mat const &x,  
                            arma::rowvec const &mean,  
@@ -47,7 +46,6 @@ arma::vec dmvnrm_arma_fast(arma::mat const &x,
 }
 
 //calculate crossproduct of 2 matrices
-//' @export
 // [[Rcpp::export]]
 NumericMatrix crossprod(NumericMatrix X){
   NumericMatrix ans(X.nrow(), X.ncol());
@@ -63,7 +61,6 @@ NumericMatrix crossprod(NumericMatrix X){
 }
 
 //matrix multiplication
-//' @export
 // [[Rcpp::export]]
 NumericMatrix matmult(NumericMatrix x, NumericMatrix y) {
   NumericMatrix ans(x.nrow(), y.ncol());
@@ -80,7 +77,7 @@ NumericMatrix matmult(NumericMatrix x, NumericMatrix y) {
 }
 
 //rnorm sample
-//' @export
+
 // [[Rcpp::export]]
 NumericMatrix rMVNormCpp(const double n,
                          const arma::vec mu,
@@ -119,7 +116,6 @@ NumericMatrix solvearma(const NumericMatrix X) {
 }
 
 //simulates S samples of theta - so several rnorms + rgamma
-//' @export
 //[[Rcpp::export]]
 NumericMatrix sim_thetacpp(int S, NumericVector lambda, int n_sources,
                            int n_tracers, int n_cov){
@@ -196,7 +192,7 @@ NumericMatrix sim_thetacpp(int S, NumericVector lambda, int n_sources,
 //calculates p - which is exp(f) / sum exp(f)
 //and f is X * B
 //X is a matrix and B is a vector
-//' @export
+
 //[[Rcpp::export]]
 NumericMatrix hfn(NumericVector theta, int n_sources, int n, int n_cov, NumericMatrix x_scaled){
   NumericMatrix p(n, n_sources);
@@ -246,7 +242,6 @@ NumericMatrix hfn(NumericVector theta, int n_sources, int n, int n_cov, NumericM
 //Log of likelihood added to prior
 //
 //
-//' @export
 //[[Rcpp::export]]
 double hcpp(int n_sources, int n_isotopes, int n_covariates,
             NumericVector beta_prior,
@@ -394,7 +389,7 @@ double hcpp(int n_sources, int n_isotopes, int n_covariates,
 
 // This is basically the same as sim_theta but its using updated lambdas
 // instead of set prior values
-//' @export
+
 //[[Rcpp::export]]
 double log_q_cpp(NumericVector theta, NumericVector lambda, 
                  int n_sources, int n_tracers, int S, int n_covariates){
@@ -563,7 +558,6 @@ double log_q_cpp(NumericVector theta, NumericVector lambda,
 // TRY ADDING AUTO-DIFFERRENTIATION HERE RATHER THAN FROM FIRST PRINCIPLES
 // This is just differentiating from first principles
 
-//' @export
 // [[Rcpp::export]]
 NumericVector delta_lqltcpp(NumericVector lambda, NumericVector theta, 
                             double eps, int n_sources, 
@@ -597,7 +591,6 @@ NumericVector delta_lqltcpp(NumericVector lambda, NumericVector theta,
 }
 
 // getting the difference of hcpp and log_q_cpp
-//' @export
 // [[Rcpp::export]]
 double h_lambdacpp(int n_sources, int n_isotopes,
                    NumericVector beta_prior,
@@ -616,7 +609,6 @@ double h_lambdacpp(int n_sources, int n_isotopes,
 }
 
 //calculating covariance of 2 matrices
-//' @export
 // [[Rcpp::export]]
 NumericMatrix cov_mat_cpp(NumericMatrix x, NumericMatrix y) {
   int xcol = x.ncol();
@@ -676,7 +668,6 @@ NumericMatrix cov_mat_cpp(NumericMatrix x, NumericMatrix y) {
 
 
 //Nabla LB is the mean of delta_lqlt element-wise multiplied by h_lambda
-//' @export
 // [[Rcpp::export]]
 NumericVector nabla_LB_cpp(NumericVector lambda, NumericMatrix theta, 
                            int n_sources, int n_tracers, NumericVector beta_prior,
@@ -772,7 +763,6 @@ NumericVector nabla_LB_cpp(NumericVector lambda, NumericMatrix theta,
 
 
 // calculate control variate (big formula)
-//' @export
 // [[Rcpp::export]]
 NumericVector control_var_cpp(NumericVector lambda, 
                               NumericMatrix theta, 
@@ -860,7 +850,6 @@ NumericVector control_var_cpp(NumericVector lambda,
 }
 
 // estimate of LB 
-//' @export
 // [[Rcpp::export]]
 double LB_lambda_cpp(NumericMatrix theta, NumericVector lambda, 
                      NumericVector p, int n_sources, int n_isotopes, 
@@ -895,7 +884,6 @@ double LB_lambda_cpp(NumericMatrix theta, NumericVector lambda,
 
 
 // Actually putting it all together and running it
-//' @export
 // [[Rcpp::export]]
 NumericVector run_VB_cpp(NumericVector lambdastart,
                          int n_sources,

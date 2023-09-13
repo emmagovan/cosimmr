@@ -7,5 +7,5 @@
 #' @import Rcpp 
 #' @importFrom Rcpp evalCpp
 #' @useDynLib cosimmr
-#' @name cosimmr
+#' @aliases cosimmr-package
 NULL  

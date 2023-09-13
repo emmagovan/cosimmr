@@ -9,7 +9,7 @@
 #' Further detail about these plots is provided in the vignette.
 #'
 #' @param x An object of class \code{cosimmr_output} created via
-#'  \code{\link{simmr_ffvb}}.
+#'  \code{\link{cosimmr_ffvb}}.
 #' @param type The type of plot required. Can be one or more of 'isospace', 
 #' 'betahistogram'
 #' @param binwidth The width of the bins for the histogram. Defaults to 0.05
@@ -66,16 +66,21 @@ plot.cosimmr_output <-
   function(x,
            type = c(
              "isospace",
-             "beta_hist"
+             "beta_histogram",
+             "beta_boxplot",
+             "p_ind",
+             "p_mean"
              ),
+           ind = 1,
            covariates = 1,
-           binwidth = 10,
+           binwidth = 0.1,
            alpha = 0.5,
            title = if (length(covariates) == 1) {
              "simmr output plot"
            } else {
              paste("simmr output plot: covariate", covariates)
            },
+           n_output = 3600,
            ggargs = NULL,
            ...) {
     if(inherits(x, "cosimmr_output") == TRUE){
@@ -88,20 +93,86 @@ plot.cosimmr_output <-
         graphics::plot(x$input, title = title, ...)
       }
       
-      #Prep data
-      #Data needs to be edited I think to make life easier
-      
-    for( i in 1:length(covariates)){
-      out_all_beta = x$output$beta[,i,]
-      #I don't actually understand what this is doing
-      df <- reshape2::melt(out_all_beta)
-      colnames(df) = c("Num", "Source", "Beta")
-      
-      if("beta_hist" %in% type){
+      if("p_ind" %in% type){
         
-        #Histograms
-        g <- ggplot(df, aes(
-          x = Beta
+        #Need to have a separate matrix for each ind value
+        #So do all this in loop and repeat I think is easiest
+        for(i in 1:length(ind)){
+          curr_ind = ind[i]
+        out_all_p = x$output$BUGSoutput$sims.list$p[curr_ind,,]
+        
+
+         colnames(out_all_p) = x$input$source_names
+
+        df <- reshape2::melt(out_all_p)
+        
+        
+        colnames(df) = c("Num", "Source", "Proportion")
+        
+        #add other plot types here maybe
+        
+          g <- ggplot(df, aes(
+            x = Proportion
+          )) +
+            scale_fill_viridis(discrete = TRUE) +
+            geom_histogram(binwidth = binwidth, alpha = alpha) +
+            theme_bw() +
+            ggtitle(title[i]) +
+            facet_wrap("~ Source") +
+            theme(legend.position = "none") +
+            ggargs
+          print(g) 
+          
+          
+        }
+      }
+      
+      if("p_mean" %in% type){
+        #I think I'm right in saying that the mean should be
+        #When all the x's equal zero because its mean centred
+        #Also need to check for intercept I guess?
+
+      #So check if intercept = TRUE and then print a vector
+        if(x$input$intercept == TRUE){
+          x_pred = c(1, rep(0, (ncol(x$input$x_scaled) - 1)))
+        } else if(x$input$intercept == FALSE){
+          x_pred = c(rep(0, (ncol(x$input$x_scaled))))
+        }
+
+        thetares= x$output$theta
+        K = x$input$n_sources
+        n_tracers = x$input$n_tracers
+        n_covariates = ncol(x$input$x_scaled)
+
+
+
+        sigma <- (1/sqrt(thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)]))
+
+        #p_sample = array(NA, dim = c(1, n_output, K))
+        p_sample = matrix(ncol = K, nrow = n_output)
+
+        beta = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
+
+        f <- array(NA, dim = c(1, K, n_output))
+
+        for(s in 1:n_output){
+          f[,,s] = (x_pred) %*% beta[s,,]
+        }
+
+        for(j in 1:n_output){
+           # p_sample[1,j, ] 
+         p_sample[j,] <- exp(f[1,1:K, j]) / (sum((exp(f[1,1:K, j]))))
+        }
+        
+        colnames(p_sample) = x$input$source_names
+
+        df_p_mean <- reshape2::melt(p_sample)
+
+
+        colnames(df_p_mean) = c("Num", "Source", "Proportion")
+
+        g <- ggplot(df_p_mean, aes(
+          x = Proportion
         )) +
           scale_fill_viridis(discrete = TRUE) +
           geom_histogram(binwidth = binwidth, alpha = alpha) +
@@ -109,31 +180,68 @@ plot.cosimmr_output <-
           ggtitle(title[i]) +
           facet_wrap("~ Source") +
           theme(legend.position = "none") +
+          ggargs
+        print(g)
+
+
+
+         }
+  
+      #Prep data
+      #Data needs to be edited I think to make life easier
+      
+    for( i in 1:length(covariates)){
+      out_all_beta = x$output$beta[,i,]
+      colnames(out_all_beta) = x$input$source_names
+      #I don't actually understand what this is doing
+      df_beta <- reshape2::melt(out_all_beta)
+      colnames(df_beta) = c("Num", "Source", "Beta")
+      
+      if("beta_histogram" %in% type){
+        
+        #Histograms
+        g <- ggplot(df_beta, aes(x = Beta)) +
+          scale_fill_viridis(discrete = TRUE) +
+          geom_histogram(binwidth = binwidth, alpha = alpha) +
+          theme_bw() +
+          ggtitle(title[i]) +
+          facet_wrap("~ Source") +
+          theme(legend.position = "none", 
+                axis.text.y=element_blank(),
+                axis.ticks.y=element_blank()) +
           ggargs +
           geom_vline(xintercept = 0, colour = "red")
         
         
         #Boxplot
-        g <- ggplot(df, aes(x = Beta)) +
-          scale_fill_viridis(discrete = TRUE) +
-          geom_boxplot() +
-         theme_bw() +
-        ggtitle(title[i]) +
-         facet_wrap("~ Source")+
-  geom_vline(xintercept = 0, colour = "red") +
-          ggargs
-
+      
         print(g)
       }
       
       
-      if("x" %in% type){
-        #add other plot types here maybe
+      
+      
+      if("beta_boxplot" %in% type){
+        g <- ggplot(df_beta, aes(x = Beta)) +
+          scale_fill_viridis(discrete = TRUE) +
+          geom_boxplot() +
+          theme_bw() +
+          ggtitle(title[i]) +
+          facet_wrap("~ Source")+
+          geom_vline(xintercept = 0, colour = "red") +
+          ggargs +
+          theme(axis.text.y=element_blank(),
+               axis.ticks.y=element_blank())
+        
+        print(g)
+        
       }
       
       
       
     }
     }
+    
     if (exists("g")) invisible(g) 
   }
+

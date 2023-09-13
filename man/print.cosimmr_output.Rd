@@ -7,7 +7,7 @@
 \method{print}{cosimmr_output}(x, ...)
 }
 \arguments{
-\item{x}{An object of class \code{simmr_output}}
+\item{x}{An object of class \code{cosimmr_output}}
 
 \item{...}{Other arguments (not supported)}
 }
@@ -18,6 +18,6 @@ Returns a neat summary of the object
 Print a simmr output object
 }
 \seealso{
-\code{\link{simmr_mcmc}} and \code{\link{simmr_ffvb}} for creating
-\code{simmr_output} objects
+\code{\link{cosimmr_ffvb}} for creating
+\code{cosimmr_output} objects
 }

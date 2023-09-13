@@ -1,0 +1,91 @@
+---
+title: "Stable Isotope Mixing Models with Covariates in R using cosimmr"
+author: "Emma Govan and Andrew Parnell"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette:
+  toc: true
+vignette: >
+  %\VignetteIndexEntry{cosimmr}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+
+## Introduction
+
+`cosimmr` is a package in R designed for running Stable Isotope Mixing Models in
+R, using Fixed Form Variational Bayes. The aim of this vignette is to allow users
+to quickly learn how to use the package and giving examples of all the 
+features within the package.
+If you find any bugs in the software, or have new features which you think would be 
+useful, please add this to the [Github issues page](https://github.com/emmagovan/cosimmr/issues)
+
+## Installation of the `cosimmr` package
+
+First, start Rstudio and find the window with the command prompt (the symbol `>`). Type
+
+```{r,eval = FALSE}
+install.packages("cosimmr")
+```
+It may ask you to pick your nearest CRAN mirror (the nearest site which hosts R packages). You will then see some activity on the screen as the `cosimmr` package and the other packages it uses are downloaded. The final line should then read: 
+
+`package 'cosimmr' successfully unpacked and MD5 sums checked`
+
+You then need to load the package. Type
+
+```{r,eval = FALSE}
+library(cosimmr)
+```
+
+This will load the `cosimmr` package and all the associated packages. You’ll need to type the `library(cosimmr)` command every time you start R.
+
+
+There is some sample data sets (from ADD PAPER REF) available within cosimmr. 
+Use the following command to access one.
+```{r}
+data(geese_data_day1)
+```
+
+This data can then be loaded into cosimmr using the function `cosimmr_load`
+
+```{r}
+cosimmr_1 <- with(
+  geese_data_day1,
+  cosimmr_load(
+    formula = mixtures ~ c(1,2,3,3,2,3,2,1,2),
+    source_names = source_names,
+    source_means = source_means,
+    source_sds = source_sds,
+    correction_means = correction_means,
+    correction_sds = correction_sds,
+    concentration_means = concentration_means
+  )
+)
+```
+
+An isospace plot can be generated using this data
+
+```{r}
+plot(cosimmr_1)
+```
+
+The data can then be run through `cosimmr_ffvb`, the main function of the `cosimmr` 
+package.
+```{r}
+cosimmr_1_out = cosimmr_ffvb(cosimmr_1)
+```
+
+
+The output of this can be plotted, using the plot function. There are several different
+options available in the plot function
+```{r}
+plot(cosimmr_1_out, type = c("isospace", "beta_hist", "p_ind"), ind = c(1,7))
+```
+
+
+
+
+
+

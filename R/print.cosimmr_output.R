@@ -1,12 +1,12 @@
 #' Print a simmr output object
 #'
-#' @param x An object of class \code{simmr_output}
+#' @param x An object of class \code{cosimmr_output}
 #' @param ... Other arguments (not supported)
 #'
 #' @return Returns a neat summary of the object
 #'
-#' @seealso \code{\link{simmr_mcmc}} and \code{\link{simmr_ffvb}} for creating
-#' \code{simmr_output} objects
+#' @seealso  \code{\link{cosimmr_ffvb}} for creating
+#' \code{cosimmr_output} objects
 #' @export
 print.cosimmr_output <-
   function(x, ...) {

@@ -1,4 +1,4 @@
-#' Plot the posterior predictive distribution for a simmr run
+#' Plot the posterior predictive distribution for a cosimmr run
 #'
 #' This function takes the output from  \code{\link{cosimmr_ffvb}} and plots 
 #' the posterior predictive distribution to enable visualisation of model fit.
@@ -55,19 +55,45 @@ posterior_predictive.simmr_output <- function(simmr_out,
                                               group = 1,
                                               prob = 0.5,
                                               plot_ppc = TRUE) {
-  # Re-Run in JAGS
-  output <- R2jags::jags(
-    data = simmr_out$output[[group]]$model$data(),
-    parameters.to.save = c("y_pred"),
-    model.file = jags_file,
-    n.chains = simmr_out$output[[group]]$BUGSoutput$n.chains,
-    n.iter = simmr_out$output[[group]]$BUGSoutput$n.iter,
-    n.burnin = simmr_out$output[[group]]$BUGSoutput$n.burnin,
-    n.thin = simmr_out$output[[group]]$BUGSoutput$n.thin
-  )
+ 
+  #Okay so what I want to do here is to  take theta matrix and simulate from likelihood
+  #So we have y ~ N(mu_y, sigma_y) and we want to sample from that?
+  #And then we take our actual original y data and compare? I think
+  K = simmr_out$input$n_sources
+  n_covariates = ncol(simmr_out$input$x_scaled)
+  n_tracers = simmr_out$input$n_tracers
+  theta = simmr_out$output$theta
+  n_output = nrow(theta)
+  x_pred = simmr_out$input$x_scaled
+  n_obs = simmr_out$input$n_obs
   
-  y_post_pred <- output$BUGSoutput$sims.list$y_pred
+  sigma <- (1/sqrt(theta[,(K*n_covariates + 1):(K*n_covariates + n_tracers)]))
+  beta = array(theta[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
   
+  #So I think what we want to do here is to generate p using beta? And then
+  #Put all the conc means etc together to create y
+  #And then sample from y
+  
+  f <- array(NA, dim = c(nrow(x_pred), K, n_output))
+  p = array(NA, dim =  c(n_obs, n_output, K))
+  
+  for(s in 1:n_output){
+    f[,,s] = as.matrix(x_pred) %*% beta[s,,]
+  }
+  
+  for(j in 1:n_output){
+    for (k in 1:n_obs) {
+      p[k,j, ] <- exp(f[k,1:K, j]) / (sum((exp(f[k,1:K, j]))))
+    }
+  }
+  
+  #Need to add proper loops here to do it properly
+  #But think the general idea is then do rnorm(mean_y, sigma_y)
+  
+  mean_y = sum((p * q) * (mu_s + mu_c)) / sum(p*q)
+  sigma_y = sum((p^2 * q^2) * (sigma_s^2 + sigma_c)^2) / sum(p^2*q^2)
+  
+
   # Make is look nicer
   low_prob <- 0.5 - prob / 2
   high_prob <- 0.5 + prob / 2

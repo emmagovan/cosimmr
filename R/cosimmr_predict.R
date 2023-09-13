@@ -69,18 +69,30 @@ cosimmr_predict <- function(simmr_out,
                           x_pred,
                           n_output = 3600) {
   
-
+#Makes sure the object is the correct class
   if(inherits(simmr_out, "cosimmr_output") == TRUE){
+    
+    
+    
+# This adds a column of ones for predicting with if the original had an
+#intercept
+    if(simmr_out$input$intercept == TRUE){
+    x_pred = cbind(c(rep(1,nrow(x_pred))), x_pred)
+    } else if(simmr_out$input$intercept == FALSE){
+      x_pred = x_pred
+    }
+    
  # x_pred_mat = matrix(x_pred, ncol = n_covariates)
   
   #Check x_pred has same number of columns as original x
   #This means they have to input x_pred as a matrix
   #Otherwise this wont work
-    if(class(x_pred) == "numeric"){
-  x_pred_mat = matrix(x_pred, nrow = 1) 
-    } else(x_pred_mat = x_pred)
+  #   if(class(x_pred) == "numeric"){
+  # x_pred_mat = matrix(x_pred, nrow = 1) 
+  #   } else(
+   #x_pred_mat = matrix(x_pred) #)
   
-if(ncol(x_pred_mat) != ncol(simmr_out$input$x_scaled)) stop("The matrix of values you wish to make predictions for does not have the same number of entries as the original covariance matrix. Please fix and rerun.")
+if(ncol(x_pred) != ncol(simmr_out$input$x_scaled)) stop("The matrix of values you wish to make predictions for does not have the same number of entries as the original covariance matrix. Please fix and rerun.")
 
   #Not sure if we want to include this - do we want to ensure the columns are named??
 #if(colnames(x_pred_mat) != colnames(simmr_out$input$x_scaled)) stop("The column names for the original covariates and the new values you wish to make predictions for are not the same")
@@ -111,12 +123,12 @@ if(ncol(x_pred_mat) != ncol(simmr_out$input$x_scaled)) stop("The matrix of value
   x_pred_mat = matrix(x_pred, ncol = n_covariates)
   } else if(simmr_out$input$scale_x == TRUE){
     if(simmr_out$input$intercept == TRUE){
-      x_pred_mat = cbind(x_pred_mat[,1], scale(x_pred_mat[,2:ncol(x_pred_mat)], 
+      x_pred_mat = cbind(x_pred[,1], scale(x_pred[,2:ncol(x_pred)], 
                                                center = simmr_out$input$scaled_center,
                                                scale = simmr_out$input$scaled_scale))
     }
     else if(simmr_out$input$intercept == FALSE){
-      x_pred_mat = scale(x_pred_mat, 
+      x_pred_mat = scale(x_pred, 
                          center = simmr_out$input$scaled_center,
                          scale = simmr_out$input$scaled_scale)
     }
@@ -133,7 +145,7 @@ if(ncol(x_pred_mat) != ncol(simmr_out$input$x_scaled)) stop("The matrix of value
   }
   
   #This is separate because otherwise its inside the loop and it prints a bunch of times
-  if(print_err == TRUE){message("Please note: The data you wish to predict with falls outside the range of data used in the original model")}
+  if(print_err){message("Please note: The data you wish to predict with falls outside the range of data used in the original model")}
   
   
   
@@ -156,5 +168,5 @@ if(ncol(x_pred_mat) != ncol(simmr_out$input$x_scaled)) stop("The matrix of value
   }
  return(p_sample)
   } else (message("Can only predict using cosimmr_output object generated from
-                  cosimmr_ffvb function"))
+cosimmr_ffvb function"))
 }

@@ -3,9 +3,10 @@
 #'
 #'
 #' @param simmr_out An object created via the function \code{\link{cosimmr_ffvb}}
-#' @param x_pred A vector or matrix of covariate values that the user wishes
+#' @param x_pred A data.frame of covariate values that the user wishes
 #' to predict source proportions for, provided in the same order that the 
-#' original covariance matrix was
+#' original covariance matrix was. Important for this to be a data.frame otherwise 
+#' numeric values can be set as characters and this causes incorrect calculations.
 
 #'
 #' @author Emma Govan <emma.govan.2021@mumail.ie>
@@ -65,22 +66,17 @@
 #'
 #' }
 #' @export
-cosimmr_predict <- function(simmr_out,
+predict.cosimmr_output <- function(simmr_out,
                           x_pred,
                           n_output = 3600) {
   
 #Makes sure the object is the correct class
   if(inherits(simmr_out, "cosimmr_output") == TRUE){
     
+    if(inherits(x_pred, "data.frame") == FALSE) stop("x_pred must be of type `data.frame` to make predictions with")
     
     
-# This adds a column of ones for predicting with if the original had an
-#intercept
-    if(simmr_out$input$intercept == TRUE){
-    x_pred = cbind(c(rep(1,nrow(x_pred))), x_pred)
-    } else if(simmr_out$input$intercept == FALSE){
-      x_pred = x_pred
-    }
+
     
  # x_pred_mat = matrix(x_pred, ncol = n_covariates)
   
@@ -92,7 +88,8 @@ cosimmr_predict <- function(simmr_out,
   #   } else(
    #x_pred_mat = matrix(x_pred) #)
   
-if(ncol(x_pred) != ncol(simmr_out$input$x_scaled)) stop("The matrix of values you wish to make predictions for does not have the same number of entries as the original covariance matrix. Please fix and rerun.")
+    #Need to figure out a different way to check - maybe save original x??
+#if(ncol(x_pred) != ncol(simmr_out$input$x_scaled)) stop("The matrix of values you wish to make predictions for does not have the same number of entries as the original covariance matrix. Please fix and rerun.")
 
   #Not sure if we want to include this - do we want to ensure the columns are named??
 #if(colnames(x_pred_mat) != colnames(simmr_out$input$x_scaled)) stop("The column names for the original covariates and the new values you wish to make predictions for are not the same")
@@ -100,13 +97,13 @@ if(ncol(x_pred) != ncol(simmr_out$input$x_scaled)) stop("The matrix of values yo
   
   #Creating a max and min vector so we can check if the new x_pred falls outside the range of the original data
   #Create vectors here but do comparison after all data has been scaled
-  max_vec = c(rep(NA, ncol(simmr_out$input$x_scaled)))
-  min_vec = c(rep(NA, ncol(simmr_out$input$x_scaled)))
-  
-  for(i in 1:(ncol(simmr_out$input$x_scaled))){
-    max_vec[i] = max(simmr_out$input$x_scaled[,i])
-    min_vec[i] = min(simmr_out$input$x_scaled[,i])
-  }
+  # max_vec = c(rep(NA, ncol(simmr_out$input$x_scaled)))
+  # min_vec = c(rep(NA, ncol(simmr_out$input$x_scaled)))
+  # 
+  # for(i in 1:(ncol(simmr_out$input$x_scaled))){
+  #   max_vec[i] = max(simmr_out$input$x_scaled[,i])
+  #   min_vec[i] = min(simmr_out$input$x_scaled[,i])
+  # }
   
 
   
@@ -116,36 +113,90 @@ if(ncol(x_pred) != ncol(simmr_out$input$x_scaled)) stop("The matrix of values yo
   n_tracers = simmr_out$input$n_tracers
   n_covariates = ncol(simmr_out$input$x_scaled)
   
+  
+  #So now what we want to do is to add x_pred onto the bottom of the original x matrix,
+  #scale all, then remove original x mat
+  
+  original_x = simmr_out$input$covariates_df
+  
+  #Add check that col names match
+  #Otherwise next line wont work
+  
+  if(colnames(x_pred) != colnames(original_x))stop("Column names of original data and data you wish to predict with do not match. Please fix and rerun.")
+  
+  new_x = rbind(original_x, x_pred)
+  
+  
+  # This adds a column of ones for predicting with if the original had an
+  #intercept - want to do this after 
+  # if(simmr_out$input$intercept == TRUE){
+  #   new_x = cbind(c(rep(1,nrow(new_x))), new_x)
+  # } else if(simmr_out$input$intercept == FALSE){
+  #   new_x = new_x
+  # }
+  
+  #Now scale
+  
+  if(nrow(mixtures) == 1){
+    #This is if its just 1 entry
+    new_x == new_x
+  } else{
+    if(scale_x == TRUE){
+      if(simmr_out$input$intercept == TRUE){
+        # Original code
+        scaled_full_mat = scale(stats::model.matrix(~ ., data=new_x)[,-1], 
+                           center = simmr_out$input$scaled_center,
+                          scale = simmr_out$input$scaled_scale)
+        scaled_full_mat = cbind(c(rep(1,nrow(scaled_full_mat))), scaled_full_mat)
+        
+        x_pred_mat = scaled_full_mat[-c(1:nrow(original_x)),]
+        
+      }
+      
+    } else if(scale_x == FALSE){
+      scaled_full_mat = scale(stats::model.matrix(~ ., data=new_x)[,-1], 
+                              center = simmr_out$input$scaled_center,
+                              scale = simmr_out$input$scaled_scale)
+      
+      x_pred_mat = scaled_full_mat[-c(1:nrow(original_x)),]
+    }
+  }
+  
   #This makes sure that the new inputs are scaled in the same way the old ones
   #were - so if they are scaled there they're scaled here using the same
   #scaling values (im sure theres a technical term for this but I don't know it)
-  if(simmr_out$input$scale_x == FALSE){
-  x_pred_mat = matrix(x_pred, ncol = n_covariates)
-  } else if(simmr_out$input$scale_x == TRUE){
-    if(simmr_out$input$intercept == TRUE){
-      x_pred_mat = cbind(x_pred[,1], scale(x_pred[,2:ncol(x_pred)], 
-                                               center = simmr_out$input$scaled_center,
-                                               scale = simmr_out$input$scaled_scale))
-    }
-    else if(simmr_out$input$intercept == FALSE){
-      x_pred_mat = scale(x_pred, 
-                         center = simmr_out$input$scaled_center,
-                         scale = simmr_out$input$scaled_scale)
-    }
-  }
+  #don't want to scale any of the original data I think
+  # if(simmr_out$input$scale_x == FALSE){
+  # x_pred_mat = matrix(x_pred, ncol = n_covariates)
+  # } else if(simmr_out$input$scale_x == TRUE){
+  #   if(simmr_out$input$intercept == TRUE){
+  #     x_pred_mat = cbind(x_pred[,1], scale(x_pred[,2:ncol(x_pred)], 
+  #                                              center = simmr_out$input$scaled_center,
+  #                                              scale = simmr_out$input$scaled_scale))
+  #   }
+  #   else if(simmr_out$input$intercept == FALSE){
+  #     x_pred_mat = scale(x_pred, 
+  #                        center = simmr_out$input$scaled_center,
+  #                        scale = simmr_out$input$scaled_scale)
+  #   }
+  # }
+  
+  
+
+  
   
   #Checks that all the values are above or equal to the min and below or equal to the max
-  for(j in 1:(nrow(x_pred_mat))){
-    for(i in 1:(ncol(simmr_out$input$x_scaled))){
-      if(x_pred_mat[j,i] >= min_vec[i] & x_pred_mat[j,i] <= max_vec[i]){
-       #message("Data falls within range of data used in original model, okay to predict with")
-        print_err = FALSE
-      } else(print_err = TRUE)
-    }
-  }
+  # for(j in 1:(nrow(x_pred_mat))){
+  #   for(i in 1:(ncol(simmr_out$input$x_scaled))){
+  #     if(x_pred_mat[j,i] >= min_vec[i] & x_pred_mat[j,i] <= max_vec[i]){
+  #      #message("Data falls within range of data used in original model, okay to predict with")
+  #       print_err = FALSE
+  #     } else(print_err = TRUE)
+  #   }
+  # }
   
   #This is separate because otherwise its inside the loop and it prints a bunch of times
-  if(print_err){message("Please note: The data you wish to predict with falls outside the range of data used in the original model")}
+  #if(print_err){message("Please note: The data you wish to predict with falls outside the range of data used in the original model")}
   
   
   

@@ -88,30 +88,39 @@ cosimmr_load <- function(formula,
                          scale_x = TRUE) {
   # Function to load in data for simmr and check whether it's appropriate for running through simmr_mcmc
   
+  
+  
+  #Possibly need covariate data frame
+  #c_df = data.frame(colour_cat = colour_cat, letter_cat = letter_cat, numeric_cov = numeric_cov)
   # Go through each object and check that it matches the requirements
   mixtures = as.matrix(stats::model.frame(formula)[,1])
+  covariates = (stats::model.frame(formula)[,-1])
+  
+  
+  # model.matrix(~ ., data=c_df, 
+               # contrasts.arg = lapply(c_df[sapply(c_df, is.factor)],
+               #                        contrasts,
+               #                        contrasts=FALSE))
+               # 
+ 
   if(nrow(mixtures) == 1){
+    #This is if its just 1 entry
     x_scaled == stats::model.matrix(formula)
   } else{
     if(scale_x == TRUE){
       if(stats::sd(stats::model.matrix(formula)[,1]) == 0){
+        # Original code
         intercept = TRUE
         scaled_mat = scale(stats::model.matrix(formula)[,(2:ncol(stats::model.matrix(formula)))])
-        x_scaled = cbind(stats::model.matrix(formula)[,1], 
+        x_scaled = cbind(stats::model.matrix(formula)[,1],
                          scaled_mat)
         colnames(x_scaled) = c(colnames(stats::model.matrix(formula)))
-        
+
         scaled_center = attr(scaled_mat, "scaled:center")
-        
+
         scaled_scale = attr(scaled_mat, "scaled:scale")
-      } else if(stats::sd(stats::model.matrix(formula)[,1]) != 0){
-        intercept = FALSE
-        x_scaled = scale(stats::model.matrix(formula))
         
-        scaled_center = attr(x_scaled, "scaled:center")
-        
-        scaled_scale = attr(x_scaled, "scaled:scale")
-      }
+       }
       
     } else if(scale_x == FALSE){
       x_scaled = stats::model.matrix(formula)
@@ -245,7 +254,8 @@ cosimmr_load <- function(formula,
     scale_x = scale_x,
     scaled_center = scaled_center,
     scaled_scale = scaled_scale,
-    intercept = intercept
+    intercept = intercept,
+    covariates_df = covariates
   )
   
   # Look through to see whether there are any missing values in anything

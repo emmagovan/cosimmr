@@ -11,14 +11,8 @@
   covariates = 1,
   binwidth = 0.1,
   alpha = 0.5,
-  title = if (length(covariates) == 1) {
-     "simmr output plot"
- } else {
-    
-    paste("simmr output plot: covariate", covariates)
- },
+  title = NULL,
   n_output = 3600,
-  ggargs = NULL,
   ...
 )
 }
@@ -36,9 +30,9 @@ matrix plots}
 
 \item{title}{The title of the plot.}
 
-\item{ggargs}{Extra arguments to be included in the ggplot (e.g. axis limits)}
-
 \item{...}{Currently not used}
+
+\item{ggargs}{Extra arguments to be included in the ggplot (e.g. axis limits)}
 }
 \description{
 This function allows for 4 different types of plots of the simmr output

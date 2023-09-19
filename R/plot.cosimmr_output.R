@@ -75,22 +75,22 @@ plot.cosimmr_output <-
            covariates = 1,
            binwidth = 0.1,
            alpha = 0.5,
-           title = if (length(covariates) == 1) {
-             "simmr output plot"
-           } else {
-             paste("simmr output plot: covariate", covariates)
-           },
+           title = NULL,
            n_output = 3600,
-           ggargs = NULL,
            ...) {
     if(inherits(x, "cosimmr_output") == TRUE){
+      title_input = title
       # Get the specified type
       type <- match.arg(type, several.ok = TRUE)
       
       # Iso-space plot is special as all groups go on one plot
       # Add in extra dots here as they can be sent to this plot function
       if ("isospace" %in% type) {
+        if(is.null(title_input) == TRUE){
+          title = "isospace plot"
+        } else{title = title_input}
         graphics::plot(x$input, title = title, ...)
+        
       }
       
       if("p_ind" %in% type){
@@ -98,6 +98,12 @@ plot.cosimmr_output <-
         #Need to have a separate matrix for each ind value
         #So do all this in loop and repeat I think is easiest
         for(i in 1:length(ind)){
+          if(is.null(title_input) == TRUE){
+            title = c(rep(NA, length(ind)))
+            for(j in 1:length(ind)){
+              title[j] = paste("p_ind plot: individual", ind[j])
+            }
+          } else{title = rep(title_input, length(ind))}
           curr_ind = ind[i]
         out_all_p = x$output$BUGSoutput$sims.list$p[curr_ind,,]
         
@@ -119,8 +125,7 @@ plot.cosimmr_output <-
             theme_bw() +
             ggtitle(title[i]) +
             facet_wrap("~ Source") +
-            theme(legend.position = "none") +
-            ggargs
+            theme(legend.position = "none")
           print(g) 
           
           
@@ -131,6 +136,11 @@ plot.cosimmr_output <-
         #I think I'm right in saying that the mean should be
         #When all the x's equal zero because its mean centred
         #Also need to check for intercept I guess?
+        
+        if(is.null(title_input) == TRUE){
+            title = "p_mean_plot"
+          } else{title = title_input}
+       
 
       #So check if intercept = TRUE and then print a vector
         if(x$input$intercept == TRUE){
@@ -177,10 +187,9 @@ plot.cosimmr_output <-
           scale_fill_viridis(discrete = TRUE) +
           geom_histogram(binwidth = binwidth, alpha = alpha) +
           theme_bw() +
-          ggtitle(title[i]) +
+          ggtitle(title) +
           facet_wrap("~ Source") +
-          theme(legend.position = "none") +
-          ggargs
+          theme(legend.position = "none")
         print(g)
 
 
@@ -199,6 +208,13 @@ plot.cosimmr_output <-
       
       if("beta_histogram" %in% type){
         
+          if(is.null(title_input) == TRUE){
+            title = c(rep(NA, length(covariates)))
+            for(j in 1:length(covariates)){
+              title[j] = paste("beta histogram plot: covariate", covariates[j])
+            }
+          } else{title = rep(title_input, length(covariates))}
+        
         #Histograms
         g <- ggplot(df_beta, aes(x = Beta)) +
           scale_fill_viridis(discrete = TRUE) +
@@ -209,7 +225,6 @@ plot.cosimmr_output <-
           theme(legend.position = "none", 
                 axis.text.y=element_blank(),
                 axis.ticks.y=element_blank()) +
-          ggargs +
           geom_vline(xintercept = 0, colour = "red")
         
         
@@ -222,6 +237,13 @@ plot.cosimmr_output <-
       
       
       if("beta_boxplot" %in% type){
+        
+        if(is.null(title_input) == TRUE){
+          title = c(rep(NA, length(covariates)))
+          for(j in 1:length(covariates)){
+            title[j] = paste("beta boxplot: covariate", covariates[j])
+          }
+        } else{title = rep(title_input, length(covariates))}
         g <- ggplot(df_beta, aes(x = Beta)) +
           scale_fill_viridis(discrete = TRUE) +
           geom_boxplot() +
@@ -229,7 +251,6 @@ plot.cosimmr_output <-
           ggtitle(title[i]) +
           facet_wrap("~ Source")+
           geom_vline(xintercept = 0, colour = "red") +
-          ggargs +
           theme(axis.text.y=element_blank(),
                axis.ticks.y=element_blank())
         

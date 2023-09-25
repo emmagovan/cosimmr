@@ -21,8 +21,8 @@ solvearma <- function(X) {
     .Call('_cosimmr_solvearma', PACKAGE = 'cosimmr', X)
 }
 
-sim_thetacpp <- function(S, lambda, n_sources, n_tracers, n_cov) {
-    .Call('_cosimmr_sim_thetacpp', PACKAGE = 'cosimmr', S, lambda, n_sources, n_tracers, n_cov)
+sim_thetacpp <- function(S, lambda, n_sources, n_tracers, n_cov, solo) {
+    .Call('_cosimmr_sim_thetacpp', PACKAGE = 'cosimmr', S, lambda, n_sources, n_tracers, n_cov, solo)
 }
 
 hfn <- function(theta, n_sources, n, n_cov, x_scaled) {
@@ -61,7 +61,7 @@ LB_lambda_cpp <- function(theta, lambda, p, n_sources, n_isotopes, beta_prior, n
     .Call('_cosimmr_LB_lambda_cpp', PACKAGE = 'cosimmr', theta, lambda, p, n_sources, n_isotopes, beta_prior, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c_0)
 }
 
-run_VB_cpp <- function(lambdastart, n_sources, n_tracers, n_covariates, n, beta_prior, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, eps_0, t_W, c_prior) {
-    .Call('_cosimmr_run_VB_cpp', PACKAGE = 'cosimmr', lambdastart, n_sources, n_tracers, n_covariates, n, beta_prior, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, eps_0, t_W, c_prior)
+run_VB_cpp <- function(lambdastart, n_sources, n_tracers, n_covariates, n, beta_prior, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, eps_0, t_W, c_prior, solo) {
+    .Call('_cosimmr_run_VB_cpp', PACKAGE = 'cosimmr', lambdastart, n_sources, n_tracers, n_covariates, n, beta_prior, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, eps_0, t_W, c_prior, solo)
 }
 

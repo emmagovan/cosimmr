@@ -51,10 +51,11 @@ data(geese_data_day1)
 This data can then be loaded into cosimmr using the function `cosimmr_load`
 
 ```{r}
+group = c(rep("Period 1", 9))
 cosimmr_1 <- with(
   geese_data_day1,
   cosimmr_load(
-    formula = mixtures ~ c(1,2,3,3,2,3,2,1,2),
+    formula = mixtures ~ 1,
     source_names = source_names,
     source_means = source_means,
     source_sds = source_sds,
@@ -63,6 +64,17 @@ cosimmr_1 <- with(
     concentration_means = concentration_means
   )
 )
+
+cosimmr_1 <- cosimmr_load(
+    formula = geese_data_day1$mixtures ~ c(1,1,1,1,1,1,1,1,1.1),
+    source_names = geese_data_day1$source_names,
+    source_means = geese_data_day1$source_means,
+    source_sds = geese_data_day1$source_sds,
+    correction_means = geese_data_day1$correction_means,
+    correction_sds = geese_data_day1$correction_sds,
+    concentration_means = geese_data_day1$concentration_means
+  )
+
 
 
 
@@ -78,6 +90,8 @@ The data can then be run through `cosimmr_ffvb`, the main function of the `cosim
 package.
 ```{r}
 cosimmr_1_out = cosimmr_ffvb(cosimmr_1)
+
+summary(cosimmr_1_out)
 ```
 
 
@@ -123,235 +137,113 @@ colour_cat = c("red", "green", "blue", "red", "red", "red", "blue", "green", "bl
 #     concentration_means = concentration_means
 #   )
 # )
+data(geese_data)
+
+Groups =matrix(geese_data$groups)
+Groups = matrix(c(rep(1,9), rep(2,29), rep(3,74), rep(4,10), 
+               rep(5,41), rep(6,20), rep(7,32), rep(8,36)), ncol = 1)
+
+colnames(Groups) = c("Groups")
+
 
 cosimmr_2 <-cosimmr_load(
-    formula = geese_data_day1$mixtures ~ colour_cat,
-    source_names = geese_data_day1$source_names,
-    source_means = geese_data_day1$source_means,
-    source_sds = geese_data_day1$source_sds,
-    correction_means = geese_data_day1$correction_means,
-    correction_sds = geese_data_day1$correction_sds,
-    concentration_means = geese_data_day1$concentration_means
-  )
+    formula = geese_data$mixtures ~ as.factor(Groups),
+    source_names = geese_data$source_names,
+    source_means = geese_data$source_means,
+    source_sds = geese_data$source_sds,
+    correction_means = geese_data$correction_means,
+    correction_sds = geese_data$correction_sds,
+    concentration_means = geese_data$concentration_means)
 
 cosimmr_2_out = cosimmr_ffvb(cosimmr_2)
 
-library(microbenchmark)
+summary(cosimmr_2_out, individual = c(1, 10, 39, 113,123,164,184, 251))
 
-microbenchmark(cosimmr = cosimmr_ffvb(cosimmr_2),
-               mixsiar = run_model(run="short", mix, source, discr, model_filename, alpha.prior=1), times = 2L)
-
+df = data.frame(Groups = c(1,2,3))
 
 
-cosimmr_predict(cosimmr_1_out, as.matrix("red"))
-```
+pre<-predict(cosimmr_2_out, df)
 
 
-
-## Mixsiar comparison
-
-
-```{r}
-library(MixSIAR)
-mix.filename <- system.file("extdata", "geese_consumer.csv", package = "MixSIAR")
-mix <- load_mix_data(filename=mix.filename,
-					 iso_names=c("d13C","d15N"),
-					 factors="Group",
-					 fac_random=FALSE,
-					 fac_nested=FALSE,
-					 cont_effects=NULL)
-
-# Load source data
-source.filename <- system.file("extdata", "geese_sources.csv", package = "MixSIAR")
-source <- load_source_data(filename=source.filename,
-						   source_factors=NULL,
-						   conc_dep=TRUE,
-						   data_type="means",
-						   mix)
-
-# Load discrimination/TDF data
-discr.filename <- system.file("extdata", "geese_discrimination.csv", package = "MixSIAR")
-discr <- load_discr_data(filename=discr.filename, mix)
-
-# Make isospace plot
-plot_data(filename="isospace_plot",
-		  plot_save_pdf=TRUE,
-		  plot_save_png=FALSE,
-		  mix,source,discr)
-
-# Calculate standardized convex hull area
-if(mix$n.iso==2) calc_area(source=source,mix=mix,discr=discr)
-
-# Plot your prior
-plot_prior(alpha.prior=1,source)
-
-# Define model structure and write JAGS model file
-model_filename <- "MixSIAR_model.txt"
-resid_err <- TRUE
-process_err <- FALSE
-write_JAGS_model(model_filename, resid_err, process_err, mix, source)
-
-# Run the JAGS model ("test" first, then "short")
-jags.1 <- run_model(run="test", mix, source, discr, model_filename, alpha.prior=1)
-#jags.1 <- run_model(run="short", mix, source, discr, model_filename, alpha.prior=1)
-
-# Process diagnostics, summary stats, and posterior plots
-output_JAGS(jags.1, mix, source)
-
-#Stats from Mixsiar
-```
-
-
-Alligator
-```{r}
-library(tidyr)
-library(ggplot2)
-mix.filename <- system.file("extdata", "alligator_consumer.csv", package = "MixSIAR")
-source.filename <- system.file("extdata", "alligator_sources_simplemean.csv", package = "MixSIAR")
-discr.filename <- system.file("extdata", "alligator_TEF.csv", package = "MixSIAR")
-
-# load mix data (cont effect of Length, random effect of Individual)
-mix <- load_mix_data(filename=mix.filename,
-                          iso_names=c("d13C","d15N"),
-                          factors="ID",
-                          fac_random=TRUE,
-                          fac_nested=NULL,
-                          cont_effects="Length")
-
-# load source data
-source <- load_source_data(filename=source.filename,
-                         source_factors=NULL,
-                         conc_dep=FALSE,
-                         data_type="means",
-                         mix=mix)
-
-# load TEF data
-discr <- load_discr_data(filename=discr.filename, mix=mix)
-
-# isospace plot
-plot_data(filename="isospace_plot",
-        plot_save_pdf=TRUE,
-        plot_save_png=FALSE,
-        mix, source, discr)
-
-# Define model structure and write JAGS model file
-model_filename <- paste0("MixSIAR_model_cont_ind.txt")
-resid_err <- FALSE
-process_err <- TRUE
-write_JAGS_model(model_filename, resid_err, process_err, mix, source)
-
-# Run the JAGS model
-jags.mod <- run_model(run="short", mix, source, discr, model_filename, alpha.prior=1)
-
-# Process diagnostics, summary stats, and posterior plots
-output_JAGS(jags.mod, mix, source)
-graphics.off()
-```
-
-
-
-
-
-#Isopod Examples
-```{r}
-mix.filename <- system.file("extdata", "isopod_consumer.csv", package = "MixSIAR")
-mix <- load_mix_data(filename=mix.filename,
-					 iso_names=c("c16.4w3","c18.2w6","c18.3w3","c18.4w3","c20.4w6","c20.5w3","c22.5w3","c22.6w3"),
-					 factors="Site",
-					 fac_random=TRUE,
-					 fac_nested=FALSE,
-					 cont_effects=NULL)
-
-# Load source data
-source.filename <- system.file("extdata", "isopod_sources.csv", package = "MixSIAR")
-source <- load_source_data(filename=source.filename,
-						   source_factors=NULL,
-						   conc_dep=FALSE,
-						   data_type="means",
-						   mix)
-
-# Load discrimination/TDF data
-discr.filename <- system.file("extdata", "isopod_discrimination.csv", package = "MixSIAR")
-discr <- load_discr_data(filename=discr.filename, mix)
-
-# Make isospace plot
-plot_data(filename="isospace_plot",
-		  plot_save_pdf=TRUE,
-		  plot_save_png=FALSE,
-		  mix,source,discr)
-
-# Plot your prior
-plot_prior(alpha.prior=1,source)
-
-# Define model structure and write JAGS model file
-model_filename <- "MixSIAR_model.txt"
-resid_err <- TRUE
-process_err <- FALSE
-write_JAGS_model(model_filename, resid_err, process_err, mix, source)
-
-# Run the JAGS model ("test" first, then "normal")
-jags.1 <- run_model(run="test", mix, source, discr, model_filename,alpha.prior=1)
-
-## "normal" took my laptop ~60 minutes to run
-#jags.1 <- run_model(run="normal", mix, source, discr, model_filename,alpha.prior=1)
-
-# Process diagnostics, summary stats, and posterior plots
-output_JAGS(jags.1, mix, source)
-```
-
-
-Example with categorical and numeric
-```{r}
-colour_cat = c("red", "green", "blue", "red", "red", "red", "blue", "green", "blue")
-letter_cat = c("A", "B", "B", "D", "A", "c", "E", "A", "E")
-numeric_cov = c(1,3,5,7,4,3,1,2,7)
-
-cosimmr_3 <-cosimmr_load(
-    formula = geese_data_day1$mixtures ~ colour_cat + letter_cat + numeric_cov,
-    source_names = geese_data_day1$source_names,
-    source_means = geese_data_day1$source_means,
-    source_sds = geese_data_day1$source_sds,
-    correction_means = geese_data_day1$correction_means,
-    correction_sds = geese_data_day1$correction_sds,
-    concentration_means = geese_data_day1$concentration_means
-  )
-
-cosimmr_3_out = cosimmr_ffvb(cosimmr_3)
-```
-
-
-
-
-
-CONVERTING CATEGORICAL DATA
-
-```{r}
-#Think I need to convert categorical data to factor first - but only categorical data
-#And need to make sure numeric is numeric
-#And then run this
-#And then still need to figure out predictions but it might work via that
-#attr(,"contrasts")$factor.colour_cat bit
-
-c_df = cbind(geese_data_day1$mixtures, data.frame(colour_cat = colour_cat, letter_cat = letter_cat, numeric_cov = numeric_cov))
-
-for(i in 1:ncol(c_df)){
-  if(class(c_df[,i]) == "character"){c_df[,i] = as.factor(c_df[,i])}
-}
-
- model.matrix(as.matrix(c_df[,1:2]) ~ colour_cat + numeric_cov + letter_cat, data=c_df, 
-              contrasts.arg = lapply(c_df[sapply(c_df, is.factor)], 
-                                     contrasts, contrasts=FALSE))
+ round(colMeans(pre[1,,]),3)
+ sd = c(rep(NA, 4))
  
+ for(i in 1:4){
+   sd[i] = round(sd(pre[1,,i]),3)
+ }
+ 
+ print(sd)
 
 ```
 
 
 
 
+#run by 'hand' using rcpp code
+```{r}
+########## SET THESE
+data(geese_data)
+Groups <- geese_data$groups
 
 
+x <- matrix(c(Groups), ncol = 1)
+x_scaled <- cbind(matrix(rep(1, 251), ncol = 1), x)
+#x_scaled <- matrix(c(rep(1, n)), ncol = 1)
+
+#x_scaled = cbind(matrix(rep(1,251)), model.matrix(geese_data$mixtures ~ Groups))
+x_scaled = model.matrix(geese_data$mixtures ~ Groups)
+n_covariates <- (ncol(x_scaled))
+y <- geese_data$mixtures
+
+#-------------------- FFVB variables-----------------------
+#Don't actually need to edit anything here, just run it
 
 
+# Variables for the FFVB
+S <- 100
+K = 4
+mu_beta_zero <- matrix(c(rep(0, K * (n_covariates))), 
+                       nrow = (n_covariates), 
+                       ncol = K)
+#n_covariates + 1 for alpha (or beta_0) and then 1 beta for each covariate
+sigma_beta_zero <- matrix(c(rep(1, K * (n_covariates))), 
+                          nrow = (n_covariates), 
+                          ncol = K)
+
+
+mu_c = geese_data$correction_means
+mu_s = geese_data$source_means
+q = geese_data$concentration_means
+sigma_c = geese_data$correction_sds
+sigma_s = geese_data$source_sds
+n_isotopes <- ncol(mu_c)
+c_0 <- c(rep(1, n_isotopes)) #Change to 0.0001
+d_0 <- c(rep(1, n_isotopes))
+beta_lambda<-c(rep(0, K),rep(1, K * (K + 1) / 2))
+lambda <- c(
+  rep(beta_lambda, n_covariates),
+  rep(1, n_isotopes), #shape
+  rep(1, n_isotopes) #rate
+)
+
+c_prior = c(rep(1, 251))
+
+lambdaout <- run_VB_cpp(lambda, K, n_isotopes, n_covariates, 251, 1, 
+                        as.matrix(q), as.matrix(mu_s), as.matrix(mu_c), 
+                        as.matrix(sigma_c), as.matrix(sigma_s), y, x_scaled,
+                        100, 10, 0.9, 0.9, 100, 0.1, 50, c_prior, 
+                        solo = FALSE)
+
+
+function (lambdastart, n_sources, n_tracers, n_covariates, n, 
+  beta_prior, concentrationmeans, sourcemeans, correctionmeans, 
+  corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, 
+  eps_0, t_W, c_prior, solo) 
+  
+n_samples = 3600
+
+theta_out_rcpp <- sim_thetacpp(S, lambdaout, K, n_isotopes, n_covariates)
+```
 
 
 

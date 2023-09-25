@@ -73,8 +73,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // sim_thetacpp
-NumericMatrix sim_thetacpp(int S, NumericVector lambda, int n_sources, int n_tracers, int n_cov);
-RcppExport SEXP _cosimmr_sim_thetacpp(SEXP SSEXP, SEXP lambdaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP n_covSEXP) {
+NumericMatrix sim_thetacpp(int S, NumericVector lambda, int n_sources, int n_tracers, int n_cov, bool solo);
+RcppExport SEXP _cosimmr_sim_thetacpp(SEXP SSEXP, SEXP lambdaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP n_covSEXP, SEXP soloSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -83,7 +83,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
     Rcpp::traits::input_parameter< int >::type n_tracers(n_tracersSEXP);
     Rcpp::traits::input_parameter< int >::type n_cov(n_covSEXP);
-    rcpp_result_gen = Rcpp::wrap(sim_thetacpp(S, lambda, n_sources, n_tracers, n_cov));
+    Rcpp::traits::input_parameter< bool >::type solo(soloSEXP);
+    rcpp_result_gen = Rcpp::wrap(sim_thetacpp(S, lambda, n_sources, n_tracers, n_cov, solo));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -271,8 +272,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_VB_cpp
-NumericVector run_VB_cpp(NumericVector lambdastart, int n_sources, int n_tracers, int n_covariates, int n, NumericVector beta_prior, NumericMatrix concentrationmeans, NumericMatrix sourcemeans, NumericMatrix correctionmeans, NumericMatrix corrsds, NumericMatrix sourcesds, NumericMatrix y, NumericMatrix x_scaled, int S, int P, double beta_1, double beta_2, int tau, double eps_0, int t_W, NumericVector c_prior);
-RcppExport SEXP _cosimmr_run_VB_cpp(SEXP lambdastartSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP n_covariatesSEXP, SEXP nSEXP, SEXP beta_priorSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP x_scaledSEXP, SEXP SSEXP, SEXP PSEXP, SEXP beta_1SEXP, SEXP beta_2SEXP, SEXP tauSEXP, SEXP eps_0SEXP, SEXP t_WSEXP, SEXP c_priorSEXP) {
+NumericVector run_VB_cpp(NumericVector lambdastart, int n_sources, int n_tracers, int n_covariates, int n, NumericVector beta_prior, NumericMatrix concentrationmeans, NumericMatrix sourcemeans, NumericMatrix correctionmeans, NumericMatrix corrsds, NumericMatrix sourcesds, NumericMatrix y, NumericMatrix x_scaled, int S, int P, double beta_1, double beta_2, int tau, double eps_0, int t_W, NumericVector c_prior, bool solo);
+RcppExport SEXP _cosimmr_run_VB_cpp(SEXP lambdastartSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP n_covariatesSEXP, SEXP nSEXP, SEXP beta_priorSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP x_scaledSEXP, SEXP SSEXP, SEXP PSEXP, SEXP beta_1SEXP, SEXP beta_2SEXP, SEXP tauSEXP, SEXP eps_0SEXP, SEXP t_WSEXP, SEXP c_priorSEXP, SEXP soloSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -297,7 +298,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type eps_0(eps_0SEXP);
     Rcpp::traits::input_parameter< int >::type t_W(t_WSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type c_prior(c_priorSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_VB_cpp(lambdastart, n_sources, n_tracers, n_covariates, n, beta_prior, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, eps_0, t_W, c_prior));
+    Rcpp::traits::input_parameter< bool >::type solo(soloSEXP);
+    rcpp_result_gen = Rcpp::wrap(run_VB_cpp(lambdastart, n_sources, n_tracers, n_covariates, n, beta_prior, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, eps_0, t_W, c_prior, solo));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -308,7 +310,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_cosimmr_matmult", (DL_FUNC) &_cosimmr_matmult, 2},
     {"_cosimmr_rMVNormCpp", (DL_FUNC) &_cosimmr_rMVNormCpp, 3},
     {"_cosimmr_solvearma", (DL_FUNC) &_cosimmr_solvearma, 1},
-    {"_cosimmr_sim_thetacpp", (DL_FUNC) &_cosimmr_sim_thetacpp, 5},
+    {"_cosimmr_sim_thetacpp", (DL_FUNC) &_cosimmr_sim_thetacpp, 6},
     {"_cosimmr_hfn", (DL_FUNC) &_cosimmr_hfn, 5},
     {"_cosimmr_hcpp", (DL_FUNC) &_cosimmr_hcpp, 13},
     {"_cosimmr_log_q_cpp", (DL_FUNC) &_cosimmr_log_q_cpp, 6},
@@ -318,7 +320,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_cosimmr_nabla_LB_cpp", (DL_FUNC) &_cosimmr_nabla_LB_cpp, 16},
     {"_cosimmr_control_var_cpp", (DL_FUNC) &_cosimmr_control_var_cpp, 14},
     {"_cosimmr_LB_lambda_cpp", (DL_FUNC) &_cosimmr_LB_lambda_cpp, 15},
-    {"_cosimmr_run_VB_cpp", (DL_FUNC) &_cosimmr_run_VB_cpp, 21},
+    {"_cosimmr_run_VB_cpp", (DL_FUNC) &_cosimmr_run_VB_cpp, 22},
     {NULL, NULL, 0}
 };
 

@@ -9,9 +9,10 @@
 \arguments{
 \item{simmr_out}{An object created via the function \code{\link{cosimmr_ffvb}}}
 
-\item{x_pred}{A vector or matrix of covariate values that the user wishes
+\item{x_pred}{A data.frame of covariate values that the user wishes
 to predict source proportions for, provided in the same order that the 
-original covariance matrix was}
+original covariance matrix was. Important for this to be a data.frame otherwise 
+numeric values can be set as characters and this causes incorrect calculations.}
 }
 \description{
 Predicts proportion of each source in a mixture, based on values provided for covariates

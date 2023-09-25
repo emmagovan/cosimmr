@@ -4,7 +4,12 @@
 \alias{summary.cosimmr_output}
 \title{Summarises the output created with \code{\link{cosimmr_ffvb}}}
 \usage{
-\method{summary}{cosimmr_output}(object, type = c("quantiles", "statistics", "correlations"), ...)
+\method{summary}{cosimmr_output}(
+  object,
+  type = c("quantiles", "statistics", "correlations"),
+  individual = 1,
+  ...
+)
 }
 \arguments{
 \item{type}{The type of output required. At least none of quantiles', 

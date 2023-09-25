@@ -177,16 +177,16 @@ cosimmr_ffvb <- function(simmr_in,
                          prior_control = list(
                            mu_0 = rep(0, simmr_in$n_sources),
                            sigma_0 = 1,
-                           tau_shape = rep(0.5, simmr_in$n_tracers),
-                           tau_rate = rep(0.5, simmr_in$n_tracers)
+                           tau_shape = rep(1, simmr_in$n_tracers),
+                           tau_rate = rep(1, simmr_in$n_tracers)
                          ),
                          ffvb_control = list(
                            n_output = 3600,
-                           S = 100,
+                           S = 200,
                            P = 10,
                            beta_1 = 0.9,
                            beta_2 = 0.9,
-                           tau = 150,
+                           tau = 100,
                            eps_0 = 0.1,
                            t_W = 50
                          )) {
@@ -204,7 +204,7 @@ cosimmr_ffvb <- function(simmr_in,
   x_scaled = simmr_in$x_scaled
   
   c_0 <- prior_control$tau_shape #Change to 0.0001
-  #d_0 <- prior_control$tau_rate
+  # #d_0 <- prior_control$tau_rate
   
   beta_lambda<-c(mu_a,rep(1, K * (K + 1) / 2))
   
@@ -264,16 +264,16 @@ cosimmr_ffvb <- function(simmr_in,
   lambdares <- run_VB_cpp(
     lambdastart, K, n_tracers, n_covariates, n, beta_prior, concentration_means,
     source_means, correction_means, correction_sds,
-    source_sds, y, as.matrix(x_scaled), ffvb_control$S,
+    source_sds, y, (x_scaled), ffvb_control$S,
     ffvb_control$P, ffvb_control$beta_1,
     ffvb_control$beta_2, ffvb_control$tau,
     ffvb_control$eps_0, ffvb_control$t_W,
-    c_0
+    c_0, solo
   )
   
   
   
-  thetares <- sim_thetacpp(n_output, lambdares, K, n_tracers, n_covariates)
+  thetares <- sim_thetacpp(n_output, lambdares, K, n_tracers, n_covariates, solo)
   
   #p <- t(apply(x_scaled %*% thetares[(1 + n_output * (i - 1)):(n_output * i), 1:K*n_covariates], 1, p_fun))
   

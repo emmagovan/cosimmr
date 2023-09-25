@@ -149,16 +149,29 @@ predict.cosimmr_output <- function(simmr_out,
                           scale = simmr_out$input$scaled_scale)
         scaled_full_mat = cbind(c(rep(1,nrow(scaled_full_mat))), scaled_full_mat)
         
-        x_pred_mat = scaled_full_mat[-c(1:nrow(original_x)),]
+        x_pred_mat = matrix(scaled_full_mat[-c(1:nrow(original_x)),], ncol = ncol(scaled_full_mat))
+        
+      }else if(simmr_out$input$intercept == FALSE){
+        scaled_full_mat = scale(stats::model.matrix(~ .-1, data=new_x), 
+                                center = simmr_out$input$scaled_center,
+                                scale = simmr_out$input$scaled_scale)
+      
+        
+        x_pred_mat = matrix(scaled_full_mat[-c(1:nrow(original_x)),], ncol = ncol(scaled_full_mat))
         
       }
       
-    } else if(scale_x == FALSE){
-      scaled_full_mat = scale(stats::model.matrix(~ ., data=new_x)[,-1], 
-                              center = simmr_out$input$scaled_center,
-                              scale = simmr_out$input$scaled_scale)
-      
-      x_pred_mat = scaled_full_mat[-c(1:nrow(original_x)),]
+    }else if(scale_x == FALSE){
+      if(simmr_out$input$intercept == TRUE){
+        scaled_full_mat = (stats::model.matrix(~ ., data=new_x))
+        
+        x_pred_mat = scaled_full_mat[-c(1:nrow(original_x)),]
+      }else if(simmr_out$input$intercept == FALSE){
+        scaled_full_mat = stats::model.matrix(~ .-1, data=new_x)
+        
+        x_pred_mat = scaled_full_mat[-c(1:nrow(original_x)),]
+      }
+
     }
   }
   
@@ -209,7 +222,7 @@ predict.cosimmr_output <- function(simmr_out,
   f <- array(NA, dim = c(nrow(x_pred_mat), K, n_output)) 
   
   for(s in 1:n_output){
-    f[,,s] = as.matrix(x_pred_mat) %*% beta[s,,]
+    f[,,s] = (x_pred_mat) %*% beta[s,,]
   }
   
   for(j in 1:n_output){

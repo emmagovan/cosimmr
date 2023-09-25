@@ -106,9 +106,20 @@ cosimmr_load <- function(formula,
   if(nrow(mixtures) == 1){
     #This is if its just 1 entry
     x_scaled == stats::model.matrix(formula)
-  } else{
-    if(scale_x == TRUE){
+  } 
+  if(scale_x == TRUE){
       if(stats::sd(stats::model.matrix(formula)[,1]) == 0){
+        if(ncol(stats::model.matrix(formula)) == 1){
+          intercept = TRUE
+          scaled_mat = (stats::model.matrix(formula))
+          x_scaled = scaled_mat
+          colnames(x_scaled) = c(colnames(stats::model.matrix(formula)))
+          
+          scaled_center = attr(scaled_mat, "scaled:center")
+          
+          scaled_scale = attr(scaled_mat, "scaled:scale")
+          print("Cannot scale when only using row of 1s")
+        } else if(ncol(stats::model.matrix(formula)) != 1){
         # Original code
         intercept = TRUE
         scaled_mat = scale(stats::model.matrix(formula)[,(2:ncol(stats::model.matrix(formula)))])
@@ -122,10 +133,29 @@ cosimmr_load <- function(formula,
         
        }
       
-    } else if(scale_x == FALSE){
+      }else if(stats::sd(stats::model.matrix(formula)[,1]) != 0){
+        intercept = FALSE
+        scaled_mat = scale(stats::model.matrix(formula))
+        x_scaled = scaled_mat
+        colnames(x_scaled) = c(colnames(stats::model.matrix(formula)))
+        
+        scaled_center = attr(scaled_mat, "scaled:center")
+        
+        scaled_scale = attr(scaled_mat, "scaled:scale")
+      
+      }
+      } else if(scale_x == FALSE){
+        
+        if(stats::sd(stats::model.matrix(formula)[,1]) == 0){
+          intercept = TRUE}else(intercept = FALSE)
       x_scaled = stats::model.matrix(formula)
+      scaled_center = NULL
+      
+      scaled_scale = NULL
+      
+      
     }
-  }
+  
   # Write a function that generically tests for any 2D numeric data shape such as matrix, data frame or tibble
   assert_2D_numeric <- function(x,
                                 nrows = NULL,

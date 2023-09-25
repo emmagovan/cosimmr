@@ -118,7 +118,7 @@ NumericMatrix solvearma(const NumericMatrix X) {
 //simulates S samples of theta - so several rnorms + rgamma
 //[[Rcpp::export]]
 NumericMatrix sim_thetacpp(int S, NumericVector lambda, int n_sources,
-                           int n_tracers, int n_cov){
+                           int n_tracers, int n_cov, bool solo){
   NumericMatrix theta(S, (n_cov*n_sources + n_tracers));
   NumericMatrix mean_beta((n_cov), n_sources);
   int mat_size = n_sources * (n_sources+1) /2;
@@ -175,10 +175,17 @@ NumericMatrix sim_thetacpp(int S, NumericVector lambda, int n_sources,
   
   theta = Rcpp::wrap(theta_arma);
   
+  NumericVector solovec(S);
+  for(int s = 0; s<S; s++){
+    solovec(s) = 1000;
+  }
   
-  
-  for(int i = 0; i<n_tracers; i++){
+  if(solo == FALSE) for(int i = 0; i<n_tracers; i++){
     theta(_,i+n_sources*n_cov) = (Rcpp::rgamma(S,  lambda(n_cov * mat_size + n_cov *n_sources +i),
+                                  1/lambda(n_cov * mat_size + n_cov *n_sources +i + n_tracers)));
+  }
+  else if(solo == TRUE)for(int i = 0; i<n_tracers; i++){
+    theta(_,i+n_sources*n_cov) = solovec + 0.00001 * (Rcpp::rgamma(S,  lambda(n_cov * mat_size + n_cov *n_sources +i),
                                   1/lambda(n_cov * mat_size + n_cov *n_sources +i + n_tracers)));
   }
   
@@ -350,15 +357,22 @@ double hcpp(int n_sources, int n_isotopes, int n_covariates,
   // extract theta before below step
   // Then rewrite formula - drop n
   
+  double ly = y.rows();
+  
+  // for(int i=0; i<n; i++){
+  //   for(int j=0; j<n_isotopes; j++){
+  //     hold += - log(sigtotal(i,j)) - 0.5  * log(2 * M_PI) -
+  //       0.5 * pow((y(i,j)-mutotal(i,j)),2) * 1/(pow(sigtotal(i,j), 2));
+  //   }
+  // }
   
   for(int i=0; i<n; i++){
     for(int j=0; j<n_isotopes; j++){
-      hold += - log(sigtotal(i,j)) - 0.5  * log(2 * M_PI) -
+      hold += - ly * log(sigtotal(i,j)) - 0.5 * ly * log(2 * M_PI) -
         0.5 * pow((y(i,j)-mutotal(i,j)),2) * 1/pow(sigtotal(i,j), 2);
     }
   }
-  
-  
+
   
   
   double betanorm = 0;
@@ -371,14 +385,30 @@ double hcpp(int n_sources, int n_isotopes, int n_covariates,
     }
   }
   
-  double gammaprior = 0;
+  // for(int i = 0; i<n_covariates; i++){
+  //   for(int j=0; j<n_sources; j++){
+  //     betanorm +=  - log(prior_sd(i,j)) - 0.5 * log(2 * M_PI) -
+  //       0.5 * (pow((beta(i,j) - prior_means(i,j)), 2) * 1/(pow(prior_sd(i,j), 2)));
+  //   }
+  // }
   
+
+  
+  double gammaprior = 0;
+
   for (int i=0; i<(n_isotopes); i++){
     gammaprior += c_0(i) * log(d_0(i)) - log(tgamma(c_0(i))) +
       (c_0(i) - 1) * log(theta(i+n_sources*n_covariates))-
       d_0(i) * theta(i+n_sources*n_covariates);
-    
+
   }
+
+  // for (int i=0; i<(n_isotopes); i++){
+  //   gammaprior += c_0(i) * log(d_0(i)) - log(tgamma(c_0(i))) +
+  //     (c_0(i) - 1) * (theta(i+n_sources*n_covariates))-
+  //     d_0(i) * theta(i+n_sources*n_covariates);
+  // 
+  // }
   // 
   double totx = gammaprior + betanorm + hold;
   
@@ -460,77 +490,85 @@ double log_q_cpp(NumericVector theta, NumericVector lambda,
   //   }
   // }
   
-  NumericMatrix p_mat(n_covariates, n_sources);
+ // NumericMatrix p_mat(n_covariates, n_sources);
   
-  for(int k=0; k<n_covariates; k++){
-    NumericMatrix beta_minus_mean(1, n_sources);
-    
-    for(int i = 0; i<n_sources; i++){
-      beta_minus_mean(0,i) = beta(k,i) - mean_beta(k,i);
-    }
-    
-    NumericMatrix chol_prec_mat = (Rcpp::wrap(chol_prec.slice(k)));
-    NumericMatrix t_chol_prec(n_sources, n_sources);
-    for(int i=0; i<n_sources; i++){
-      for (int j=0; j < n_sources; j++){
-        t_chol_prec(j,i) = chol_prec_mat(i,j);
-      }}
-    
-    p_mat(k,_) = matmult(beta_minus_mean, t_chol_prec);
-  }
-  
-  NumericVector sumlogdiag(n_covariates);
-  
-  for(int i=0; i<n_sources; i++){
-    for(int j=0; j<n_sources; j++){
-      for(int k=0; k<n_covariates; k++){
-        NumericMatrix cov = (Rcpp::wrap(chol_prec.slice(k)));
-        if(i==j){
-          sumlogdiag(k) += log(cov(i,j));
-        }
-      }
-    }
-  }
-  
-  double sum_p = 0;
-  
-  //  Need to fix  mat mult - extrct each p before multiplying and then put into matmult i think
-  
-  NumericVector p_mat_mult(n_covariates);
-  
-  for(int k = 0; k<n_covariates; k++){
-    for(int i = 0; i<n_sources; i++){
-      p_mat_mult(k) += pow(p_mat(k,i),2);
-    }
-  }
-  
-  
-  
-  
-  
-  
-  for(int k = 0; k<n_covariates; k++){
-    sum_p = sum_p -0.5 * n_sources *log(2 *M_PI) - 0.5 * sumlogdiag(k) - 0.5 * p_mat_mult(k);
-  }
-  
-  
-  
-  
-  
-  
-  
-  
-  // double thetanorm = 0;
-  // for(int i=0; i<n_covariates; i++){
-  //   NumericMatrix prec(n_sources, n_sources);
-  //   prec = crossprod(Rcpp::wrap(chol_prec.slice(i)));
-  //   NumericMatrix solve_prec(n_sources, n_sources);
-  //   solve_prec = solvearma(prec);
-  //   NumericMatrix currentbeta(1, n_sources);
-  //   currentbeta(0,_) = beta(i,_);
+  // for(int k=0; k<n_covariates; k++){
+  //   NumericMatrix beta_minus_mean(1, n_sources);
   //   
-  //   thetanorm += *REAL(Rcpp::wrap(dmvnrm_arma_fast(as<arma::mat>(currentbeta), mean_beta(i,_), as<arma::mat>(solve_prec))));
+  //   for(int i = 0; i<n_sources; i++){
+  //     beta_minus_mean(0,i) = beta(k,i) - mean_beta(k,i);
+  //   }
+  //   
+  //   NumericMatrix chol_prec_mat = (Rcpp::wrap(chol_prec.slice(k)));
+  //   NumericMatrix t_chol_prec(n_sources, n_sources);
+  //   for(int i=0; i<n_sources; i++){
+  //     for (int j=0; j < n_sources; j++){
+  //       t_chol_prec(j,i) = chol_prec_mat(i,j);
+  //     }}
+  //   
+  //   //p_mat(k,_) = matmult(beta_minus_mean, t_chol_prec);
   // }
+  
+  // NumericVector sumlogdiag(n_covariates);
+  // 
+  // for(int i=0; i<n_sources; i++){
+  //   for(int j=0; j<n_sources; j++){
+  //     for(int k=0; k<n_covariates; k++){
+  //       NumericMatrix cov = (Rcpp::wrap(chol_prec.slice(k)));
+  //       if(i==j){
+  //         sumlogdiag(k) += log(cov(i,j));
+  //       }
+  //     }
+  //   }
+  // }
+  
+  // double sum_p = 0;
+  // 
+  // //  Need to fix  mat mult - extrct each p before multiplying and then put into matmult i think
+  // 
+  // NumericVector p_mat_mult(n_covariates);
+  // 
+  // for(int k = 0; k<n_covariates; k++){
+  //   for(int i = 0; i<n_sources; i++){
+  //     p_mat_mult(k) += pow(p_mat(k,i),2);
+  //   }
+  // }
+  // 
+  // 
+  // 
+  // 
+  // 
+  // 
+  // for(int k = 0; k<n_covariates; k++){
+  //   sum_p = sum_p -0.5 * n_sources *log(2 *M_PI) - 0.5 * sumlogdiag(k) - 0.5 * p_mat_mult(k);
+  // }
+  
+  // for(int k = 0; k<n_covariates; k++){
+  //   sum_p = sum_p - 0.5 * n_sources *log(2 *M_PI) - n_sources * sumlogdiag(k) - 0.5 *  p_mat_mult(k);
+  // }
+  
+  
+  
+  
+  
+  
+  
+  
+  double thetanorm = 0;
+  
+  
+  
+  
+  for(int i=0; i<n_covariates; i++){
+    NumericMatrix prec(n_sources, n_sources);
+    prec = crossprod(Rcpp::wrap(chol_prec.slice(i)));
+    NumericMatrix solve_prec(n_sources, n_sources);
+    solve_prec = solvearma(prec);
+    NumericMatrix currentbeta(1, n_sources);
+    currentbeta(0,_) = beta(i,_);
+
+    thetanorm += *REAL(Rcpp::wrap(dmvnrm_arma_fast(as<arma::mat>(currentbeta), mean_beta(i,_), as<arma::mat>(solve_prec))));
+  }
   
   
   
@@ -539,17 +577,26 @@ double log_q_cpp(NumericVector theta, NumericVector lambda,
   
   double gamman = 0;
   for (int i=0; i <(n_tracers); i++){
-    gamman += lambda(n_covariates * mat_size + n_covariates *n_sources +i) * 
+    gamman += lambda(n_covariates * mat_size + n_covariates *n_sources +i) *
       log(lambda(n_covariates * mat_size + n_covariates *n_sources +i + n_tracers))  -
       log(tgamma(lambda(n_covariates * mat_size + n_covariates *n_sources +i)))  +
-      (lambda(n_covariates * mat_size + n_covariates *n_sources +i) - 1) * log(theta(i+n_sources*n_covariates)) - 
+      (lambda(n_covariates * mat_size + n_covariates *n_sources +i) - 1) * log(theta(i+n_sources*n_covariates)) -
       lambda(n_covariates * mat_size + n_covariates *n_sources +i + n_tracers) * theta((i+n_sources*n_covariates));
   }
   
+  // for (int i=0; i <(n_tracers); i++){
+  //   gamman += lambda(n_covariates * mat_size + n_covariates *n_sources +i) *
+  //     log(lambda(n_covariates * mat_size + n_covariates *n_sources +i + n_tracers))  -
+  //     log(tgamma(lambda(n_covariates * mat_size + n_covariates *n_sources +i)))  +
+  //     (lambda(n_covariates * mat_size + n_covariates *n_sources +i) - 1) * (theta(i+n_sources*n_covariates)) -
+  //     lambda(n_covariates * mat_size + n_covariates *n_sources +i + n_tracers) * theta((i+n_sources*n_covariates));
+  // }
+
   
   
   
-  double x = sum_p+ gamman;
+  //double x = sum_p+ gamman;
+  double x = thetanorm +gamman;
   
   return (x);
   
@@ -905,7 +952,8 @@ NumericVector run_VB_cpp(NumericVector lambdastart,
                          int tau,
                          double eps_0,
                          int t_W,
-                         NumericVector c_prior
+                         NumericVector c_prior,
+                         bool solo
 ){
   
   
@@ -914,7 +962,7 @@ NumericVector run_VB_cpp(NumericVector lambdastart,
   
   NumericMatrix theta(S, (n_sources + n_tracers));
   
-  theta = sim_thetacpp(S, lambdastart, n_sources, n_tracers, n_covariates);
+  theta = sim_thetacpp(S, lambdastart, n_sources, n_tracers, n_covariates, solo);
   // print(theta);
   NumericVector c(lsl);
   
@@ -974,7 +1022,7 @@ NumericVector run_VB_cpp(NumericVector lambdastart,
   
   while(stop == FALSE){
     
-    theta = sim_thetacpp(S, lambda, n_sources, n_tracers, n_covariates);
+    theta = sim_thetacpp(S, lambda, n_sources, n_tracers, n_covariates, solo);
 
     
     g_t = nabla_LB_cpp(lambda, theta, n_sources, n_tracers, beta_prior,
@@ -1027,14 +1075,14 @@ NumericVector run_VB_cpp(NumericVector lambdastart,
 //////////// This was written by Ahmed
 
     int r = t;
-    int i = 0;
+    int inn = 0;
     while(1){
-      i++;
+      inn++;
       r = r/10;
       if(r == 0) break;
     }
     
-    for(int j = 0 ; j < (13+i) ;j++){
+    for(int j = 0 ; j < (13+inn) ;j++){
     Rcout<<"\b";
     }
     

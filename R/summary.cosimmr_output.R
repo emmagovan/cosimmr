@@ -87,7 +87,7 @@ summary.cosimmr_output <-
         # Loop through groups
         for (i in 1:length(individual)) {
           message("\nSummary for Individual ",  individual[i], "\n")
-          out_all <- object$output$BUGSoutput$sims.list$p[i,,]
+          out_all <- object$output$BUGSoutput$sims.list$p[individual[i],,]
           
           # Get objects
           out_quantiles[[i]] <- t(apply(out_all, 2, "quantile", probs = c(0.025, 0.25, 0.5, 0.75, 0.975)))

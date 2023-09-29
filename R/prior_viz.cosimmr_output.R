@@ -6,9 +6,9 @@
 #' \code{\link{posterior_predictive}} to visually evaluate the influence of
 #' the prior on the posterior distribution.
 #'
-#' @param simmr_out A run of the cosimmr model from \code{\link{simmr_ffvb}}
+#' @param cosimmr_out A run of the cosimmr model from \code{\link{cosimmr_ffvb}}
 #' @param plot Whether to create a density plot of the prior or not. The simulated prior values are returned as part of the object
-#' @param include_posterior Whether to include the posterior distribution on top of the priors. Defaults to TRUE
+#' @param include_posterior Whether to include the posterior distribution on top of the priors. Defaults to TRUE. The posterior returned is of the mean value of covariates
 #' @param n_sims The number of simulations from the prior distribution
 #' @param scales The type of scale from \code{facet_wrap} allowing for \code{fixed}, \code{free}, \code{free_x}, \code{free_y}
 #'
@@ -79,11 +79,51 @@ prior_viz.cosimmr_output <- function(cosimmr_out,
     }
     colnames(p_prior_sim) <- simmr_out$input$source_names
     if (plot) {
+      
+      ############ from plot.output function
+      if(cosimmr_out$input$intercept == TRUE){
+        x_pred = c(1, rep(0, (ncol(cosimmr_out$input$x_scaled) - 1)))
+      } else if(cosimmr_out$input$intercept == FALSE){
+        x_pred = c(rep(0, (ncol(x$input$x_scaled))))
+      }
+      
+      thetares= cosimmr_out$output$theta
+      K = cosimmr_out$input$n_sources
+      n_tracers = cosimmr_out$input$n_tracers
+      n_covariates = ncol(cosimmr_out$input$x_scaled)
+      
+      
+      
+      sigma <- (1/sqrt(thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)]))
+      
+      #p_sample = array(NA, dim = c(1, n_output, K))
+      p_sample = matrix(ncol = K, nrow = n_output)
+      
+      beta = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
+      
+      f <- array(NA, dim = c(1, K, n_output))
+      
+      for(s in 1:n_output){
+        f[,,s] = (x_pred) %*% beta[s,,]
+      }
+      
+      for(j in 1:n_output){
+        # p_sample[1,j, ] 
+        p_sample[j,] <- exp(f[1,1:K, j]) / (sum((exp(f[1,1:K, j]))))
+      }
+      
+      colnames(p_sample) = cosimmr_out$input$source_names
+      
+      df_p_mean <- reshape2::melt(p_sample)
+      
+      
+      ##############################
+      
       df <- reshape2::melt(p_prior_sim)
       colnames(df) <- c("Num", "Source", "Proportion")
       df$Type <- "Prior"
       out_all <- simmr_out$output[[group]]$BUGSoutput$sims.list$p
-      df2 <- reshape2::melt(out_all)
+      df2 <- df_p_mean
       colnames(df2) <- c("Num", "Source", "Proportion")
       df2$Type <- "Posterior"
       df_all <- rbind(df2, df)

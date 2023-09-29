@@ -51,7 +51,6 @@ data(geese_data_day1)
 This data can then be loaded into cosimmr using the function `cosimmr_load`
 
 ```{r}
-group = c(rep("Period 1", 9))
 cosimmr_1 <- with(
   geese_data_day1,
   cosimmr_load(
@@ -64,24 +63,10 @@ cosimmr_1 <- with(
     concentration_means = concentration_means
   )
 )
-
-cosimmr_1 <- cosimmr_load(
-    formula = geese_data_day1$mixtures ~ c(1,1,1,1,1,1,1,1,1.1),
-    source_names = geese_data_day1$source_names,
-    source_means = geese_data_day1$source_means,
-    source_sds = geese_data_day1$source_sds,
-    correction_means = geese_data_day1$correction_means,
-    correction_sds = geese_data_day1$correction_sds,
-    concentration_means = geese_data_day1$concentration_means
-  )
-
-
-
-
 ```
+This is a simple example that doesn't include any covariates. Note the formula is given in the form `tracer_data ~ covariates`. 
 
 An isospace plot can be generated using this data
-
 ```{r}
 plot(cosimmr_1)
 ```
@@ -94,12 +79,37 @@ cosimmr_1_out = cosimmr_ffvb(cosimmr_1)
 summary(cosimmr_1_out)
 ```
 
-
-The output of this can be plotted, using the plot function. There are several different
-options available in the plot function
+The output of this can be plotted, using the plot function. There are several different options available in the plot function.
 ```{r}
-plot(cosimmr_1_out, type = c("isospace", "beta_histogram", "p_ind"), ind = c(1,7))
+plot(cosimmr_1_out, type = c("isospace", "beta_histogram", "p_ind"), individuals = c(1,7))
 ```
+
+More complex examples can also be run. Here we include the group the geese belong to as a covariate
+```{r}
+data(geese_data)
+Groups = matrix(geese_data$groups)
+
+cosimmr_2 <-cosimmr_load(
+    formula = geese_data$mixtures ~ as.factor(Groups),
+    source_names = geese_data$source_names,
+    source_means = geese_data$source_means,
+    source_sds = geese_data$source_sds,
+    correction_means = geese_data$correction_means,
+    correction_sds = geese_data$correction_sds,
+    concentration_means = geese_data$concentration_means)
+
+cosimmr_2_out = cosimmr_ffvb(cosimmr_2)
+
+```
+
+We can then use the `predict` function to predict for each group
+```{r}
+#Need to change this to df probably
+pred_matrix = matrix(c("Period 1", "Period 3", "Period 4", "Period 8"), ncol = 1)
+groups_predict = predict(cosimmr_2_out, x_pred = pred_matrix)
+```
+
+
 
 Predictions
 ```{r}
@@ -139,7 +149,7 @@ colour_cat = c("red", "green", "blue", "red", "red", "red", "blue", "green", "bl
 # )
 data(geese_data)
 
-Groups =matrix(geese_data$groups)
+Groups =matrix(geese_data$groups[1:38])
 Groups = matrix(c(rep(1,9), rep(2,29), rep(3,74), rep(4,10), 
                rep(5,41), rep(6,20), rep(7,32), rep(8,36)), ncol = 1)
 
@@ -147,7 +157,7 @@ colnames(Groups) = c("Groups")
 
 
 cosimmr_2 <-cosimmr_load(
-    formula = geese_data$mixtures ~ as.factor(Groups),
+    formula = geese_data$mixtures[1:38,] ~ as.factor(Groups),
     source_names = geese_data$source_names,
     source_means = geese_data$source_means,
     source_sds = geese_data$source_sds,

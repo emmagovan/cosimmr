@@ -73,9 +73,11 @@ predict.cosimmr_output <- function(simmr_out,
 #Makes sure the object is the correct class
   if(inherits(simmr_out, "cosimmr_output") == TRUE){
     
+    #It has to be a data.frame if theres numeric and categorical data otherwise matrices
+    #just turn everything into categorical so it wont work
     if(inherits(x_pred, "data.frame") == FALSE) stop("x_pred must be of type `data.frame` to make predictions with")
     
-    
+    scale_x = simmr_out$input$scale_x
 
     
  # x_pred_mat = matrix(x_pred, ncol = n_covariates)
@@ -117,7 +119,7 @@ predict.cosimmr_output <- function(simmr_out,
   #So now what we want to do is to add x_pred onto the bottom of the original x matrix,
   #scale all, then remove original x mat
   
-  original_x = simmr_out$input$covariates_df
+  original_x = data.frame(simmr_out$input$covariates_df)
   
   #Add check that col names match
   #Otherwise next line wont work
@@ -230,7 +232,17 @@ predict.cosimmr_output <- function(simmr_out,
       p_sample[n_obs,j, ] <- exp(f[n_obs,1:K, j]) / (sum((exp(f[n_obs,1:K, j]))))
     }
   }
- return(p_sample)
+  
+  out<-list(
+    p = p_sample,
+    beta = beta,
+    sigma = sigma,
+    input = simmr_out$input,
+    theta = thetares
+  )
+  
+  class(out) = "cosimmr_pred_out"
+ return(out)
   } else (message("Can only predict using cosimmr_output object generated from
 cosimmr_ffvb function"))
 }

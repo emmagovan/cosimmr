@@ -127,8 +127,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // log_q_cpp
-double log_q_cpp(NumericVector theta, NumericVector lambda, int n_sources, int n_tracers, int S, int n_covariates);
-RcppExport SEXP _cosimmr_log_q_cpp(SEXP thetaSEXP, SEXP lambdaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP SSEXP, SEXP n_covariatesSEXP) {
+double log_q_cpp(NumericVector theta, NumericVector lambda, int n_sources, int n_tracers, int S, int n_cov);
+RcppExport SEXP _cosimmr_log_q_cpp(SEXP thetaSEXP, SEXP lambdaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP SSEXP, SEXP n_covSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -137,8 +137,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
     Rcpp::traits::input_parameter< int >::type n_tracers(n_tracersSEXP);
     Rcpp::traits::input_parameter< int >::type S(SSEXP);
-    Rcpp::traits::input_parameter< int >::type n_covariates(n_covariatesSEXP);
-    rcpp_result_gen = Rcpp::wrap(log_q_cpp(theta, lambda, n_sources, n_tracers, S, n_covariates));
+    Rcpp::traits::input_parameter< int >::type n_cov(n_covSEXP);
+    rcpp_result_gen = Rcpp::wrap(log_q_cpp(theta, lambda, n_sources, n_tracers, S, n_cov));
     return rcpp_result_gen;
 END_RCPP
 }

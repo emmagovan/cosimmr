@@ -94,6 +94,8 @@ cosimmr_load <- function(formula,
   #c_df = data.frame(colour_cat = colour_cat, letter_cat = letter_cat, numeric_cov = numeric_cov)
   # Go through each object and check that it matches the requirements
   mixtures = as.matrix(stats::model.frame(formula)[,1])
+  
+  #Need to add some method here to keep the column names
   covariates = (stats::model.frame(formula)[,-1])
   
   
@@ -285,7 +287,8 @@ cosimmr_load <- function(formula,
     scaled_center = scaled_center,
     scaled_scale = scaled_scale,
     intercept = intercept,
-    covariates_df = covariates
+    covariates_df = covariates,
+    n_covariates =  ncol(x_scaled)
   )
   
   # Look through to see whether there are any missing values in anything

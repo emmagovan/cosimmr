@@ -175,14 +175,14 @@
 #' @export cosimmr_ffvb
 cosimmr_ffvb <- function(simmr_in,
                          prior_control = list(
-                           mu_0 = rep(0, simmr_in$n_sources),
+                           mu_0 = rep(0, simmr_in$n_sources * simmr_in$n_covariates),
                            sigma_0 = 1,
                            tau_shape = rep(1, simmr_in$n_tracers),
                            tau_rate = rep(1, simmr_in$n_tracers)
                          ),
                          ffvb_control = list(
                            n_output = 3600,
-                           S = 200,
+                           S = 100,
                            P = 10,
                            beta_1 = 0.9,
                            beta_2 = 0.9,
@@ -200,18 +200,19 @@ cosimmr_ffvb <- function(simmr_in,
   n_output <- ffvb_control$n_output
   mu_a <- prior_control$mu_0
   sigma_a <- prior_control$sigma_0
-  n_covariates<- ncol(simmr_in$x_scaled)
+  n_covariates<- simmr_in$n_covariates
   x_scaled = simmr_in$x_scaled
   
   c_0 <- prior_control$tau_shape #Change to 0.0001
   # #d_0 <- prior_control$tau_rate
   
-  beta_lambda<-c(mu_a,rep(1, K * (K + 1) / 2))
+ # beta_lambda<-c(mu_a, rep(1, (K*n_covariates) * (K*n_covariates) + 1) / 2)))
+
+beta_lambda <-c(mu_a, rep(1,(((K*n_covariates) * (K*n_covariates +1))/2)))
+
+
   
-  lambda <- c(
-    rep(beta_lambda, n_covariates),
-    #c_0, #shape
-    #d_0 #rate
+  lambda <- c((beta_lambda),
     rep(1, n_tracers * 2)
   )
   
@@ -241,7 +242,7 @@ cosimmr_ffvb <- function(simmr_in,
   if (nrow(simmr_in$mixtures) == 1) {
     message("Only 1 mixture value, performing a simmr solo run...\n")
     solo <- TRUE
-    beta_prior = 100
+    beta_prior = c(rep(100, n_tracers))
   } else {
     solo <- FALSE
     beta_prior = prior_control$tau_rate
@@ -282,12 +283,24 @@ cosimmr_ffvb <- function(simmr_in,
   
   p_sample = array(NA, dim = c(simmr_in$n_obs, n_output, K))
   
-  beta = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
+  #beta1 = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
+  #The only thing I can potentially think of is that beta is filling wrong
+  #So change to a matrix and see if that fixes the problem??
+  beta = thetares[,1:(n_covariates * K)]
   
   f <- array(NA, dim = c(simmr_in$n_obs, K, n_output)) 
   
+  # for(s in 1:n_output){
+  #   f[,,s] = as.matrix(x_scaled) %*% beta[s,,]
+  # }
+  
+  #I'm not sure if this works or not
+  #We want beta to be the 4 sources for each covariate, 
+  #It should be n_covariates * K 
+  #n_output here is 3600 cause I keep confusing myself
   for(s in 1:n_output){
-    f[,,s] = as.matrix(x_scaled) %*% beta[s,,]
+    
+    f[,,s] = as.matrix(x_scaled) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
   }
   
   for(j in 1:n_output){
@@ -295,6 +308,21 @@ cosimmr_ffvb <- function(simmr_in,
       p_sample[n_obs,j, ] <- exp(f[n_obs,1:K, j]) / (sum((exp(f[n_obs,1:K, j]))))
     }
   }
+  
+  ########################
+  ##vs old way
+  # beta1 = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
+  # f1 <- array(NA, dim = c(simmr_in$n_obs, K, n_output))
+  # for(s in 1:n_output){
+  #   f1[,,s] = as.matrix(x_scaled) %*% beta1[s,,]
+  # }
+  # p_sample1 = array(NA, dim = c(simmr_in$n_obs, n_output, K))
+  # for(j in 1:n_output){
+  #   for (n_obs in 1:simmr_in$n_obs) {
+  #     p_sample1[n_obs,j, ] <- exp(f1[n_obs,1:K, j]) / (sum((exp(f1[n_obs,1:K, j]))))
+  #   }
+  # }
+  
   
   #Not sure best way to do this??
   #colnames(p[1,,]) <- simmr_in$source_names

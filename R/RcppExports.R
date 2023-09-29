@@ -33,8 +33,8 @@ hcpp <- function(n_sources, n_isotopes, n_covariates, beta_prior, x_scaled, conc
     .Call('_cosimmr_hcpp', PACKAGE = 'cosimmr', n_sources, n_isotopes, n_covariates, beta_prior, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, c_0)
 }
 
-log_q_cpp <- function(theta, lambda, n_sources, n_tracers, S, n_covariates) {
-    .Call('_cosimmr_log_q_cpp', PACKAGE = 'cosimmr', theta, lambda, n_sources, n_tracers, S, n_covariates)
+log_q_cpp <- function(theta, lambda, n_sources, n_tracers, S, n_cov) {
+    .Call('_cosimmr_log_q_cpp', PACKAGE = 'cosimmr', theta, lambda, n_sources, n_tracers, S, n_cov)
 }
 
 delta_lqltcpp <- function(lambda, theta, eps, n_sources, n_tracers, n_covariates, S) {

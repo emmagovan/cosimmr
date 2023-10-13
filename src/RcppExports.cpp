@@ -11,28 +11,14 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// dmvnrm_arma_fast
-arma::vec dmvnrm_arma_fast(arma::mat const& x, arma::rowvec const& mean, arma::mat const& sigma, bool const logd);
-RcppExport SEXP _cosimmr_dmvnrm_arma_fast(SEXP xSEXP, SEXP meanSEXP, SEXP sigmaSEXP, SEXP logdSEXP) {
+// proddiag
+double proddiag(NumericMatrix x);
+RcppExport SEXP _cosimmr_proddiag(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat const& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::rowvec const& >::type mean(meanSEXP);
-    Rcpp::traits::input_parameter< arma::mat const& >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< bool const >::type logd(logdSEXP);
-    rcpp_result_gen = Rcpp::wrap(dmvnrm_arma_fast(x, mean, sigma, logd));
-    return rcpp_result_gen;
-END_RCPP
-}
-// crossprod
-NumericMatrix crossprod(NumericMatrix X);
-RcppExport SEXP _cosimmr_crossprod(SEXP XSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(crossprod(X));
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(proddiag(x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -48,16 +34,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rMVNormCpp
-NumericMatrix rMVNormCpp(const double n, const arma::vec mu, const NumericMatrix U);
-RcppExport SEXP _cosimmr_rMVNormCpp(SEXP nSEXP, SEXP muSEXP, SEXP USEXP) {
+// crossprod
+NumericMatrix crossprod(NumericMatrix X);
+RcppExport SEXP _cosimmr_crossprod(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double >::type n(nSEXP);
-    Rcpp::traits::input_parameter< const arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< const NumericMatrix >::type U(USEXP);
-    rcpp_result_gen = Rcpp::wrap(rMVNormCpp(n, mu, U));
+    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(crossprod(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rMVNormCpp
+NumericMatrix rMVNormCpp(int n, arma::vec Mean, arma::mat Var);
+RcppExport SEXP _cosimmr_rMVNormCpp(SEXP nSEXP, SEXP MeanSEXP, SEXP VarSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Mean(MeanSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Var(VarSEXP);
+    rcpp_result_gen = Rcpp::wrap(rMVNormCpp(n, Mean, Var));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -305,9 +302,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_cosimmr_dmvnrm_arma_fast", (DL_FUNC) &_cosimmr_dmvnrm_arma_fast, 4},
-    {"_cosimmr_crossprod", (DL_FUNC) &_cosimmr_crossprod, 1},
+    {"_cosimmr_proddiag", (DL_FUNC) &_cosimmr_proddiag, 1},
     {"_cosimmr_matmult", (DL_FUNC) &_cosimmr_matmult, 2},
+    {"_cosimmr_crossprod", (DL_FUNC) &_cosimmr_crossprod, 1},
     {"_cosimmr_rMVNormCpp", (DL_FUNC) &_cosimmr_rMVNormCpp, 3},
     {"_cosimmr_solvearma", (DL_FUNC) &_cosimmr_solvearma, 1},
     {"_cosimmr_sim_thetacpp", (DL_FUNC) &_cosimmr_sim_thetacpp, 6},

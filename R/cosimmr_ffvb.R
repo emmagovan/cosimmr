@@ -187,7 +187,7 @@ cosimmr_ffvb <- function(simmr_in,
                            beta_1 = 0.9,
                            beta_2 = 0.9,
                            tau = 100,
-                           eps_0 = 0.1,
+                           eps_0 = 0.0225,
                            t_W = 50
                          )) {
   # Throw a warning if less than 4 observations in a group - 1 is ok as it wil do a solo run
@@ -282,6 +282,7 @@ beta_lambda <-c(mu_a, rep(1,(((K*n_covariates) * (K*n_covariates +1))/2)))
   sigma <- (1/sqrt(thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)]))
   
   p_sample = array(NA, dim = c(simmr_in$n_obs, n_output, K))
+  p_mean_sample = matrix(NA, nrow = n_output, ncol = K)
   
   #beta1 = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
   #The only thing I can potentially think of is that beta is filling wrong
@@ -289,6 +290,14 @@ beta_lambda <-c(mu_a, rep(1,(((K*n_covariates) * (K*n_covariates +1))/2)))
   beta = thetares[,1:(n_covariates * K)]
   
   f <- array(NA, dim = c(simmr_in$n_obs, K, n_output)) 
+  #f_mean_sample <- array(NA, dim = c(1, K, n_output)) 
+  f_mean_sample = matrix(NA, nrow = K, ncol = n_output)
+  
+  if(simmr_in$input$intercept == TRUE){
+    x_sample_mean = c(1, rep(0, (ncol(simmr_in$input$x_scaled) - 1)))
+  } else if(simmr_in$input$intercept == FALSE){
+    x_sample_mean = c(rep(0, (ncol(simmr_in$input$x_scaled))))
+  }
   
   # for(s in 1:n_output){
   #   f[,,s] = as.matrix(x_scaled) %*% beta[s,,]
@@ -301,12 +310,17 @@ beta_lambda <-c(mu_a, rep(1,(((K*n_covariates) * (K*n_covariates +1))/2)))
   for(s in 1:n_output){
     
     f[,,s] = as.matrix(x_scaled) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
+    f_mean_sample[,s] = as.matrix(x_sample_mean) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE) 
   }
   
   for(j in 1:n_output){
     for (n_obs in 1:simmr_in$n_obs) {
       p_sample[n_obs,j, ] <- exp(f[n_obs,1:K, j]) / (sum((exp(f[n_obs,1:K, j]))))
     }
+  }
+  
+  for(j in 1:n_output){
+    p_sample_mean[j,] = exp(f_mean[1:K,j]) /(sum(exp(f[1:K,j])))
   }
   
   ########################
@@ -343,6 +357,7 @@ beta_lambda <-c(mu_a, rep(1,(((K*n_covariates) * (K*n_covariates +1))/2)))
     BUGSoutput = list(
       sims.list = list(
         p = p_sample,
+        p_mean = p_sample_mean,
         sigma = sigma
       )),
     model = list(data = list(

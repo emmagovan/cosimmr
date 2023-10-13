@@ -87,10 +87,10 @@ plot(cosimmr_1_out, type = c("isospace", "beta_histogram", "p_ind"), individuals
 More complex examples can also be run. Here we include the group the geese belong to as a covariate
 ```{r}
 data(geese_data)
-Groups = matrix(geese_data$groups)
+Groups = matrix(geese_data$groups[1:38])
 
 cosimmr_2 <-cosimmr_load(
-    formula = geese_data$mixtures ~ as.factor(Groups),
+    formula = geese_data$mixtures[1:38,] ~ as.factor(Groups),
     source_names = geese_data$source_names,
     source_means = geese_data$source_means,
     source_sds = geese_data$source_sds,
@@ -108,6 +108,51 @@ We can then use the `predict` function to predict for each group
 pred_matrix = matrix(c("Period 1", "Period 3", "Period 4", "Period 8"), ncol = 1)
 groups_predict = predict(cosimmr_2_out, x_pred = pred_matrix)
 ```
+
+
+```{r}
+library(readxl)
+library(tidyverse)
+path = system.file("extdata", "geese_data.xls", package = "simmr")
+geese_data <- lapply(excel_sheets(path), read_excel, path = path)
+
+#geese_data = data(geese_data)
+# Just use time point 1 for now
+consumer <- geese_data[[1]] |> filter(Time == 1) # 1  93 124 398 428 459 490 549
+
+sources <- geese_data[[2]]
+TEFs <- geese_data[[3]]
+conc <- geese_data[[4]]
+
+n <- nrow(consumer)
+n_isotopes <- 2
+K <- nrow(sources)
+mu_s <- as.matrix(sources[, c(2, 3)] )
+sigma_s <- as.matrix(sources[, c(4, 5)])
+mu_c <- as.matrix(TEFs[, c(2, 3)])
+sigma_c <- as.matrix(TEFs[, c(4, 5)])
+q <- as.matrix(conc[, c(2:3)])
+y <- consumer |>
+  select(d13C_Pl, d15N_Pl) |>
+  as.matrix()
+
+x = data.frame(Sex = geese_data[[1]]$Sex[1:9], Age =  geese_data[[1]]$Age[1:9])
+
+cosimmr_3 <-cosimmr_load(
+    formula = y ~ x$Sex + x$Age,
+    source_names = geese_data[[2]]$Sources,
+    source_means = mu_s,
+    source_sds = sigma_s,
+    correction_means = mu_c,
+    correction_sds = sigma_c,
+    concentration_means = q)
+
+cosimmr_3_out = cosimmr_ffvb(cosimmr_3)
+
+summary(cosimmr_3_out, individual = c(1:9))
+
+```
+
 
 
 
@@ -149,7 +194,7 @@ colour_cat = c("red", "green", "blue", "red", "red", "red", "blue", "green", "bl
 # )
 data(geese_data)
 
-Groups =matrix(geese_data$groups[1:38])
+Groups =matrix(geese_data$groups)
 Groups = matrix(c(rep(1,9), rep(2,29), rep(3,74), rep(4,10), 
                rep(5,41), rep(6,20), rep(7,32), rep(8,36)), ncol = 1)
 
@@ -157,7 +202,7 @@ colnames(Groups) = c("Groups")
 
 
 cosimmr_2 <-cosimmr_load(
-    formula = geese_data$mixtures[1:38,] ~ as.factor(Groups),
+    formula = geese_data$mixtures ~ as.factor(Groups),
     source_names = geese_data$source_names,
     source_means = geese_data$source_means,
     source_sds = geese_data$source_sds,

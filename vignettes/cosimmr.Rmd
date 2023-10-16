@@ -87,10 +87,10 @@ plot(cosimmr_1_out, type = c("isospace", "beta_histogram", "p_ind"), individuals
 More complex examples can also be run. Here we include the group the geese belong to as a covariate
 ```{r}
 data(geese_data)
-Groups = matrix(geese_data$groups[1:38])
+Groups = matrix(geese_data$groups[1:112])
 
 cosimmr_2 <-cosimmr_load(
-    formula = geese_data$mixtures[1:38,] ~ as.factor(Groups),
+    formula = geese_data$mixtures[1:112,] ~ as.factor(Groups),
     source_names = geese_data$source_names,
     source_means = geese_data$source_means,
     source_sds = geese_data$source_sds,

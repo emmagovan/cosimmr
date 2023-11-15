@@ -77,6 +77,8 @@ package.
 cosimmr_1_out = cosimmr_ffvb(cosimmr_1)
 
 summary(cosimmr_1_out)
+
+plot(cosimmr_1_out$output$mean_LB[502:1336])
 ```
 
 The output of this can be plotted, using the plot function. There are several different options available in the plot function.
@@ -87,10 +89,10 @@ plot(cosimmr_1_out, type = c("isospace", "beta_histogram", "p_ind"), individuals
 More complex examples can also be run. Here we include the group the geese belong to as a covariate
 ```{r}
 data(geese_data)
-Groups = matrix(geese_data$groups[1:112])
+Groups = matrix(geese_data$groups[1:38])
 
 cosimmr_2 <-cosimmr_load(
-    formula = geese_data$mixtures[1:112,] ~ as.factor(Groups),
+    formula = geese_data$mixtures[1:38,] ~ as.factor(Groups),
     source_names = geese_data$source_names,
     source_means = geese_data$source_means,
     source_sds = geese_data$source_sds,
@@ -99,6 +101,38 @@ cosimmr_2 <-cosimmr_load(
     concentration_means = geese_data$concentration_means)
 
 cosimmr_2_out = cosimmr_ffvb(cosimmr_2)
+
+#library(microbenchmark)
+
+#microbenchmark(cosimmr = cosimmr_ffvb(cosimmr_2), times = 5L)
+
+summary(cosimmr_2_out, individual = c(1, 10))
+
+
+plot(cosimmr_2_out$output$mean_LB[202:2243])
+
+
+summary(cosimmr_2_out, individual = c(1, 10, 40, 115, 125, 165, 185, 220))
+
+plot(cosimmr_2_out$output$mean_LB[52:610])
+plot(cosimmr_2_out$output$mean_LB[52:108], xlab = "eps = 0.09")
+
+cosimmr_3 <- with(
+  geese_data,
+  cosimmr_load(
+    formula = mixtures ~ 1,
+    source_names = source_names,
+    source_means = source_means,
+    source_sds = source_sds,
+    correction_means = correction_means,
+    correction_sds = correction_sds,
+    concentration_means = concentration_means
+  )
+)
+
+cosimmr_3_out = cosimmr_ffvb(cosimmr_3)
+
+
 
 ```
 

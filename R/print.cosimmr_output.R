@@ -13,7 +13,7 @@ print.cosimmr_output <-
     if (inherits(x, "cosimmr_output") == TRUE) {
          if (inherits(x, "ffvb") == TRUE) {
         print(x$input)
-        message("The input data has been run via simmr_ffvb and has produced ")
+        message("The input data has been run via cosimmr_ffvb and has produced ")
         message(nrow(x$output$BUGSoutput$sims.list$sigma), " samples.")
       }
     }

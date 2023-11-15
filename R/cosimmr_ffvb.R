@@ -182,13 +182,13 @@ cosimmr_ffvb <- function(simmr_in,
                          ),
                          ffvb_control = list(
                            n_output = 3600,
-                           S = 100,
-                           P = 10,
+                           S = 1000,
+                           P = 50,
                            beta_1 = 0.9,
                            beta_2 = 0.9,
                            tau = 100,
-                           eps_0 = 0.025,
-                           t_W = 50
+                           eps_0 = 0.005,
+                           t_W = 100
                          )) {
   # Throw a warning if less than 4 observations in a group - 1 is ok as it wil do a solo run
   #  if (min(table(simmr_in$group)) > 1 & min(table(simmr_in$group)) < 4) warning("At least 1 group has less than 4 observations - either put each observation in an individual group or use informative prior information")
@@ -276,7 +276,8 @@ beta_lambda <-c(mu_a, rep(1,(((K*n_covariates) * (K*n_covariates +1))/2)))
   
   
   
-  thetares <- sim_thetacpp(n_output, lambdares, K, n_tracers, n_covariates, solo)
+  #thetares <- sim_thetacpp(n_output, lambdares, K, n_tracers, n_covariates, solo)
+  thetares <- sim_thetacpp(n_output, lambdares$lambda, K, n_tracers, n_covariates, solo)
   
   #p <- t(apply(x_scaled %*% thetares[(1 + n_output * (i - 1)):(n_output * i), 1:K*n_covariates], 1, p_fun))
   
@@ -354,7 +355,8 @@ beta_lambda <-c(mu_a, rep(1,(((K*n_covariates) * (K*n_covariates +1))/2)))
     source_names = simmr_in$source_names,
     theta = thetares,
     groupnames = simmr_in$group,
-    lambdares = lambdares,
+    lambdares = lambdares$lambda,
+    mean_LB = lambdares$mean_LB,
     beta = beta,
     BUGSoutput = list(
       sims.list = list(

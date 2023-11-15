@@ -79,33 +79,16 @@ predict.cosimmr_output <- function(simmr_out,
     
     scale_x = simmr_out$input$scale_x
 
-    
- # x_pred_mat = matrix(x_pred, ncol = n_covariates)
-  
-  #Check x_pred has same number of columns as original x
-  #This means they have to input x_pred as a matrix
-  #Otherwise this wont work
-  #   if(class(x_pred) == "numeric"){
-  # x_pred_mat = matrix(x_pred, nrow = 1) 
-  #   } else(
-   #x_pred_mat = matrix(x_pred) #)
-  
-    #Need to figure out a different way to check - maybe save original x??
-#if(ncol(x_pred) != ncol(simmr_out$input$x_scaled)) stop("The matrix of values you wish to make predictions for does not have the same number of entries as the original covariance matrix. Please fix and rerun.")
-
-  #Not sure if we want to include this - do we want to ensure the columns are named??
-#if(colnames(x_pred_mat) != colnames(simmr_out$input$x_scaled)) stop("The column names for the original covariates and the new values you wish to make predictions for are not the same")
-  
   
   #Creating a max and min vector so we can check if the new x_pred falls outside the range of the original data
   #Create vectors here but do comparison after all data has been scaled
-  # max_vec = c(rep(NA, ncol(simmr_out$input$x_scaled)))
-  # min_vec = c(rep(NA, ncol(simmr_out$input$x_scaled)))
-  # 
-  # for(i in 1:(ncol(simmr_out$input$x_scaled))){
-  #   max_vec[i] = max(simmr_out$input$x_scaled[,i])
-  #   min_vec[i] = min(simmr_out$input$x_scaled[,i])
-  # }
+  max_vec = c(rep(NA, ncol(simmr_out$input$x_scaled)))
+  min_vec = c(rep(NA, ncol(simmr_out$input$x_scaled)))
+  
+   for(i in 1:(ncol(simmr_out$input$x_scaled))){
+     max_vec[i] = max(simmr_out$input$x_scaled[,i])
+     min_vec[i] = min(simmr_out$input$x_scaled[,i])
+   }
   
 
   
@@ -177,41 +160,20 @@ predict.cosimmr_output <- function(simmr_out,
     }
   }
   
-  #This makes sure that the new inputs are scaled in the same way the old ones
-  #were - so if they are scaled there they're scaled here using the same
-  #scaling values (im sure theres a technical term for this but I don't know it)
-  #don't want to scale any of the original data I think
-  # if(simmr_out$input$scale_x == FALSE){
-  # x_pred_mat = matrix(x_pred, ncol = n_covariates)
-  # } else if(simmr_out$input$scale_x == TRUE){
-  #   if(simmr_out$input$intercept == TRUE){
-  #     x_pred_mat = cbind(x_pred[,1], scale(x_pred[,2:ncol(x_pred)], 
-  #                                              center = simmr_out$input$scaled_center,
-  #                                              scale = simmr_out$input$scaled_scale))
-  #   }
-  #   else if(simmr_out$input$intercept == FALSE){
-  #     x_pred_mat = scale(x_pred, 
-  #                        center = simmr_out$input$scaled_center,
-  #                        scale = simmr_out$input$scaled_scale)
-  #   }
-  # }
-  
-  
-
   
   
   #Checks that all the values are above or equal to the min and below or equal to the max
-  # for(j in 1:(nrow(x_pred_mat))){
-  #   for(i in 1:(ncol(simmr_out$input$x_scaled))){
-  #     if(x_pred_mat[j,i] >= min_vec[i] & x_pred_mat[j,i] <= max_vec[i]){
-  #      #message("Data falls within range of data used in original model, okay to predict with")
-  #       print_err = FALSE
-  #     } else(print_err = TRUE)
-  #   }
-  # }
+  for(j in 1:(nrow(x_pred_mat))){
+    for(i in 1:(ncol(simmr_out$input$x_scaled))){
+      if(x_pred_mat[j,i] >= min_vec[i] & x_pred_mat[j,i] <= max_vec[i]){
+       #message("Data falls within range of data used in original model, okay to predict with")
+        print_err = FALSE
+      } else(print_err = TRUE)
+    }
+  }
   
   #This is separate because otherwise its inside the loop and it prints a bunch of times
-  #if(print_err){message("Please note: The data you wish to predict with falls outside the range of data used in the original model")}
+  if(print_err){message("Please note: The data you wish to predict with falls outside the range of data used in the original model")}
   
   
   
@@ -224,7 +186,7 @@ predict.cosimmr_output <- function(simmr_out,
   f <- array(NA, dim = c(nrow(x_pred_mat), K, n_output)) 
   
   for(s in 1:n_output){
-    f[,,s] = (x_pred_mat) %*% beta[s,,]
+    f[,,s] = as.matrix(x_pred_mat) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
   }
   
   for(j in 1:n_output){

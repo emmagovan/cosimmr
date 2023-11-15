@@ -11,42 +11,19 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// proddiag
-double proddiag(NumericMatrix x);
-RcppExport SEXP _cosimmr_proddiag(SEXP xSEXP) {
+// digamma_wrapper
+arma::vec digamma_wrapper(const arma::vec& x);
+RcppExport SEXP _cosimmr_digamma_wrapper(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(proddiag(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// matmult
-NumericMatrix matmult(NumericMatrix x, NumericMatrix y);
-RcppExport SEXP _cosimmr_matmult(SEXP xSEXP, SEXP ySEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type y(ySEXP);
-    rcpp_result_gen = Rcpp::wrap(matmult(x, y));
-    return rcpp_result_gen;
-END_RCPP
-}
-// crossprod
-NumericMatrix crossprod(NumericMatrix X);
-RcppExport SEXP _cosimmr_crossprod(SEXP XSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(crossprod(X));
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(digamma_wrapper(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // rMVNormCpp
-NumericMatrix rMVNormCpp(int n, arma::vec Mean, arma::mat Var);
+arma::mat rMVNormCpp(int n, arma::vec Mean, arma::mat Var);
 RcppExport SEXP _cosimmr_rMVNormCpp(SEXP nSEXP, SEXP MeanSEXP, SEXP VarSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -59,24 +36,24 @@ BEGIN_RCPP
 END_RCPP
 }
 // solvearma
-NumericMatrix solvearma(const NumericMatrix X);
+arma::mat solvearma(arma::mat& X);
 RcppExport SEXP _cosimmr_solvearma(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericMatrix >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
     rcpp_result_gen = Rcpp::wrap(solvearma(X));
     return rcpp_result_gen;
 END_RCPP
 }
 // sim_thetacpp
-NumericMatrix sim_thetacpp(int S, NumericVector lambda, int n_sources, int n_tracers, int n_cov, bool solo);
+arma::mat sim_thetacpp(int S, arma::vec lambda, int n_sources, int n_tracers, int n_cov, bool solo);
 RcppExport SEXP _cosimmr_sim_thetacpp(SEXP SSEXP, SEXP lambdaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP n_covSEXP, SEXP soloSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type S(SSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
     Rcpp::traits::input_parameter< int >::type n_tracers(n_tracersSEXP);
     Rcpp::traits::input_parameter< int >::type n_cov(n_covSEXP);
@@ -86,51 +63,51 @@ BEGIN_RCPP
 END_RCPP
 }
 // hfn
-NumericMatrix hfn(NumericVector theta, int n_sources, int n, int n_cov, NumericMatrix x_scaled);
+arma::mat hfn(arma::vec theta, int n_sources, int n, int n_cov, arma::mat x_scaled);
 RcppExport SEXP _cosimmr_hfn(SEXP thetaSEXP, SEXP n_sourcesSEXP, SEXP nSEXP, SEXP n_covSEXP, SEXP x_scaledSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP);
     Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type n_cov(n_covSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type x_scaled(x_scaledSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x_scaled(x_scaledSEXP);
     rcpp_result_gen = Rcpp::wrap(hfn(theta, n_sources, n, n_cov, x_scaled));
     return rcpp_result_gen;
 END_RCPP
 }
 // hcpp
-double hcpp(int n_sources, int n_isotopes, int n_covariates, NumericVector beta_prior, NumericMatrix x_scaled, NumericMatrix concentrationmeans, NumericMatrix sourcemeans, NumericMatrix correctionmeans, NumericMatrix corrsds, NumericMatrix sourcesds, NumericVector theta, NumericMatrix y, NumericVector c_0);
-RcppExport SEXP _cosimmr_hcpp(SEXP n_sourcesSEXP, SEXP n_isotopesSEXP, SEXP n_covariatesSEXP, SEXP beta_priorSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP thetaSEXP, SEXP ySEXP, SEXP c_0SEXP) {
+double hcpp(int n_sources, int n_isotopes, int n_covariates, arma::vec d_prior, arma::mat x_scaled, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::vec theta, arma::mat y, arma::vec c_prior);
+RcppExport SEXP _cosimmr_hcpp(SEXP n_sourcesSEXP, SEXP n_isotopesSEXP, SEXP n_covariatesSEXP, SEXP d_priorSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP thetaSEXP, SEXP ySEXP, SEXP c_priorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
     Rcpp::traits::input_parameter< int >::type n_isotopes(n_isotopesSEXP);
     Rcpp::traits::input_parameter< int >::type n_covariates(n_covariatesSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type beta_prior(beta_priorSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type x_scaled(x_scaledSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type concentrationmeans(concentrationmeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sourcemeans(sourcemeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type correctionmeans(correctionmeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type corrsds(corrsdsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sourcesds(sourcesdsSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type c_0(c_0SEXP);
-    rcpp_result_gen = Rcpp::wrap(hcpp(n_sources, n_isotopes, n_covariates, beta_prior, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, c_0));
+    Rcpp::traits::input_parameter< arma::vec >::type d_prior(d_priorSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x_scaled(x_scaledSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type concentrationmeans(concentrationmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcemeans(sourcemeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type correctionmeans(correctionmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type corrsds(corrsdsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcesds(sourcesdsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type c_prior(c_priorSEXP);
+    rcpp_result_gen = Rcpp::wrap(hcpp(n_sources, n_isotopes, n_covariates, d_prior, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, c_prior));
     return rcpp_result_gen;
 END_RCPP
 }
 // log_q_cpp
-double log_q_cpp(NumericVector theta, NumericVector lambda, int n_sources, int n_tracers, int S, int n_cov);
+double log_q_cpp(arma::vec theta, arma::vec lambda, int n_sources, int n_tracers, int S, int n_cov);
 RcppExport SEXP _cosimmr_log_q_cpp(SEXP thetaSEXP, SEXP lambdaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP SSEXP, SEXP n_covSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
     Rcpp::traits::input_parameter< int >::type n_tracers(n_tracersSEXP);
     Rcpp::traits::input_parameter< int >::type S(SSEXP);
@@ -140,13 +117,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // delta_lqltcpp
-NumericVector delta_lqltcpp(NumericVector lambda, NumericVector theta, double eps, int n_sources, int n_tracers, int n_covariates, int S);
+arma::vec delta_lqltcpp(arma::vec lambda, arma::vec theta, double eps, int n_sources, int n_tracers, int n_covariates, int S);
 RcppExport SEXP _cosimmr_delta_lqltcpp(SEXP lambdaSEXP, SEXP thetaSEXP, SEXP epsSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP n_covariatesSEXP, SEXP SSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP);
     Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
     Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
     Rcpp::traits::input_parameter< int >::type n_tracers(n_tracersSEXP);
@@ -157,136 +134,135 @@ BEGIN_RCPP
 END_RCPP
 }
 // h_lambdacpp
-double h_lambdacpp(int n_sources, int n_isotopes, NumericVector beta_prior, int n_covariates, int S, NumericMatrix concentrationmeans, NumericMatrix sourcemeans, NumericMatrix correctionmeans, NumericMatrix corrsds, NumericMatrix sourcesds, NumericVector theta, NumericMatrix y, NumericVector lambda, NumericMatrix x_scaled, NumericVector c_0);
+double h_lambdacpp(int n_sources, int n_isotopes, arma::vec beta_prior, int n_covariates, int S, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::vec theta, arma::mat y, arma::vec lambda, arma::mat x_scaled, arma::vec c_0);
 RcppExport SEXP _cosimmr_h_lambdacpp(SEXP n_sourcesSEXP, SEXP n_isotopesSEXP, SEXP beta_priorSEXP, SEXP n_covariatesSEXP, SEXP SSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP thetaSEXP, SEXP ySEXP, SEXP lambdaSEXP, SEXP x_scaledSEXP, SEXP c_0SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
     Rcpp::traits::input_parameter< int >::type n_isotopes(n_isotopesSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type beta_prior(beta_priorSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_prior(beta_priorSEXP);
     Rcpp::traits::input_parameter< int >::type n_covariates(n_covariatesSEXP);
     Rcpp::traits::input_parameter< int >::type S(SSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type concentrationmeans(concentrationmeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sourcemeans(sourcemeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type correctionmeans(correctionmeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type corrsds(corrsdsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sourcesds(sourcesdsSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type x_scaled(x_scaledSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type c_0(c_0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type concentrationmeans(concentrationmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcemeans(sourcemeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type correctionmeans(correctionmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type corrsds(corrsdsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcesds(sourcesdsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x_scaled(x_scaledSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type c_0(c_0SEXP);
     rcpp_result_gen = Rcpp::wrap(h_lambdacpp(n_sources, n_isotopes, beta_prior, n_covariates, S, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, lambda, x_scaled, c_0));
     return rcpp_result_gen;
 END_RCPP
 }
 // cov_mat_cpp
-NumericMatrix cov_mat_cpp(NumericMatrix x, NumericMatrix y);
-RcppExport SEXP _cosimmr_cov_mat_cpp(SEXP xSEXP, SEXP ySEXP) {
+arma::mat cov_mat_cpp(arma::mat x_arma, arma::mat y_arma);
+RcppExport SEXP _cosimmr_cov_mat_cpp(SEXP x_armaSEXP, SEXP y_armaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type y(ySEXP);
-    rcpp_result_gen = Rcpp::wrap(cov_mat_cpp(x, y));
+    Rcpp::traits::input_parameter< arma::mat >::type x_arma(x_armaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type y_arma(y_armaSEXP);
+    rcpp_result_gen = Rcpp::wrap(cov_mat_cpp(x_arma, y_arma));
     return rcpp_result_gen;
 END_RCPP
 }
 // nabla_LB_cpp
-NumericVector nabla_LB_cpp(NumericVector lambda, NumericMatrix theta, int n_sources, int n_tracers, NumericVector beta_prior, int S, int n_covariates, NumericMatrix x_scaled, NumericMatrix concentrationmeans, NumericMatrix sourcemeans, NumericMatrix correctionmeans, NumericMatrix corrsds, NumericMatrix sourcesds, NumericMatrix y, NumericVector c, NumericVector c_0);
+arma::colvec nabla_LB_cpp(arma::vec lambda, arma::mat theta, int n_sources, int n_tracers, arma::vec beta_prior, int S, int n_covariates, arma::mat x_scaled, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::mat y, arma::vec c, arma::vec c_0);
 RcppExport SEXP _cosimmr_nabla_LB_cpp(SEXP lambdaSEXP, SEXP thetaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP beta_priorSEXP, SEXP SSEXP, SEXP n_covariatesSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP cSEXP, SEXP c_0SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type theta(thetaSEXP);
     Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
     Rcpp::traits::input_parameter< int >::type n_tracers(n_tracersSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type beta_prior(beta_priorSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_prior(beta_priorSEXP);
     Rcpp::traits::input_parameter< int >::type S(SSEXP);
     Rcpp::traits::input_parameter< int >::type n_covariates(n_covariatesSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type x_scaled(x_scaledSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type concentrationmeans(concentrationmeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sourcemeans(sourcemeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type correctionmeans(correctionmeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type corrsds(corrsdsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sourcesds(sourcesdsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type c(cSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type c_0(c_0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x_scaled(x_scaledSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type concentrationmeans(concentrationmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcemeans(sourcemeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type correctionmeans(correctionmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type corrsds(corrsdsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcesds(sourcesdsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type c(cSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type c_0(c_0SEXP);
     rcpp_result_gen = Rcpp::wrap(nabla_LB_cpp(lambda, theta, n_sources, n_tracers, beta_prior, S, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c, c_0));
     return rcpp_result_gen;
 END_RCPP
 }
 // control_var_cpp
-NumericVector control_var_cpp(NumericVector lambda, NumericMatrix theta, int n_sources, int n_tracers, NumericVector beta_prior, int n_covariates, NumericMatrix x_scaled, NumericMatrix concentrationmeans, NumericMatrix sourcemeans, NumericMatrix correctionmeans, NumericMatrix corrsds, NumericMatrix sourcesds, NumericMatrix y, NumericVector c_0);
+arma::vec control_var_cpp(arma::vec lambda, arma::mat theta, int n_sources, int n_tracers, arma::vec beta_prior, int n_covariates, arma::mat x_scaled, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::mat y, arma::vec c_0);
 RcppExport SEXP _cosimmr_control_var_cpp(SEXP lambdaSEXP, SEXP thetaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP beta_priorSEXP, SEXP n_covariatesSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP c_0SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type theta(thetaSEXP);
     Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
     Rcpp::traits::input_parameter< int >::type n_tracers(n_tracersSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type beta_prior(beta_priorSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_prior(beta_priorSEXP);
     Rcpp::traits::input_parameter< int >::type n_covariates(n_covariatesSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type x_scaled(x_scaledSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type concentrationmeans(concentrationmeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sourcemeans(sourcemeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type correctionmeans(correctionmeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type corrsds(corrsdsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sourcesds(sourcesdsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type c_0(c_0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x_scaled(x_scaledSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type concentrationmeans(concentrationmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcemeans(sourcemeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type correctionmeans(correctionmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type corrsds(corrsdsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcesds(sourcesdsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type c_0(c_0SEXP);
     rcpp_result_gen = Rcpp::wrap(control_var_cpp(lambda, theta, n_sources, n_tracers, beta_prior, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c_0));
     return rcpp_result_gen;
 END_RCPP
 }
 // LB_lambda_cpp
-double LB_lambda_cpp(NumericMatrix theta, NumericVector lambda, NumericVector p, int n_sources, int n_isotopes, NumericVector beta_prior, int n_covariates, NumericMatrix x_scaled, NumericMatrix concentrationmeans, NumericMatrix sourcemeans, NumericMatrix correctionmeans, NumericMatrix corrsds, NumericMatrix sourcesds, NumericMatrix y, NumericVector c_0);
-RcppExport SEXP _cosimmr_LB_lambda_cpp(SEXP thetaSEXP, SEXP lambdaSEXP, SEXP pSEXP, SEXP n_sourcesSEXP, SEXP n_isotopesSEXP, SEXP beta_priorSEXP, SEXP n_covariatesSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP c_0SEXP) {
+double LB_lambda_cpp(arma::mat theta, arma::vec lambda, int n_sources, int n_isotopes, arma::vec beta_prior, int n_covariates, arma::mat x_scaled, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::mat y, arma::vec c_0);
+RcppExport SEXP _cosimmr_LB_lambda_cpp(SEXP thetaSEXP, SEXP lambdaSEXP, SEXP n_sourcesSEXP, SEXP n_isotopesSEXP, SEXP beta_priorSEXP, SEXP n_covariatesSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP c_0SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
     Rcpp::traits::input_parameter< int >::type n_isotopes(n_isotopesSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type beta_prior(beta_priorSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_prior(beta_priorSEXP);
     Rcpp::traits::input_parameter< int >::type n_covariates(n_covariatesSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type x_scaled(x_scaledSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type concentrationmeans(concentrationmeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sourcemeans(sourcemeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type correctionmeans(correctionmeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type corrsds(corrsdsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sourcesds(sourcesdsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type c_0(c_0SEXP);
-    rcpp_result_gen = Rcpp::wrap(LB_lambda_cpp(theta, lambda, p, n_sources, n_isotopes, beta_prior, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c_0));
+    Rcpp::traits::input_parameter< arma::mat >::type x_scaled(x_scaledSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type concentrationmeans(concentrationmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcemeans(sourcemeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type correctionmeans(correctionmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type corrsds(corrsdsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcesds(sourcesdsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type c_0(c_0SEXP);
+    rcpp_result_gen = Rcpp::wrap(LB_lambda_cpp(theta, lambda, n_sources, n_isotopes, beta_prior, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c_0));
     return rcpp_result_gen;
 END_RCPP
 }
 // run_VB_cpp
-NumericVector run_VB_cpp(NumericVector lambdastart, int n_sources, int n_tracers, int n_covariates, int n, NumericVector beta_prior, NumericMatrix concentrationmeans, NumericMatrix sourcemeans, NumericMatrix correctionmeans, NumericMatrix corrsds, NumericMatrix sourcesds, NumericMatrix y, NumericMatrix x_scaled, int S, int P, double beta_1, double beta_2, int tau, double eps_0, int t_W, NumericVector c_prior, bool solo);
+List run_VB_cpp(arma::vec lambdastart, int n_sources, int n_tracers, int n_covariates, int n, arma::vec beta_prior, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::mat y, arma::mat x_scaled, int S, int P, double beta_1, double beta_2, int tau, double eps_0, int t_W, arma::vec c_prior, bool solo);
 RcppExport SEXP _cosimmr_run_VB_cpp(SEXP lambdastartSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP n_covariatesSEXP, SEXP nSEXP, SEXP beta_priorSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP x_scaledSEXP, SEXP SSEXP, SEXP PSEXP, SEXP beta_1SEXP, SEXP beta_2SEXP, SEXP tauSEXP, SEXP eps_0SEXP, SEXP t_WSEXP, SEXP c_priorSEXP, SEXP soloSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type lambdastart(lambdastartSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lambdastart(lambdastartSEXP);
     Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
     Rcpp::traits::input_parameter< int >::type n_tracers(n_tracersSEXP);
     Rcpp::traits::input_parameter< int >::type n_covariates(n_covariatesSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type beta_prior(beta_priorSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type concentrationmeans(concentrationmeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sourcemeans(sourcemeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type correctionmeans(correctionmeansSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type corrsds(corrsdsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sourcesds(sourcesdsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type x_scaled(x_scaledSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_prior(beta_priorSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type concentrationmeans(concentrationmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcemeans(sourcemeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type correctionmeans(correctionmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type corrsds(corrsdsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcesds(sourcesdsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x_scaled(x_scaledSEXP);
     Rcpp::traits::input_parameter< int >::type S(SSEXP);
     Rcpp::traits::input_parameter< int >::type P(PSEXP);
     Rcpp::traits::input_parameter< double >::type beta_1(beta_1SEXP);
@@ -294,7 +270,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< double >::type eps_0(eps_0SEXP);
     Rcpp::traits::input_parameter< int >::type t_W(t_WSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type c_prior(c_priorSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type c_prior(c_priorSEXP);
     Rcpp::traits::input_parameter< bool >::type solo(soloSEXP);
     rcpp_result_gen = Rcpp::wrap(run_VB_cpp(lambdastart, n_sources, n_tracers, n_covariates, n, beta_prior, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, eps_0, t_W, c_prior, solo));
     return rcpp_result_gen;
@@ -302,9 +278,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_cosimmr_proddiag", (DL_FUNC) &_cosimmr_proddiag, 1},
-    {"_cosimmr_matmult", (DL_FUNC) &_cosimmr_matmult, 2},
-    {"_cosimmr_crossprod", (DL_FUNC) &_cosimmr_crossprod, 1},
+    {"_cosimmr_digamma_wrapper", (DL_FUNC) &_cosimmr_digamma_wrapper, 1},
     {"_cosimmr_rMVNormCpp", (DL_FUNC) &_cosimmr_rMVNormCpp, 3},
     {"_cosimmr_solvearma", (DL_FUNC) &_cosimmr_solvearma, 1},
     {"_cosimmr_sim_thetacpp", (DL_FUNC) &_cosimmr_sim_thetacpp, 6},
@@ -316,7 +290,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_cosimmr_cov_mat_cpp", (DL_FUNC) &_cosimmr_cov_mat_cpp, 2},
     {"_cosimmr_nabla_LB_cpp", (DL_FUNC) &_cosimmr_nabla_LB_cpp, 16},
     {"_cosimmr_control_var_cpp", (DL_FUNC) &_cosimmr_control_var_cpp, 14},
-    {"_cosimmr_LB_lambda_cpp", (DL_FUNC) &_cosimmr_LB_lambda_cpp, 15},
+    {"_cosimmr_LB_lambda_cpp", (DL_FUNC) &_cosimmr_LB_lambda_cpp, 14},
     {"_cosimmr_run_VB_cpp", (DL_FUNC) &_cosimmr_run_VB_cpp, 22},
     {NULL, NULL, 0}
 };

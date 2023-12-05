@@ -66,20 +66,20 @@ arma::mat rMVNormCpp(int n, arma::vec Mean, arma::mat Var) {
 
 
 
-//solves matrix - returns transpose though
-// [[Rcpp::export]]
-arma::mat solvearma(arma::mat& X) {
-  
-  
-  arma::mat b = arma::eye(X.n_rows, X.n_cols);
-  
-  
-  // Now backsolve and add back on the means
-  arma::mat ans = arma::solve(X, b);
-  
-  
-  return ans.t();
-}
+// //solves matrix - returns transpose though
+// // [[Rcpp::export]]
+// arma::mat solvearma(arma::mat& X) {
+//   
+//   
+//   arma::mat b = arma::eye(X.n_rows, X.n_cols);
+//   
+//   
+//   // Now backsolve and add back on the means
+//   arma::mat ans = arma::solve(X, b);
+//   
+//   
+//   return ans.t();
+// }
 
 //simulates S samples of theta - so several rnorms + rgamma
 //[[Rcpp::export]]
@@ -101,7 +101,7 @@ arma::mat sim_thetacpp(int S, arma::vec lambda, int n_sources,
   int count = 0;
   for(int i = 0; i<ncns; i++){
     for(int j = 0; j<ncns; j++){
-      if (i <= j){
+      if (j <= i){
         count +=1;
         chol_prec((i),(j)) = sig_beta(count-1);
       }
@@ -109,7 +109,7 @@ arma::mat sim_thetacpp(int S, arma::vec lambda, int n_sources,
   }
   
   arma::mat normmat(S, ncns);
-  arma::mat prec = chol_prec.t() * chol_prec;
+  arma::mat prec = chol_prec * chol_prec.t();
   // arma::mat solve_prec = arma::inv(prec);
   // arma::mat var = solve_prec.t();
   arma::mat var = arma::inv(prec);
@@ -188,7 +188,8 @@ double hcpp(int n_sources, int n_isotopes, int n_covariates,
             arma::mat concentrationmeans, arma::mat sourcemeans,
             arma::mat correctionmeans,
             arma::mat corrsds, arma::mat sourcesds,
-            arma::vec theta, arma::mat y, arma::vec c_prior){
+            arma::vec theta, arma::mat y, arma::vec c_prior,
+            arma::mat sd_prior){
   
   int n = y.n_rows;
   
@@ -225,7 +226,7 @@ double hcpp(int n_sources, int n_isotopes, int n_covariates,
       }
       
       mutotal(i, j) = mutop / mubtm;
-      sigtotal(i, j) = sqrt(sigsqtop / sigsqbtm + 1.0 / theta(j + n_sources * n_covariates));
+      sigtotal(i, j) = sqrt(sigsqtop / sigsqbtm + 1/theta(j + n_sources * n_covariates));
     }
   }
   
@@ -244,8 +245,8 @@ double hcpp(int n_sources, int n_isotopes, int n_covariates,
   
   for (int i = 0; i < n_covariates; i++) {
     for (int j = 0; j < n_sources; j++) {
-      betanorm += -n_covariates * n_sources * log(1.0) - 0.5 * log(2 * M_PI) -
-        0.5 * pow((beta(i, j) - 0), 2) / pow(1.0, 2);
+      betanorm += -n_covariates * n_sources * log(sd_prior(i,j)) - 0.5 * log(2 * M_PI) -
+        0.5 * pow((beta(i, j) - 0), 2) / pow(sd_prior(i,j), 2);
     }
   }
   
@@ -289,7 +290,7 @@ double log_q_cpp(arma::vec theta, arma::vec lambda,
   
   for(int i = 0; i<ncns; i++){
     for(int j = 0; j<ncns; j++){
-      if (i <= j){
+      if (j <= i){
         count +=1;
         chol_prec((i),(j)) = sig_beta(count-1);
         
@@ -298,7 +299,7 @@ double log_q_cpp(arma::vec theta, arma::vec lambda,
     }
   }
   
-  arma::mat prec = chol_prec.t() * chol_prec;
+  arma::mat prec = chol_prec * chol_prec.t();
   
   
   // arma::mat theta_mat(theta.memptr(), 1, n_sources * n_cov, false, true);
@@ -324,7 +325,13 @@ double log_q_cpp(arma::vec theta, arma::vec lambda,
   // 
   // double ZtZ = ZtZmat(0,0);
   
-  arma::mat Z = betaminusmean * chol_prec.t(); //* betaminusmean.t();
+  
+
+  // Z <- (y - mu)%*%cholPrec
+  // return(- (m/2) * log(2* pi) + log(det(cholPrec)) - 0.5 * Z%*%t(Z))
+  //   
+    
+  arma::mat Z = betaminusmean * chol_prec; //* betaminusmean.t();
   arma::mat ZtZ = Z * Z.t();
   
   double ZtZ_scalar = ZtZ(0, 0);
@@ -369,30 +376,141 @@ double log_q_cpp(arma::vec theta, arma::vec lambda,
 }
 
 // [[Rcpp::export]]
-arma::vec delta_lqltcpp(arma::vec lambda, arma::vec theta,
-                        double eps, int n_sources,
-                        int n_tracers, int n_covariates,
-                        int S) {
+arma::vec delta_lqltcppauto(arma::vec lambda, arma::vec theta,
+                            int n_sources,
+                            int n_tracers, int n_covariates,
+                            int S){
   
   int k = lambda.n_elem;
   
-  arma::vec ans(k);
+  arma::vec ans(k, arma::fill::zeros);
   
-  for (int i = 0; i < k; i++) {
-    arma::vec lambdaplusd = (lambda);
-    arma::vec lambdaminusd = (lambda);
-    
-    lambdaplusd(i) += eps;
-    lambdaminusd(i) -= eps;
-    
-    double log_q_plus = log_q_cpp(theta, lambdaplusd, n_sources, n_tracers, S, n_covariates);
-    double log_q_minus = log_q_cpp(theta, lambdaminusd, n_sources, n_tracers, S, n_covariates);
-    
-    ans(i) = (log_q_plus - log_q_minus) / (2 * eps);
+  int ncns = n_sources * n_covariates;
+  
+  arma::vec mean_beta = lambda.subvec(0, ncns - 1);
+  
+  int mat_size = ((ncns) * (ncns+1))/2;
+  
+  arma::vec sig_beta = lambda.subvec(ncns, ncns + mat_size -1);
+  
+  arma::mat chol_prec(ncns, ncns, arma::fill::zeros);
+  
+  int count = 0;
+  
+  for(int i = 0; i<ncns; i++){
+    for(int j = 0; j<ncns; j++){
+      if (j <= i){
+        count +=1;
+        chol_prec((i),(j)) = sig_beta(count-1);
+        
+      }
+      
+    }
   }
   
+  arma::mat prec = chol_prec * chol_prec.t();
+  arma::mat var = arma::inv(prec);
+  
+  // This is the mean part
+  ans.subvec(0, ncns - 1) = prec * (theta.subvec(0, ncns -1) - mean_beta);
+  
+  //// This is a symmetric matrix - just want upper triangular elements and want to format as a vector
+  // arma::mat ans2 = (-0.5 *(prec - prec * (theta.subvec(0, ncns -1) - mean_beta) * (theta.subvec(0, ncns -1) - mean_beta).t() * prec)); //* chol_prec;
+  arma::mat ans2(ncns, ncns);
+  // For the sigma part - need to fill different parts
+  // Can do the matrix and then the off diagonals
+  
+  // Derivatives from here
+  // https://www.sciencedirect.com/science/article/pii/S2452306222000168#sec0032
+  //chol_prec = L^-1^T
+  //prec = L^-1TL^-1
+  
+  arma::vec ytilde = (theta.subvec(0, ncns -1) - mean_beta);
+  // double count3 = 0;
+  //arma::vec test(4);
+  for(int i = 0; i<ncns; i++){
+    for(int j = 0; j<ncns; j++){
+      if(i == j){
+        double sumylambda = 0;
+        for(int m=0; m<ncns; m++){
+          
+          sumylambda += theta(m) * chol_prec(m,i);
+        }
+        ans2(i,j) = 1/chol_prec(i,j) -ytilde(i) * sumylambda;
+      }
+    }}
+  
+  for(int i = 0; i<ncns; i++){
+    for(int j = 0; j<ncns; j++){
+      if(j < i){
+        double sumylambda = 0;
+        for(int m=0; m<ncns; m++){
+          
+          sumylambda += theta(m) * chol_prec(m,j);
+        }
+        ans2(i,j) = -ytilde(i) * sumylambda;
+      }
+    }}
+  
+  arma::vec derivative_sigma(mat_size);
+  
+  int count2 = 0;
+  //This is just to extract the upper triangular elements in the right order
+  
+  for(int i = 0; i<ncns; i++){
+    for(int j = 0; j<ncns; j++){
+      if (j <= i){
+        count2 +=1;
+        derivative_sigma(count2-1) = ans2(i,j);
+        
+      }
+      
+    }
+  }
+  
+  ans.subvec(ncns, ncns + mat_size -1) = derivative_sigma;
+  
+  arma::vec c = lambda.subvec(ncns + mat_size, ncns + mat_size + n_tracers - 1);
+  arma::vec d = lambda.subvec(ncns + mat_size + n_tracers, ncns + mat_size + 2 * n_tracers-1);
+  
+  // When I did this before I didn't need the /lgamma - not sure why, normally included in the digamma for some reason
+  //ans.subvec(ncns + mat_size, ncns + mat_size + n_tracers - 1) = log(d) - digamma_wrapper(c)/lgamma(c) - log(theta(ncns));
+  ans.subvec(ncns + mat_size, ncns + mat_size + n_tracers - 1) = log(d) - digamma_wrapper(c) + log(theta.subvec(ncns, ncns+1));
+  
+  
+  ans.subvec(ncns + mat_size+ n_tracers, ncns + mat_size + 2 * n_tracers - 1) = c/d - theta.subvec(ncns, ncns+1);
+  
+  // return Rcpp::List::create(Rcpp::Named("ans") = ans,
+  //                           Rcpp::Named("test") = test);
   return ans;
+  //log(d) - digamma_wrapper(c)/lgamma(c) - log(theta(ncns));
 }
+
+// // [[Rcpp::export]]
+// arma::vec delta_lqltcpp(arma::vec lambda, arma::vec theta,
+//                         double eps, int n_sources,
+//                         int n_tracers, int n_covariates,
+//                         int S) {
+// 
+//   int k = lambda.n_elem;
+// 
+//   arma::vec ans(k);
+// 
+//   for (int i = 0; i < k; i++) {
+//     arma::vec lambdaplusd = (lambda);
+//     arma::vec lambdaminusd = (lambda);
+// 
+//     lambdaplusd(i) += eps;
+//     lambdaminusd(i) -= eps;
+// 
+//     double log_q_plus = log_q_cpp(theta, lambdaplusd, n_sources, n_tracers, S, n_covariates);
+//     double log_q_minus = log_q_cpp(theta, lambdaminusd, n_sources, n_tracers, S, n_covariates);
+// 
+//     ans(i) = (log_q_plus - log_q_minus) / (2 * eps);
+//   }
+// 
+//   return ans;
+// }
 
 
 // // [[Rcpp::export]]
@@ -481,10 +599,11 @@ double h_lambdacpp(int n_sources, int n_isotopes,
                    arma::vec theta, arma::mat y,
                    arma::vec lambda,
                    arma::mat x_scaled,
-                   arma::vec c_0) {
+                   arma::vec c_0,
+                   arma::mat sd_prior) {
   
   return hcpp(n_sources, n_isotopes, n_covariates, beta_prior, x_scaled, concentrationmeans, sourcemeans, correctionmeans,
-              corrsds, sourcesds, theta, y, c_0) - log_q_cpp(theta, lambda, n_sources, n_isotopes, S, n_covariates);
+              corrsds, sourcesds, theta, y, c_0, sd_prior) - log_q_cpp(theta, lambda, n_sources, n_isotopes, S, n_covariates);
 }
 
 //calculating covariance of 2 matrices
@@ -519,7 +638,8 @@ arma::colvec nabla_LB_cpp(arma::vec lambda, arma::mat theta,
                           arma::mat corrsds, arma::mat sourcesds, 
                           arma::mat y,
                           arma::vec c,
-                          arma::vec c_0){
+                          arma::vec c_0,
+                          arma::mat sd_prior){
   
   int thetanrow = theta.n_rows;
   int lambdalength = lambda.n_elem;
@@ -533,8 +653,10 @@ arma::colvec nabla_LB_cpp(arma::vec lambda, arma::mat theta,
   
   
   for(int i = 0; i <thetanrow; i++){
-    big_delta_lqlt.row(i) = delta_lqltcpp(lambda, theta.row(i).t(), 0.001, n_sources, n_tracers,
-                       n_covariates, S).t();
+     // big_delta_lqlt.row(i) = delta_lqltcpp(lambda, theta.row(i).t(), 0.001, n_sources, n_tracers,
+     //                   n_covariates, S).t();
+     big_delta_lqlt.row(i) = delta_lqltcppauto(lambda, theta.row(i).t(), n_sources, n_tracers,
+                        n_covariates, S).t();
   }
   
   for(int i =0; i<thetanrow; i++){
@@ -543,7 +665,7 @@ arma::colvec nabla_LB_cpp(arma::vec lambda, arma::mat theta,
                  concentrationmeans, sourcemeans,
                  correctionmeans,
                  corrsds,sourcesds, theta.row(i).t(), y,
-                 lambda, x_scaled, c_0);
+                 lambda, x_scaled, c_0, sd_prior);
   }
   
   
@@ -594,7 +716,8 @@ arma::vec control_var_cpp(arma::vec lambda,
                           arma::mat corrsds,
                           arma::mat sourcesds,
                           arma::mat y,
-                          arma::vec c_0){
+                          arma::vec c_0,
+                          arma::mat sd_prior){
   
   int S = theta.n_rows;
   
@@ -608,7 +731,9 @@ arma::vec control_var_cpp(arma::vec lambda,
   arma::vec big_h_lambda_transpose(S);
   
   for(int i = 0; i <S; i++){
-    big_delta_lqlt.row(i) = delta_lqltcpp(lambda, theta.row(i).t(), 0.001, n_sources, n_tracers,
+     //big_delta_lqlt.row(i) = delta_lqltcpp(lambda, theta.row(i).t(), 0.001, n_sources, n_tracers,
+     //                   n_covariates, S).t();
+    big_delta_lqlt.row(i) = delta_lqltcppauto(lambda, theta.row(i).t(), n_sources, n_tracers,
                        n_covariates, S).t();
   }
   
@@ -618,7 +743,7 @@ arma::vec control_var_cpp(arma::vec lambda,
                  concentrationmeans, sourcemeans,
                  correctionmeans,
                  corrsds,sourcesds, theta.row(i).t(), y,
-                 lambda, x_scaled, c_0);
+                 lambda, x_scaled, c_0, sd_prior);
   }
   
   
@@ -679,7 +804,8 @@ double LB_lambda_cpp(arma::mat theta, arma::vec lambda,
                      arma::mat corrsds,
                      arma::mat sourcesds,
                      arma::mat y,
-                     arma::vec c_0){
+                     arma::vec c_0,
+                     arma::mat sd_prior){
   
   int S = theta.n_rows;
   
@@ -691,7 +817,7 @@ double LB_lambda_cpp(arma::mat theta, arma::vec lambda,
                  concentrationmeans, sourcemeans,
                  correctionmeans, corrsds, sourcesds,
                  theta.row(i).t(), y, lambda,
-                 x_scaled, c_0);
+                 x_scaled, c_0, sd_prior);
   }
   
   double ans = mean(hlambdaapply);
@@ -725,7 +851,8 @@ List run_VB_cpp(arma::vec lambdastart,
                      double eps_0,
                      int t_W,
                      arma::vec c_prior,
-                     bool solo
+                     bool solo,
+                     arma::mat sd_prior
 ){
   
   
@@ -738,7 +865,7 @@ List run_VB_cpp(arma::vec lambdastart,
                                 n_covariates, x_scaled,
                                 concentrationmeans,
                                 sourcemeans, correctionmeans,
-                                corrsds, sourcesds, y, c_prior);
+                                corrsds, sourcesds, y, c_prior, sd_prior);
   
   arma::vec c_0(lsl, arma::fill::zeros);
   
@@ -748,7 +875,7 @@ List run_VB_cpp(arma::vec lambdastart,
                                S, n_covariates, x_scaled,
                                concentrationmeans, sourcemeans,
                                correctionmeans, corrsds,
-                               sourcesds, y, c_0, c_prior);
+                               sourcesds, y, c_0, c_prior, sd_prior);
   
   
   
@@ -783,7 +910,7 @@ List run_VB_cpp(arma::vec lambdastart,
     g_t = nabla_LB_cpp(lambda, theta, n_sources, n_tracers, beta_prior,
                        S, n_covariates, x_scaled, concentrationmeans,
                        sourcemeans, correctionmeans, corrsds, sourcesds,
-                       y, c, c_prior);
+                       y, c, c_prior, sd_prior);
     
     // This is where we would have gradient clipping
     // So it would be some threshold/norm(g_t) * g_t
@@ -798,7 +925,7 @@ List run_VB_cpp(arma::vec lambdastart,
                         n_covariates, x_scaled,
                         concentrationmeans, sourcemeans,
                         correctionmeans,
-                        corrsds,sourcesds, y, c_prior);
+                        corrsds,sourcesds, y, c_prior, sd_prior);
     
     
     nu_t = arma::square(g_t);
@@ -850,7 +977,7 @@ List run_VB_cpp(arma::vec lambdastart,
          n_covariates, x_scaled,
          concentrationmeans, sourcemeans,
          correctionmeans,
-         corrsds,sourcesds, y, c_prior);
+         corrsds,sourcesds, y, c_prior, sd_prior);
     }
     else{
       for (int i = 0; i<(t_W-1); i++){
@@ -863,7 +990,7 @@ List run_VB_cpp(arma::vec lambdastart,
          n_covariates, x_scaled,
          concentrationmeans, sourcemeans,
          correctionmeans,
-         corrsds,sourcesds, y, c_prior);
+         corrsds,sourcesds, y, c_prior, sd_prior);
       
       double LB_bar = arma::mean(LB);
       

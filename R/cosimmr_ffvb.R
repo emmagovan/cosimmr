@@ -176,17 +176,17 @@
 cosimmr_ffvb <- function(simmr_in,
                          prior_control = list(
                            mu_0 = rep(0, simmr_in$n_sources * simmr_in$n_covariates),
-                           sigma_0 = 1,
-                           tau_shape = rep(1, simmr_in$n_tracers),
-                           tau_rate = rep(1, simmr_in$n_tracers)
+                           sigma_0 = 3,
+                           tau_shape = rep(3, simmr_in$n_tracers),
+                           tau_rate = rep(3, simmr_in$n_tracers)
                          ),
                          ffvb_control = list(
                            n_output = 3600,
-                           S = 1000,
-                           P = 50,
+                           S = 250,
+                           P = 200,
                            beta_1 = 0.9,
                            beta_2 = 0.9,
-                           tau = 100,
+                           tau = 250,
                            eps_0 = 0.005,
                            t_W = 100
                          )) {
@@ -202,6 +202,25 @@ cosimmr_ffvb <- function(simmr_in,
   sigma_a <- prior_control$sigma_0
   n_covariates<- simmr_in$n_covariates
   x_scaled = simmr_in$x_scaled
+
+  # sig_prior = matrix(rep(0, n_covariates*K*n_covariates*K), ncol = n_covariates*K, 
+  #                    nrow = n_covariates*K)
+  # count = 0
+  # sig_prior_vars = rep(sigma_a, (((K*n_covariates) * (K*n_covariates +1))/2))
+  # 
+  # for(i in 1:(n_covariates * K)){
+  #   for(j in 1:(n_covariates * K)){
+  #   if(j<=i){
+  #     count = count +1
+  #     sig_prior[i,j] = sig_prior_vars[count]
+  #   }
+  #   }
+  # }
+  
+  sig_prior = matrix(rep(sigma_a, n_covariates*K*n_covariates*K), ncol = n_covariates*K, 
+                                         nrow = n_covariates*K)
+
+
   
   c_0 <- prior_control$tau_shape #Change to 0.0001
   # #d_0 <- prior_control$tau_rate
@@ -209,14 +228,18 @@ cosimmr_ffvb <- function(simmr_in,
  # beta_lambda<-c(mu_a, rep(1, (K*n_covariates) * (K*n_covariates) + 1) / 2)))
 
   #Regular
-beta_lambda <-c(mu_a, rep(1,(((K*n_covariates) * (K*n_covariates +1))/2)))
+beta_lambda <-c(mu_a, rep(sigma_a,(((K*n_covariates) * (K*n_covariates +1))/2)))
 
   #Diag
 #beta_lambda <-c(mu_a, rep(1, K*n_covariates))
   
-  lambda <- c((beta_lambda),
-    rep(1, n_tracers * 2)
-  )
+  # lambda <- c((beta_lambda),
+  #   rep(1, n_tracers * 2)
+  # )
+lambda <- c(beta_lambda,
+            prior_control$tau_shape, 
+            prior_control$tau_rate)
+
   
   ll = length(lambda)
   
@@ -271,7 +294,7 @@ beta_lambda <-c(mu_a, rep(1,(((K*n_covariates) * (K*n_covariates +1))/2)))
     ffvb_control$P, ffvb_control$beta_1,
     ffvb_control$beta_2, ffvb_control$tau,
     ffvb_control$eps_0, ffvb_control$t_W,
-    c_0, solo
+    c_0, solo, sig_prior
   )
   
   

@@ -67,41 +67,9 @@ posterior_predictive.cosimmr_output <- function(cosimmr_out,
   x_pred = cosimmr_out$input$x_scaled
   n_obs = cosimmr_out$input$n_obs
   
-  tau <- theta[,(K*n_covariates + 1):(K*n_covariates + n_tracers)]
-  beta_all <- theta[,1:(n_covariates * K)]
-  
- # beta_all = array(theta[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
-  
-  beta_average = colMeans(beta_all)
-  beta_average_mat = matrix(beta_average, nrow = n_covariates, byrow = TRUE)
-  tau_average = colMeans(tau)
-  #So I think what we want to do here is to generate p using beta? And then
-  #Put all the conc means etc together to create y
-  #And then sample from y
-  
-  #f <- array(NA, dim = c(nrow(x_pred), K, n_output))
-  #p = array(NA, dim =  c(n_obs, n_output, K))
-  f = matrix(NA, nrow = nrow(x_pred), ncol = K)
-  p = matrix(NA, nrow = n_obs, ncol = K)
-  
-  #Probably want to get the average of p over n_output?
-  
-  f = (x_pred) %*% beta_average_mat
-  
-  
-  
-  
-  # for(s in 1:n_output){
-  #  f[,,s] = as.matrix(x_pred) %*% beta[s,,]
-  #   
-  # }
-  
-  for(j in 1:n_obs){
-   # for (k in 1:n_obs) {
-      p[j, ] <- exp(f[j,]) / (sum((exp(f[j,]))))
-  #  }
-  }
-  
+  #This is p_mean
+  #Could change it so they opt for p mean?
+  p = cosimmr_out$output$BUGSoutput$sims.list$p_mean
   #Need to add proper loops here to do it properly
   #But think the general idea is then do rnorm(mean_y, sigma_y)
   

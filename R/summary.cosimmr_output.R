@@ -61,7 +61,7 @@
 #'
 #' # Summarise
 #' summary(cosimmr_1_out) # This outputs all the summaries
-#' summary(cosimmr_1_out, type = "quanties") # Just the diagnostics
+#' summary(cosimmr_1_out, type = "quantiles") # Just the diagnostics
 #' # Store the output in an
 #' ans <- summary(cosimmr_1_out,
 #'   type = c("quantiles", "statistics")
@@ -71,11 +71,11 @@
 summary.cosimmr_output <-
   function(object, type = c("quantiles", "statistics", "correlations"), individual = 1, ...) {
     if (inherits(object, "cosimmr_output") == TRUE) {
-    if (inherits(object, "ffvb") == TRUE) {
+      if (inherits(object, "ffvb") == TRUE) {
         # Get the specified type
         type <- match.arg(type, several.ok = TRUE)
         
-
+        
         
         # Set up containers
         out_bgr <- out_quantiles <- out_statistics <- out_cor <- vector("list", length = length(individual))
@@ -115,13 +115,13 @@ summary.cosimmr_output <-
             # Print out quantiles argument
             print(round(out_cor[[i]], 3))
           }
-        
-        
-
+          
+          
+          
           invisible(list(quantiles = out_quantiles, statistics = out_statistics, correlations = out_cor))
-        
+          
         }
-    }
+      }
     } else {
       (return(message("incorrect object passed to function")))
     }

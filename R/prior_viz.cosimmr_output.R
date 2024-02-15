@@ -67,9 +67,9 @@ prior_viz.cosimmr_output <- function(cosimmr_out,
 
     
     # Plot and/or output the prior
-    mu_f_mean <- simmr_out$output$model$data$mu_f_mean
-    sigma_f_sd <- simmr_out$output$model$data$sigma_f_sd
-    n_sources <- simmr_out$input$n_sources
+    mu_f_mean <- cosimmr_out$output$model$data$mu_f_mean
+    sigma_f_sd <- cosimmr_out$output$model$data$sigma_f_sd
+    n_sources <- cosimmr_out$input$n_sources
     
     # Now simulate some ps
     p_prior_sim <- matrix(NA, ncol = n_sources, nrow = n_sims)
@@ -77,7 +77,7 @@ prior_viz.cosimmr_output <- function(cosimmr_out,
       f <- rnorm(n_sources, mean = mu_f_mean, sd = sigma_f_sd)
       p_prior_sim[i, ] <- exp(f) / sum(exp(f))
     }
-    colnames(p_prior_sim) <- simmr_out$input$source_names
+    colnames(p_prior_sim) <- cosimmr_out$input$source_names
     if (plot) {
       
       ############ from plot.output function
@@ -91,10 +91,11 @@ prior_viz.cosimmr_output <- function(cosimmr_out,
       K = cosimmr_out$input$n_sources
       n_tracers = cosimmr_out$input$n_tracers
       n_covariates = ncol(cosimmr_out$input$x_scaled)
+      n_output = ncol(cosimmr_out$output$theta)
       
       
       
-      sigma <- (1/sqrt(thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)]))
+      sigma <- cosimmr_out$output$BUGSoutput$sims.list$sigma#(sqrt(exp(thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)]))
       
       #p_sample = array(NA, dim = c(1, n_output, K))
       p_sample = matrix(ncol = K, nrow = n_output)
@@ -122,7 +123,7 @@ prior_viz.cosimmr_output <- function(cosimmr_out,
       df <- reshape2::melt(p_prior_sim)
       colnames(df) <- c("Num", "Source", "Proportion")
       df$Type <- "Prior"
-      out_all <- simmr_out$output[[group]]$BUGSoutput$sims.list$p
+     # out_all <- cosimmr_out$output$BUGSoutput$sims.list$p
       df2 <- df_p_mean
       colnames(df2) <- c("Num", "Source", "Proportion")
       df2$Type <- "Posterior"

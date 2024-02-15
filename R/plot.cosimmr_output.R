@@ -200,7 +200,34 @@ plot.cosimmr_output <-
       #Data needs to be edited I think to make life easier
       
     for( i in 1:length(covariates)){
-      out_all_beta = x$output$beta[,i,]
+      
+      #I think I need to make a beta array here?? 
+      # out_all_p = x$output$BUGSoutput$sims.list$p[curr_ind,,]
+      # 
+      # 
+      # colnames(out_all_p) = x$input$source_names
+      # 
+      # df <- reshape2::melt(out_all_p)
+      # 
+      # 
+      # colnames(df) = c("Num", "Source", "Proportion")
+      # 
+      
+
+      beta = array(NA, dim = c(x$input$n_covariates, nrow(x$output$beta), x$input$n_sources))
+      
+      for(s in 1:nrow(x$output$theta)){
+      for(k in 1:x$input$n_covariates){
+        for(j in 1:x$input$n_sources){
+          beta[k,s, j] = x$output$beta[s, (k-1)*x$input$n_sources + (j)]
+        }
+      }
+      }
+
+     #This is slightly wrong
+      #I need to just think about it more
+      
+      out_all_beta = beta[i,,]
       colnames(out_all_beta) = x$input$source_names
       #I don't actually understand what this is doing
       df_beta <- reshape2::melt(out_all_beta)

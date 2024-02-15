@@ -13,15 +13,15 @@ prior_viz(
 )
 }
 \arguments{
+\item{cosimmr_out}{A run of the cosimmr model from \code{\link{cosimmr_ffvb}}}
+
 \item{plot}{Whether to create a density plot of the prior or not. The simulated prior values are returned as part of the object}
 
-\item{include_posterior}{Whether to include the posterior distribution on top of the priors. Defaults to TRUE}
+\item{include_posterior}{Whether to include the posterior distribution on top of the priors. Defaults to TRUE. The posterior returned is of the mean value of covariates}
 
 \item{n_sims}{The number of simulations from the prior distribution}
 
 \item{scales}{The type of scale from \code{facet_wrap} allowing for \code{fixed}, \code{free}, \code{free_x}, \code{free_y}}
-
-\item{simmr_out}{A run of the cosimmr model from \code{\link{simmr_ffvb}}}
 }
 \value{
 A list containing \code{plot}: the ggplot object (useful if requires customisation), and \code{sim}: the simulated prior values which can be compared with the posterior densities

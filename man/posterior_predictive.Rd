@@ -12,7 +12,7 @@ posterior_predictive(
 )
 }
 \arguments{
-\item{cosimmr_out}{A run of the simmr model from \code{\link{cosimmr_ffvb}}.}
+\item{cosimmr_out}{A run of the cosimmr model from \code{\link{cosimmr_ffvb}}.}
 
 \item{prob}{The probability interval for the posterior predictives. The default is 0.5 (i.e. 50pc intervals)}
 
@@ -32,7 +32,7 @@ and can be saved for external use
 \examples{
 \donttest{
 data(geese_data_day1)
-simmr_1 <- with(
+cosimmr_1 <- with(
   geese_data_day1,
   cosimmr_load(
     formula = mixtures ~ c(1,2,3,2,1,2,3,2,1),
@@ -46,15 +46,15 @@ simmr_1 <- with(
 )
 
 # Plot
-plot(simmr_1)
+plot(cosimmr_1)
 
 # Print
-simmr_1
+cosimmr_1
 
 # FFVB run
-simmr_1_out <- cosimmr_ffvb(simmr_1)
+cosimmr_1_out <- cosimmr_ffvb(cosimmr_1)
 
 # Prior predictive
-post_pred <- posterior_predictive(simmr_1_out)
+post_pred <- posterior_predictive(cosimmr_1_out)
 }
 }

@@ -69,61 +69,120 @@
 #' }
 #' @export
 summary.cosimmr_output <-
-  function(object, type = c("quantiles", "statistics", "correlations"), individual = 1, ...) {
-    if (inherits(object, "cosimmr_output") == TRUE) {
-      if (inherits(object, "ffvb") == TRUE) {
-        # Get the specified type
-        type <- match.arg(type, several.ok = TRUE)
+function(object, type = c("quantiles", "statistics", "correlations"), individual = 1, ...) {
+  if (inherits(object, "cosimmr_output") == TRUE) {
+    if (inherits(object, "ffvb") == TRUE) {
+      # Get the specified type
+      type <- match.arg(type, several.ok = TRUE)
+      
+      
+      
+      # Set up containers
+      out_bgr <- out_quantiles <- out_statistics <- out_cor <- vector("list", length = length(individual))
+      names(out_bgr) <- paste0("individual_", individual)
+      names(out_quantiles) <- paste0("individual_", individual)
+      names(out_statistics) <- paste0("individual_", individual)
+      names(out_cor) <- paste0("individual_", individual)
+      
+      # Loop through groups
+      for (i in 1:length(individual)) {
+        message("\nSummary for Individual ",  individual[i], "\n")
+        out_all <- cbind(object$output$BUGSoutput$sims.list$p[individual[i],,],
+                         object$output$BUGSoutput$sims.list$sigma)
+        colnames(out_all) = c(object$input$source_names, colnames(object$input$mixtures))
+        
+        # Get objects
+        out_quantiles[[i]] <- t(apply(out_all, 2, "quantile", probs = c(0.025, 0.25, 0.5, 0.75, 0.975)))
+        #  coda:::summary.mcmc.list(object$output)$quantiles
+        out_statistics[[i]] <- t(apply(out_all, 2, function(x) {
+          return(c(mean = mean(x), sd = stats::sd(x)))
+        }))
+        # coda:::summary.mcmc.list(object$output)$statistics[,1:2]
+        out_cor[[i]] <- stats::cor(out_all)
         
         
-        
-        # Set up containers
-        out_bgr <- out_quantiles <- out_statistics <- out_cor <- vector("list", length = length(individual))
-        names(out_bgr) <- paste0("individual_", individual)
-        names(out_quantiles) <- paste0("individual_", individual)
-        names(out_statistics) <- paste0("individual_", individual)
-        names(out_cor) <- paste0("individual_", individual)
-        
-        # Loop through groups
-        for (i in 1:length(individual)) {
-          message("\nSummary for Individual ",  individual[i], "\n")
-          out_all <- cbind(object$output$BUGSoutput$sims.list$p[individual[i],,],
-                           object$output$BUGSoutput$sims.list$sigma)
-          colnames(out_all) = c(object$input$source_names, colnames(object$input$mixtures))
-          
-          # Get objects
-          out_quantiles[[i]] <- t(apply(out_all, 2, "quantile", probs = c(0.025, 0.25, 0.5, 0.75, 0.975)))
-          #  coda:::summary.mcmc.list(object$output)$quantiles
-          out_statistics[[i]] <- t(apply(out_all, 2, function(x) {
-            return(c(mean = mean(x), sd = stats::sd(x)))
-          }))
-          # coda:::summary.mcmc.list(object$output)$statistics[,1:2]
-          out_cor[[i]] <- stats::cor(out_all)
-          
-          
-          if ("quantiles" %in% type) {
-            # Print out quantiles argument
-            print(round(out_quantiles[[i]], 3))
-          }
-          
-          if ("statistics" %in% type) {
-            # Print out quantiles argument
-            print(round(out_statistics[[i]], 3))
-          }
-          
-          if ("correlations" %in% type) {
-            # Print out quantiles argument
-            print(round(out_cor[[i]], 3))
-          }
-          
-          
-          
-          invisible(list(quantiles = out_quantiles, statistics = out_statistics, correlations = out_cor))
-          
+        if ("quantiles" %in% type) {
+          # Print out quantiles argument
+          print(round(out_quantiles[[i]], 3))
         }
+        
+        if ("statistics" %in% type) {
+          # Print out quantiles argument
+          print(round(out_statistics[[i]], 3))
+        }
+        
+        if ("correlations" %in% type) {
+          # Print out quantiles argument
+          print(round(out_cor[[i]], 3))
+        }
+        
+        
+        
+        invisible(list(quantiles = out_quantiles, statistics = out_statistics, correlations = out_cor))
+        
       }
-    } else {
-      (return(message("incorrect object passed to function")))
     }
+  } else {
+    (return(message("incorrect object passed to function")))
   }
+}
 
+# summary.cosimmr_output <-
+#   function(object, type = c("quantiles", "statistics", "correlations"), individual = 1, ...) {
+#     if (inherits(object, "cosimmr_output") == TRUE) {
+#       if (inherits(object, "ffvb") == TRUE) {
+#         # Get the specified type
+#         type <- match.arg(type, several.ok = TRUE)
+#         
+#         
+#         
+#         # Set up containers
+#         out_bgr <- out_quantiles <- out_statistics <- out_cor <- vector("list", length = length(individual))
+#         names(out_bgr) <- paste0("individual_", individual)
+#         names(out_quantiles) <- paste0("individual_", individual)
+#         names(out_statistics) <- paste0("individual_", individual)
+#         names(out_cor) <- paste0("individual_", individual)
+#         
+#         # Loop through groups
+#         for (i in 1:length(individual)) {
+#           message("\nSummary for Individual ",  individual[i], "\n")
+#           out_all <- cbind(object$output$BUGSoutput$sims.list$p[individual[i],,],
+#                            object$output$BUGSoutput$sims.list$sigma)
+#           colnames(out_all) = c(object$input$source_names, colnames(object$input$mixtures))
+#           
+#           # Get objects
+#           out_quantiles[[i]] <- t(apply(out_all, 2, "quantile", probs = c(0.025, 0.25, 0.5, 0.75, 0.975)))
+#           #  coda:::summary.mcmc.list(object$output)$quantiles
+#           out_statistics[[i]] <- t(apply(out_all, 2, function(x) {
+#             return(c(mean = mean(x), sd = stats::sd(x)))
+#           }))
+#           # coda:::summary.mcmc.list(object$output)$statistics[,1:2]
+#           out_cor[[i]] <- stats::cor(out_all)
+#           
+#           
+#           if ("quantiles" %in% type) {
+#             # Print out quantiles argument
+#             print(round(out_quantiles[[i]], 3))
+#           }
+#           
+#           if ("statistics" %in% type) {
+#             # Print out quantiles argument
+#             print(round(out_statistics[[i]], 3))
+#           }
+#           
+#           if ("correlations" %in% type) {
+#             # Print out quantiles argument
+#             print(round(out_cor[[i]], 3))
+#           }
+#           
+#           
+#           
+#           invisible(list(quantiles = out_quantiles, statistics = out_statistics, correlations = out_cor))
+#           
+#         }
+#       }
+#     } else {
+#       (return(message("incorrect object passed to function")))
+#     }
+#   }
+# 

@@ -36,8 +36,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // sim_thetacpp
-arma::mat sim_thetacpp(int S, arma::vec lambda, int n_sources, int n_tracers, int n_cov, bool solo);
-RcppExport SEXP _cosimmr_sim_thetacpp(SEXP SSEXP, SEXP lambdaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP n_covSEXP, SEXP soloSEXP) {
+arma::mat sim_thetacpp(int S, arma::vec lambda, int n_sources, int n_tracers, int n_cov, bool solo, arma::mat kappa);
+RcppExport SEXP _cosimmr_sim_thetacpp(SEXP SSEXP, SEXP lambdaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP n_covSEXP, SEXP soloSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -47,7 +47,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type n_tracers(n_tracersSEXP);
     Rcpp::traits::input_parameter< int >::type n_cov(n_covSEXP);
     Rcpp::traits::input_parameter< bool >::type solo(soloSEXP);
-    rcpp_result_gen = Rcpp::wrap(sim_thetacpp(S, lambda, n_sources, n_tracers, n_cov, solo));
+    Rcpp::traits::input_parameter< arma::mat >::type kappa(kappaSEXP);
+    rcpp_result_gen = Rcpp::wrap(sim_thetacpp(S, lambda, n_sources, n_tracers, n_cov, solo, kappa));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -67,8 +68,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // hcpp
-double hcpp(int n_sources, int n_isotopes, int n_covariates, arma::vec d_prior, arma::mat x_scaled, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::vec theta, arma::mat y, arma::vec c_prior, arma::mat sd_prior);
-RcppExport SEXP _cosimmr_hcpp(SEXP n_sourcesSEXP, SEXP n_isotopesSEXP, SEXP n_covariatesSEXP, SEXP d_priorSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP thetaSEXP, SEXP ySEXP, SEXP c_priorSEXP, SEXP sd_priorSEXP) {
+double hcpp(int n_sources, int n_isotopes, int n_covariates, arma::vec d_prior, arma::mat x_scaled, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::vec theta, arma::mat y, arma::vec c_prior, arma::mat sd_prior, arma::mat mu_prior);
+RcppExport SEXP _cosimmr_hcpp(SEXP n_sourcesSEXP, SEXP n_isotopesSEXP, SEXP n_covariatesSEXP, SEXP d_priorSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP thetaSEXP, SEXP ySEXP, SEXP c_priorSEXP, SEXP sd_priorSEXP, SEXP mu_priorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -86,7 +87,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
     Rcpp::traits::input_parameter< arma::vec >::type c_prior(c_priorSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type sd_prior(sd_priorSEXP);
-    rcpp_result_gen = Rcpp::wrap(hcpp(n_sources, n_isotopes, n_covariates, d_prior, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, c_prior, sd_prior));
+    Rcpp::traits::input_parameter< arma::mat >::type mu_prior(mu_priorSEXP);
+    rcpp_result_gen = Rcpp::wrap(hcpp(n_sources, n_isotopes, n_covariates, d_prior, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, c_prior, sd_prior, mu_prior));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -106,25 +108,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// delta_lqltcppauto
-arma::vec delta_lqltcppauto(arma::vec lambda, arma::vec theta, int n_sources, int n_tracers, int n_covariates, int S);
-RcppExport SEXP _cosimmr_delta_lqltcppauto(SEXP lambdaSEXP, SEXP thetaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP n_covariatesSEXP, SEXP SSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
-    Rcpp::traits::input_parameter< int >::type n_tracers(n_tracersSEXP);
-    Rcpp::traits::input_parameter< int >::type n_covariates(n_covariatesSEXP);
-    Rcpp::traits::input_parameter< int >::type S(SSEXP);
-    rcpp_result_gen = Rcpp::wrap(delta_lqltcppauto(lambda, theta, n_sources, n_tracers, n_covariates, S));
-    return rcpp_result_gen;
-END_RCPP
-}
 // h_lambdacpp
-double h_lambdacpp(int n_sources, int n_isotopes, arma::vec beta_prior, int n_covariates, int S, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::vec theta, arma::mat y, arma::vec lambda, arma::mat x_scaled, arma::vec c_0, arma::mat sd_prior);
-RcppExport SEXP _cosimmr_h_lambdacpp(SEXP n_sourcesSEXP, SEXP n_isotopesSEXP, SEXP beta_priorSEXP, SEXP n_covariatesSEXP, SEXP SSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP thetaSEXP, SEXP ySEXP, SEXP lambdaSEXP, SEXP x_scaledSEXP, SEXP c_0SEXP, SEXP sd_priorSEXP) {
+double h_lambdacpp(int n_sources, int n_isotopes, arma::vec beta_prior, int n_covariates, int S, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::vec theta, arma::mat y, arma::vec lambda, arma::mat x_scaled, arma::vec c_0, arma::mat sd_prior, arma::mat mu_prior);
+RcppExport SEXP _cosimmr_h_lambdacpp(SEXP n_sourcesSEXP, SEXP n_isotopesSEXP, SEXP beta_priorSEXP, SEXP n_covariatesSEXP, SEXP SSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP thetaSEXP, SEXP ySEXP, SEXP lambdaSEXP, SEXP x_scaledSEXP, SEXP c_0SEXP, SEXP sd_priorSEXP, SEXP mu_priorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -144,25 +130,42 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type x_scaled(x_scaledSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type c_0(c_0SEXP);
     Rcpp::traits::input_parameter< arma::mat >::type sd_prior(sd_priorSEXP);
-    rcpp_result_gen = Rcpp::wrap(h_lambdacpp(n_sources, n_isotopes, beta_prior, n_covariates, S, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, lambda, x_scaled, c_0, sd_prior));
+    Rcpp::traits::input_parameter< arma::mat >::type mu_prior(mu_priorSEXP);
+    rcpp_result_gen = Rcpp::wrap(h_lambdacpp(n_sources, n_isotopes, beta_prior, n_covariates, S, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, lambda, x_scaled, c_0, sd_prior, mu_prior));
     return rcpp_result_gen;
 END_RCPP
 }
-// cov_mat_cpp
-arma::mat cov_mat_cpp(arma::mat x_arma, arma::mat y_arma);
-RcppExport SEXP _cosimmr_cov_mat_cpp(SEXP x_armaSEXP, SEXP y_armaSEXP) {
+// delta_h_lambda_cpp
+arma::vec delta_h_lambda_cpp(int n_sources, int n_tracers, arma::vec beta_prior, int n_covariates, int S, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::vec theta, arma::mat y, arma::vec lambda, arma::mat x_scaled, arma::vec c_0, arma::mat sd_prior, arma::mat mu_prior, double eps);
+RcppExport SEXP _cosimmr_delta_h_lambda_cpp(SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP beta_priorSEXP, SEXP n_covariatesSEXP, SEXP SSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP thetaSEXP, SEXP ySEXP, SEXP lambdaSEXP, SEXP x_scaledSEXP, SEXP c_0SEXP, SEXP sd_priorSEXP, SEXP mu_priorSEXP, SEXP epsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type x_arma(x_armaSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type y_arma(y_armaSEXP);
-    rcpp_result_gen = Rcpp::wrap(cov_mat_cpp(x_arma, y_arma));
+    Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
+    Rcpp::traits::input_parameter< int >::type n_tracers(n_tracersSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_prior(beta_priorSEXP);
+    Rcpp::traits::input_parameter< int >::type n_covariates(n_covariatesSEXP);
+    Rcpp::traits::input_parameter< int >::type S(SSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type concentrationmeans(concentrationmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcemeans(sourcemeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type correctionmeans(correctionmeansSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type corrsds(corrsdsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sourcesds(sourcesdsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x_scaled(x_scaledSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type c_0(c_0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sd_prior(sd_priorSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type mu_prior(mu_priorSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    rcpp_result_gen = Rcpp::wrap(delta_h_lambda_cpp(n_sources, n_tracers, beta_prior, n_covariates, S, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, lambda, x_scaled, c_0, sd_prior, mu_prior, eps));
     return rcpp_result_gen;
 END_RCPP
 }
 // nabla_LB_cpp
-arma::colvec nabla_LB_cpp(arma::vec lambda, arma::mat theta, int n_sources, int n_tracers, arma::vec beta_prior, int S, int n_covariates, arma::mat x_scaled, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::mat y, arma::vec c, arma::vec c_0, arma::mat sd_prior);
-RcppExport SEXP _cosimmr_nabla_LB_cpp(SEXP lambdaSEXP, SEXP thetaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP beta_priorSEXP, SEXP SSEXP, SEXP n_covariatesSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP cSEXP, SEXP c_0SEXP, SEXP sd_priorSEXP) {
+arma::vec nabla_LB_cpp(arma::vec lambda, arma::mat theta, int n_sources, int n_tracers, arma::vec beta_prior, int S, int n_covariates, arma::mat x_scaled, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::mat y, arma::vec c_0, arma::mat sd_prior, arma::mat mu_prior, arma::mat kappa);
+RcppExport SEXP _cosimmr_nabla_LB_cpp(SEXP lambdaSEXP, SEXP thetaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP beta_priorSEXP, SEXP SSEXP, SEXP n_covariatesSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP c_0SEXP, SEXP sd_priorSEXP, SEXP mu_priorSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -180,41 +183,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type corrsds(corrsdsSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type sourcesds(sourcesdsSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type c(cSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type c_0(c_0SEXP);
     Rcpp::traits::input_parameter< arma::mat >::type sd_prior(sd_priorSEXP);
-    rcpp_result_gen = Rcpp::wrap(nabla_LB_cpp(lambda, theta, n_sources, n_tracers, beta_prior, S, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c, c_0, sd_prior));
-    return rcpp_result_gen;
-END_RCPP
-}
-// control_var_cpp
-arma::vec control_var_cpp(arma::vec lambda, arma::mat theta, int n_sources, int n_tracers, arma::vec beta_prior, int n_covariates, arma::mat x_scaled, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::mat y, arma::vec c_0, arma::mat sd_prior);
-RcppExport SEXP _cosimmr_control_var_cpp(SEXP lambdaSEXP, SEXP thetaSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP beta_priorSEXP, SEXP n_covariatesSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP c_0SEXP, SEXP sd_priorSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< int >::type n_sources(n_sourcesSEXP);
-    Rcpp::traits::input_parameter< int >::type n_tracers(n_tracersSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type beta_prior(beta_priorSEXP);
-    Rcpp::traits::input_parameter< int >::type n_covariates(n_covariatesSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type x_scaled(x_scaledSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type concentrationmeans(concentrationmeansSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sourcemeans(sourcemeansSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type correctionmeans(correctionmeansSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type corrsds(corrsdsSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sourcesds(sourcesdsSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type c_0(c_0SEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sd_prior(sd_priorSEXP);
-    rcpp_result_gen = Rcpp::wrap(control_var_cpp(lambda, theta, n_sources, n_tracers, beta_prior, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c_0, sd_prior));
+    Rcpp::traits::input_parameter< arma::mat >::type mu_prior(mu_priorSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type kappa(kappaSEXP);
+    rcpp_result_gen = Rcpp::wrap(nabla_LB_cpp(lambda, theta, n_sources, n_tracers, beta_prior, S, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c_0, sd_prior, mu_prior, kappa));
     return rcpp_result_gen;
 END_RCPP
 }
 // LB_lambda_cpp
-double LB_lambda_cpp(arma::mat theta, arma::vec lambda, int n_sources, int n_isotopes, arma::vec beta_prior, int n_covariates, arma::mat x_scaled, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::mat y, arma::vec c_0, arma::mat sd_prior);
-RcppExport SEXP _cosimmr_LB_lambda_cpp(SEXP thetaSEXP, SEXP lambdaSEXP, SEXP n_sourcesSEXP, SEXP n_isotopesSEXP, SEXP beta_priorSEXP, SEXP n_covariatesSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP c_0SEXP, SEXP sd_priorSEXP) {
+double LB_lambda_cpp(arma::mat theta, arma::vec lambda, int n_sources, int n_isotopes, arma::vec beta_prior, int n_covariates, arma::mat x_scaled, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::mat y, arma::vec c_0, arma::mat sd_prior, arma::mat mu_prior);
+RcppExport SEXP _cosimmr_LB_lambda_cpp(SEXP thetaSEXP, SEXP lambdaSEXP, SEXP n_sourcesSEXP, SEXP n_isotopesSEXP, SEXP beta_priorSEXP, SEXP n_covariatesSEXP, SEXP x_scaledSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP c_0SEXP, SEXP sd_priorSEXP, SEXP mu_priorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -233,13 +212,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
     Rcpp::traits::input_parameter< arma::vec >::type c_0(c_0SEXP);
     Rcpp::traits::input_parameter< arma::mat >::type sd_prior(sd_priorSEXP);
-    rcpp_result_gen = Rcpp::wrap(LB_lambda_cpp(theta, lambda, n_sources, n_isotopes, beta_prior, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c_0, sd_prior));
+    Rcpp::traits::input_parameter< arma::mat >::type mu_prior(mu_priorSEXP);
+    rcpp_result_gen = Rcpp::wrap(LB_lambda_cpp(theta, lambda, n_sources, n_isotopes, beta_prior, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c_0, sd_prior, mu_prior));
     return rcpp_result_gen;
 END_RCPP
 }
 // run_VB_cpp
-List run_VB_cpp(arma::vec lambdastart, int n_sources, int n_tracers, int n_covariates, int n, arma::vec beta_prior, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::mat y, arma::mat x_scaled, int S, int P, double beta_1, double beta_2, int tau, double eps_0, int t_W, arma::vec c_prior, bool solo, arma::mat sd_prior);
-RcppExport SEXP _cosimmr_run_VB_cpp(SEXP lambdastartSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP n_covariatesSEXP, SEXP nSEXP, SEXP beta_priorSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP x_scaledSEXP, SEXP SSEXP, SEXP PSEXP, SEXP beta_1SEXP, SEXP beta_2SEXP, SEXP tauSEXP, SEXP eps_0SEXP, SEXP t_WSEXP, SEXP c_priorSEXP, SEXP soloSEXP, SEXP sd_priorSEXP) {
+List run_VB_cpp(arma::vec lambdastart, int n_sources, int n_tracers, int n_covariates, int n, arma::vec beta_prior, arma::mat concentrationmeans, arma::mat sourcemeans, arma::mat correctionmeans, arma::mat corrsds, arma::mat sourcesds, arma::mat y, arma::mat x_scaled, int S, int P, double beta_1, double beta_2, int tau, double eps_0, int t_W, arma::vec c_prior, bool solo, arma::mat sd_prior, arma::mat mu_prior);
+RcppExport SEXP _cosimmr_run_VB_cpp(SEXP lambdastartSEXP, SEXP n_sourcesSEXP, SEXP n_tracersSEXP, SEXP n_covariatesSEXP, SEXP nSEXP, SEXP beta_priorSEXP, SEXP concentrationmeansSEXP, SEXP sourcemeansSEXP, SEXP correctionmeansSEXP, SEXP corrsdsSEXP, SEXP sourcesdsSEXP, SEXP ySEXP, SEXP x_scaledSEXP, SEXP SSEXP, SEXP PSEXP, SEXP beta_1SEXP, SEXP beta_2SEXP, SEXP tauSEXP, SEXP eps_0SEXP, SEXP t_WSEXP, SEXP c_priorSEXP, SEXP soloSEXP, SEXP sd_priorSEXP, SEXP mu_priorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -266,7 +246,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type c_prior(c_priorSEXP);
     Rcpp::traits::input_parameter< bool >::type solo(soloSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type sd_prior(sd_priorSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_VB_cpp(lambdastart, n_sources, n_tracers, n_covariates, n, beta_prior, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, eps_0, t_W, c_prior, solo, sd_prior));
+    Rcpp::traits::input_parameter< arma::mat >::type mu_prior(mu_priorSEXP);
+    rcpp_result_gen = Rcpp::wrap(run_VB_cpp(lambdastart, n_sources, n_tracers, n_covariates, n, beta_prior, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, eps_0, t_W, c_prior, solo, sd_prior, mu_prior));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -274,17 +255,15 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_cosimmr_digamma_wrapper", (DL_FUNC) &_cosimmr_digamma_wrapper, 1},
     {"_cosimmr_rMVNormCpp", (DL_FUNC) &_cosimmr_rMVNormCpp, 3},
-    {"_cosimmr_sim_thetacpp", (DL_FUNC) &_cosimmr_sim_thetacpp, 6},
+    {"_cosimmr_sim_thetacpp", (DL_FUNC) &_cosimmr_sim_thetacpp, 7},
     {"_cosimmr_hfn", (DL_FUNC) &_cosimmr_hfn, 5},
-    {"_cosimmr_hcpp", (DL_FUNC) &_cosimmr_hcpp, 14},
+    {"_cosimmr_hcpp", (DL_FUNC) &_cosimmr_hcpp, 15},
     {"_cosimmr_log_q_cpp", (DL_FUNC) &_cosimmr_log_q_cpp, 6},
-    {"_cosimmr_delta_lqltcppauto", (DL_FUNC) &_cosimmr_delta_lqltcppauto, 6},
-    {"_cosimmr_h_lambdacpp", (DL_FUNC) &_cosimmr_h_lambdacpp, 16},
-    {"_cosimmr_cov_mat_cpp", (DL_FUNC) &_cosimmr_cov_mat_cpp, 2},
-    {"_cosimmr_nabla_LB_cpp", (DL_FUNC) &_cosimmr_nabla_LB_cpp, 17},
-    {"_cosimmr_control_var_cpp", (DL_FUNC) &_cosimmr_control_var_cpp, 15},
-    {"_cosimmr_LB_lambda_cpp", (DL_FUNC) &_cosimmr_LB_lambda_cpp, 15},
-    {"_cosimmr_run_VB_cpp", (DL_FUNC) &_cosimmr_run_VB_cpp, 23},
+    {"_cosimmr_h_lambdacpp", (DL_FUNC) &_cosimmr_h_lambdacpp, 17},
+    {"_cosimmr_delta_h_lambda_cpp", (DL_FUNC) &_cosimmr_delta_h_lambda_cpp, 18},
+    {"_cosimmr_nabla_LB_cpp", (DL_FUNC) &_cosimmr_nabla_LB_cpp, 18},
+    {"_cosimmr_LB_lambda_cpp", (DL_FUNC) &_cosimmr_LB_lambda_cpp, 16},
+    {"_cosimmr_run_VB_cpp", (DL_FUNC) &_cosimmr_run_VB_cpp, 24},
     {NULL, NULL, 0}
 };
 

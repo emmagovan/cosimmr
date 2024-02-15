@@ -75,13 +75,16 @@ The data can then be run through `cosimmr_ffvb`, the main function of the `cosim
 package.
 ```{r}
 cosimmr_1_out = cosimmr_ffvb(cosimmr_1)
+```
 
+Summary statistics for the run can then be viewed, several options are available, such as "statistics" and "quantiles"
+```{r}
 summary(cosimmr_1_out, type = "statistics")
 ```
 
 The output of this can be plotted, using the plot function. There are several different options available in the plot function.
 ```{r}
-plot(cosimmr_1_out, type = c("isospace", "beta_histogram", "p_ind"), ind = c(1,7))
+plot(cosimmr_1_out, type ="beta_histogram", ind = 7)
 ```
 
 More complex examples can also be run. Here we include the group the geese belong to as a covariate
@@ -99,121 +102,13 @@ cosimmr_2 <-cosimmr_load(
     concentration_means = geese_data$concentration_means)
 
 cosimmr_2_out = cosimmr_ffvb(cosimmr_2)
-
-
-summary(cosimmr_2_out, type = "statistics", ind = c(1,10, 110, 114, 125, 165, 185, 220))
-
-
-Groups3 = matrix(geese_data$groups[1:112])
-
-cosimmr_3 <-cosimmr_load(
-    formula = geese_data$mixtures[1:112,] ~ as.factor(Groups3) -1,
-    source_names = geese_data$source_names,
-    source_means = geese_data$source_means,
-    source_sds = geese_data$source_sds,
-    correction_means = geese_data$correction_means,
-    correction_sds = geese_data$correction_sds,
-    concentration_means = geese_data$concentration_means,
-    scale_x = TRUE)
-
-plot(cosimmr_3)
-
-cosimmr_3_out = cosimmr_ffvb(cosimmr_3)
-
-summary(cosimmr_3_out, type = "statistics", ind = c(1,10,50))
- #plot(cosimmr_2_out, type = "p_ind")
-#library(microbenchmark)
-
-#microbenchmark(cosimmr = cosimmr_ffvb(cosimmr_2), times = 5L)
-
-iteration = cosimmr_2_out$output$lambdares$iteration #So need a way to save this - should be easy to do I think? Just return t?
-a = which.max(cosimmr_1_out$output$lambdares$mean_LB[(cosimmr_1_out$output$model$data$ffvb_control$tau +2):iteration])
-use_this = cosimmr_1_out$output$lambdares$lambda_save[(cosimmr_1_out$output$ffvb_control$tau +2)+a,]
-
-  
-thetares <- sim_thetacpp(n_output, use_this, K, n_tracers, n_covariates, solo)
-  
-  #p <- t(apply(x_scaled %*% thetares[(1 + n_output * (i - 1)):(n_output * i), 1:K*n_covariates], 1, p_fun))
-  
-  
-  sigma <- (1/sqrt(thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)]))
-  
-  p_sample = array(NA, dim = c(n, n_output, K))
-  
-  
-  #beta1 = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
-  #The only thing I can potentially think of is that beta is filling wrong
-  #So change to a matrix and see if that fixes the problem??
-  beta = thetares[,1:(n_covariates * K)]
-  
-  f <- array(NA, dim = c(n, K, n_output)) 
-  #f_mean_sample <- array(NA, dim = c(1, K, n_output)) 
-
-  
-  # for(s in 1:n_output){
-  #   f[,,s] = as.matrix(x_scaled) %*% beta[s,,]
-  # }
-  
-  #I'm not sure if this works or not
-  #We want beta to be the 4 sources for each covariate, 
-  #It should be n_covariates * K 
-  #n_output here is 3600 cause I keep confusing myself
-  for(s in 1:n_output){
-    
-    f[,,s] = as.matrix(x_scaled) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
-   
-  }
-  
-  for(j in 1:n_output){
-    for (n_obs in 1:n) {
-      p_sample[n_obs,j, ] <- exp(f[n_obs,1:K, j]) / (sum((exp(f[n_obs,1:K, j]))))
-    }
-  }
-  
-  colMeans(p_sample[1,,])
-  sd(p_sample[1,,1])
-  sd(p_sample[1,,2])
-  sd(p_sample[1,,3])
-  sd(p_sample[1,,4])
-  
-  #   colMeans(p_sample[10,,])
-  # sd(p_sample[2,,1])
-  # sd(p_sample[2,,2])
-  # sd(p_sample[2,,3])
-  # sd(p_sample[2,,4])
-
-
-
-
-summary(cosimmr_2_out, individual = c(1, 10), type = "statistics")#, 10, 115, 125))
-
-
-plot(cosimmr_2_out$output$mean_LB[102:555])
-
-
-summary(cosimmr_2_out, individual = c(1, 10, 40, 115, 125, 165, 185, 220))
-
-plot(cosimmr_2_out$output$mean_LB[52:610])
-plot(cosimmr_2_out$output$mean_LB[52:108], xlab = "eps = 0.09")
-
-cosimmr_3 <- with(
-  geese_data,
-  cosimmr_load(
-    formula = mixtures ~ 1,
-    source_names = source_names,
-    source_means = source_means,
-    source_sds = source_sds,
-    correction_means = correction_means,
-    correction_sds = correction_sds,
-    concentration_means = concentration_means
-  )
-)
-
-cosimmr_3_out = cosimmr_ffvb(cosimmr_3)
-
-
-
 ```
+
+Again we can view summary statistics for this run
+```{r}
+summary(cosimmr_2_out, type = "statistics")
+```
+
 
 We can then use the `predict` function to predict for each group
 ```{r}

@@ -7,15 +7,14 @@ Bayes(FFVB) function}
 \usage{
 cosimmr_ffvb(
   simmr_in,
-  prior_control = list(mu_0 = rep(0, simmr_in$n_sources), sigma_0 = 1, tau_shape =
-    rep(0.5, simmr_in$n_tracers), tau_rate = rep(0.5, simmr_in$n_tracers)),
-  ffvb_control = list(n_output = 3600, S = 100, P = 10, beta_1 = 0.9, beta_2 = 0.9, tau =
-    150, eps_0 = 0.1, t_W = 50)
+  prior_control = list(mu_0 = rep(0, (simmr_in$n_sources * simmr_in$n_covariates +
+    simmr_in$n_tracers)), sigma_0 = 1, tau_shape = rep(1, simmr_in$n_tracers), tau_rate =
+    rep(1, simmr_in$n_tracers)),
+  ffvb_control = list(n_output = 3600, S = 500, P = 100, beta_1 = 0.9, beta_2 = 0.9, tau
+    = 50, eps_0 = 0.005, t_W = 1000)
 )
 }
 \arguments{
-\item{simmr_in}{An object created via the function \code{\link{cosimmr_load}}}
-
 \item{prior_control}{A list of values including arguments named \code{mu_0}
 (prior for mu), and \code{sigma_0} (prior for sigma).}
 
@@ -25,6 +24,8 @@ iteration of the algorithm), \code{P} (patience parameter), \code{beta_1}
 and \code{beta_2} (adaptive learning weights), \code{tau} (threshold for
 exploring learning space), \code{eps_0} (fixed learning rate),
 \code{t_W} (rolling window size)}
+
+\item{cosimmr_in}{An object created via the function \code{\link{cosimmr_load}}}
 }
 \value{
 An object of class \code{cosimmr_output} with two named top-level
@@ -43,11 +44,11 @@ via \code{\link{plot.cosimmr_output}}.
 }
 \examples{
 \dontrun{
-## See the package vignette for a detailed run through of these 4 examples
+## See the package vignette for a detailed run through of these examples
 
 # Data set 1: 10 obs on 2 isos, 4 sources, with tefs and concdep
 data(geese_data_day1)
-simmr_1 <- with(
+cosimmr_1 <- with(
   geese_data_day1,
   cosimmr_load(
     formula = mixtures ~ c(1,2,3,2,1,3,2,1,2),
@@ -61,37 +62,37 @@ simmr_1 <- with(
 )
 
 # Plot
-plot(simmr_1)
+plot(cosimmr_1)
 
 # Print
-simmr_1
+cosimmr_1
 
 # FFVB run
-simmr_1_out <- cosimmr_ffvb(simmr_1)
+cosimmr_1_out <- cosimmr_ffvb(cosimmr_1)
 
 # Print it
-print(simmr_1_out)
+print(cosimmr_1_out)
 
 # Summary
-summary(simmr_1_out, type = "correlations")
-summary(simmr_1_out, type = "statistics")
-ans <- summary(simmr_1_out, type = c("quantiles", "statistics"))
+summary(cosimmr_1_out, type = "correlations")
+summary(cosimmr_1_out, type = "statistics")
+ans <- summary(cosimmr_1_out, type = c("quantiles", "statistics"))
 
 # Plot
-plot(simmr_1_out, type = "beta_boxplot")
-plot(simmr_1_out, type = "beta_histogram")
+plot(cosimmr_1_out, type = "beta_boxplot")
+plot(cosimmr_1_out, type = "beta_histogram")
 
 # Compare two sources
-compare_sources(simmr_1_out, source_names = c("Zostera", "Enteromorpha"))
+compare_sources(cosimmr_1_out, source_names = c("Zostera", "Enteromorpha"))
 
 # Compare multiple sources
-compare_sources(simmr_1_out)
+compare_sources(cosimmr_1_out)
 
 #####################################################################################
 
 # A version with just one observation
 data(geese_data_day1)
-simmr_2 <- with(
+cosimmr_2 <- with(
   geese_data_day1,
   simmr_loadcov(
     formula = mixtures[1, , drop = FALSE] ~ c(1),
@@ -105,70 +106,22 @@ simmr_2 <- with(
 )
 
 # Plot
-plot(simmr_2)
+plot(cosimmr_2)
 
 # FFVB run - automatically detects the single observation
-simmr_2_out <- simmr_ffvb(simmr_2)
+cosimmr_2_out <- simmr_ffvb(cosimmr_2)
 
 # Print it
-print(simmr_2_out)
+print(cosimmr_2_out)
 
 # Summary
-summary(simmr_2_out)
-ans <- summary(simmr_2_out, type = c("quantiles"))
+summary(cosimmr_2_out)
+ans <- summary(cosimmr_2_out, type = c("quantiles"))
 
 # Plot
-plot(simmr_2_out)
-plot(simmr_2_out, type = "boxplot")
-plot(simmr_2_out, type = "histogram")
-plot(simmr_2_out, type = "density")
-plot(simmr_2_out, type = "matrix")
-
-#####################################################################################
-
-# Data set 2: 3 isotopes (d13C, d15N and d34S), 30 observations, 4 sources
-data(simmr_data_2)
-simmr_3 <- with(
-  simmr_data_2,
-  cosimmr_load(
-    formula = mixtures ~ c(rep(1, ncol(mixtures))),
-    source_names = source_names,
-    source_means = source_means,
-    source_sds = source_sds,
-    correction_means = correction_means,
-    correction_sds = correction_sds,
-    concentration_means = concentration_means
-  )
-)
-
-# Get summary
-print(simmr_3)
-
-# Plot 3 times
-plot(simmr_3)
-plot(simmr_3, tracers = c(2, 3))
-plot(simmr_3, tracers = c(1, 3))
-# See vignette('simmr') for fancier axis labels
-
-# FFVB run
-simmr_3_out <- cosimmr_ffvb(simmr_3)
-
-# Print it
-print(simmr_3_out)
-
-# Summary
-summary(simmr_3_out)
-summary(simmr_3_out, type = "quantiles")
-summary(simmr_3_out, type = "correlations")
-
-# Plot
-plot(simmr_3_out)
-plot(simmr_3_out, type = "boxplot")
-plot(simmr_3_out, type = "histogram")
-plot(simmr_3_out, type = "density")
-plot(simmr_3_out, type = "matrix")
-
-################################################################
+plot(cosimmr_2_out)
+plot(cosimmr_2_out, type = "beta_boxplot")
+plot(simmr_2_out, type = "beta_histogram")
 }
 }
 \references{

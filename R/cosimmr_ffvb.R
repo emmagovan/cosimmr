@@ -9,7 +9,7 @@
 #' via \code{\link{plot.cosimmr_output}}.
 #'
 
-#' @param simmr_in An object created via the function \code{\link{cosimmr_load}}
+#' @param cosimmr_in An object created via the function \code{\link{cosimmr_load}}
 #' @param prior_control A list of values including arguments named \code{mu_0}
 #' (prior for mu), and \code{sigma_0} (prior for sigma).
 #' @param ffvb_control A list of values including arguments named \code{n_output}
@@ -45,11 +45,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' ## See the package vignette for a detailed run through of these 4 examples
+#' ## See the package vignette for a detailed run through of these examples
 #'
 #' # Data set 1: 10 obs on 2 isos, 4 sources, with tefs and concdep
 #' data(geese_data_day1)
-#' simmr_1 <- with(
+#' cosimmr_1 <- with(
 #'   geese_data_day1,
 #'   cosimmr_load(
 #'     formula = mixtures ~ c(1,2,3,2,1,3,2,1,2),
@@ -63,37 +63,37 @@
 #' )
 #'
 #' # Plot
-#' plot(simmr_1)
+#' plot(cosimmr_1)
 #'
 #' # Print
-#' simmr_1
+#' cosimmr_1
 #'
 #' # FFVB run
-#' simmr_1_out <- cosimmr_ffvb(simmr_1)
+#' cosimmr_1_out <- cosimmr_ffvb(cosimmr_1)
 #'
 #' # Print it
-#' print(simmr_1_out)
+#' print(cosimmr_1_out)
 #'
 #' # Summary
-#' summary(simmr_1_out, type = "correlations")
-#' summary(simmr_1_out, type = "statistics")
-#' ans <- summary(simmr_1_out, type = c("quantiles", "statistics"))
+#' summary(cosimmr_1_out, type = "correlations")
+#' summary(cosimmr_1_out, type = "statistics")
+#' ans <- summary(cosimmr_1_out, type = c("quantiles", "statistics"))
 #'
 #' # Plot
-#' plot(simmr_1_out, type = "beta_boxplot")
-#' plot(simmr_1_out, type = "beta_histogram")
+#' plot(cosimmr_1_out, type = "beta_boxplot")
+#' plot(cosimmr_1_out, type = "beta_histogram")
 #'
 #' # Compare two sources
-#' compare_sources(simmr_1_out, source_names = c("Zostera", "Enteromorpha"))
+#' compare_sources(cosimmr_1_out, source_names = c("Zostera", "Enteromorpha"))
 #'
 #' # Compare multiple sources
-#' compare_sources(simmr_1_out)
+#' compare_sources(cosimmr_1_out)
 #'
 #' #####################################################################################
 #'
 #' # A version with just one observation
 #' data(geese_data_day1)
-#' simmr_2 <- with(
+#' cosimmr_2 <- with(
 #'   geese_data_day1,
 #'   simmr_loadcov(
 #'     formula = mixtures[1, , drop = FALSE] ~ c(1),
@@ -107,89 +107,42 @@
 #' )
 #'
 #' # Plot
-#' plot(simmr_2)
+#' plot(cosimmr_2)
 #'
 #' # FFVB run - automatically detects the single observation
-#' simmr_2_out <- simmr_ffvb(simmr_2)
+#' cosimmr_2_out <- simmr_ffvb(cosimmr_2)
 #'
 #' # Print it
-#' print(simmr_2_out)
+#' print(cosimmr_2_out)
 #'
 #' # Summary
-#' summary(simmr_2_out)
-#' ans <- summary(simmr_2_out, type = c("quantiles"))
+#' summary(cosimmr_2_out)
+#' ans <- summary(cosimmr_2_out, type = c("quantiles"))
 #'
 #' # Plot
-#' plot(simmr_2_out)
-#' plot(simmr_2_out, type = "boxplot")
-#' plot(simmr_2_out, type = "histogram")
-#' plot(simmr_2_out, type = "density")
-#' plot(simmr_2_out, type = "matrix")
-#'
-#' #####################################################################################
-#'
-#' # Data set 2: 3 isotopes (d13C, d15N and d34S), 30 observations, 4 sources
-#' data(simmr_data_2)
-#' simmr_3 <- with(
-#'   simmr_data_2,
-#'   cosimmr_load(
-#'     formula = mixtures ~ c(rep(1, ncol(mixtures))),
-#'     source_names = source_names,
-#'     source_means = source_means,
-#'     source_sds = source_sds,
-#'     correction_means = correction_means,
-#'     correction_sds = correction_sds,
-#'     concentration_means = concentration_means
-#'   )
-#' )
-#'
-#' # Get summary
-#' print(simmr_3)
-#'
-#' # Plot 3 times
-#' plot(simmr_3)
-#' plot(simmr_3, tracers = c(2, 3))
-#' plot(simmr_3, tracers = c(1, 3))
-#' # See vignette('simmr') for fancier axis labels
-#'
-#' # FFVB run
-#' simmr_3_out <- cosimmr_ffvb(simmr_3)
-#'
-#' # Print it
-#' print(simmr_3_out)
-#'
-#' # Summary
-#' summary(simmr_3_out)
-#' summary(simmr_3_out, type = "quantiles")
-#' summary(simmr_3_out, type = "correlations")
-#'
-#' # Plot
-#' plot(simmr_3_out)
-#' plot(simmr_3_out, type = "boxplot")
-#' plot(simmr_3_out, type = "histogram")
-#' plot(simmr_3_out, type = "density")
-#' plot(simmr_3_out, type = "matrix")
-#'
-#' ################################################################
+#' plot(cosimmr_2_out)
+#' plot(cosimmr_2_out, type = "beta_boxplot")
+#' plot(simmr_2_out, type = "beta_histogram")
 #'}
 #' @export cosimmr_ffvb
 cosimmr_ffvb <- function(simmr_in,
-                         prior_control = list(
-                           mu_0 = rep(0, simmr_in$n_sources * simmr_in$n_covariates),
-                           sigma_0 = 1,
-                           tau_shape = rep(1, simmr_in$n_tracers),
-                           tau_rate = rep(1, simmr_in$n_tracers)
-                         ),
-                         ffvb_control = list(
-                           n_output = 3600, #3600
-                           S = 1000, #1000
-                           P = 100, #50
-                           beta_1 = 0.5, #0.6
-                           beta_2 = 0.5, #0.6
-                           tau = 200, #100
-                           eps_0 = 0.02, #last 0.02 worked okay
-                           t_W = 100 #100
-                         )) {
+prior_control = list(
+  mu_0 = rep(0, (simmr_in$n_sources * simmr_in$n_covariates + simmr_in$n_tracers)),
+  sigma_0 = 1,
+  tau_shape = rep(1, simmr_in$n_tracers),
+  tau_rate = rep(1, simmr_in$n_tracers)
+),
+ffvb_control = list(
+  n_output = 3600, #3600
+  S = 500, #500
+  P = 100, #100
+  beta_1 = 0.9, #0.9
+  beta_2 = 0.9, #0.9
+  tau = 50, #50
+  eps_0 = 0.005, #0.001
+  t_W =1000 #1000,
+  #lambda = NULL #Null = optimised, can choose their starting values, give a error if length is wrong etc
+)) {
   # Throw a warning if less than 4 observations in a group - 1 is ok as it wil do a solo run
   #  if (min(table(simmr_in$group)) > 1 & min(table(simmr_in$group)) < 4) warning("At least 1 group has less than 4 observations - either put each observation in an individual group or use informative prior information")
   
@@ -202,6 +155,8 @@ cosimmr_ffvb <- function(simmr_in,
   sigma_a <- prior_control$sigma_0
   n_covariates<- simmr_in$n_covariates
   x_scaled = simmr_in$x_scaled
+  c_prior = prior_control$tau_shape
+  d_prior = prior_control$tau_rate
   
   # sig_prior = matrix(rep(0, n_covariates*K*n_covariates*K), ncol = n_covariates*K, 
   #                    nrow = n_covariates*K)
@@ -220,8 +175,8 @@ cosimmr_ffvb <- function(simmr_in,
   # sig_prior = matrix(rep(sigma_a, n_covariates*K*n_covariates*K), ncol = n_covariates*K, 
   #                    nrow = n_covariates*K)
   
-  sig_prior = matrix(rep(1, n_covariates*K*n_covariates*K), ncol = n_covariates*K, 
-                     nrow = n_covariates*K)
+  sig_prior = matrix(rep(1, (n_covariates*K+n_tracers)*(n_covariates*K+n_tracers)), ncol = (n_covariates*K + n_tracers), 
+                     nrow = (n_covariates*K + n_tracers))
   
   c_0 <- c(1,1)#prior_control$tau_shape #Change to 0.0001
   # #d_0 <- prior_control$tau_rate
@@ -229,7 +184,7 @@ cosimmr_ffvb <- function(simmr_in,
   # beta_lambda<-c(mu_a, rep(1, (K*n_covariates) * (K*n_covariates) + 1) / 2)))
   
   #Regular
-  beta_lambda <-c(mu_a, rep(sigma_a,(((K*n_covariates) * (K*n_covariates +1))/2)))
+  beta_lambda <-c(mu_a, rep(sigma_a, (((K*n_covariates +n_tracers) * ((K*n_covariates +n_tracers) +1))/2)))
   
   #Diag
   #beta_lambda <-c(mu_a, rep(1, K*n_covariates))
@@ -237,14 +192,16 @@ cosimmr_ffvb <- function(simmr_in,
   # lambda <- c((beta_lambda),
   #   rep(1, n_tracers * 2)
   # )
-  lambda <- c(beta_lambda,
-              prior_control$tau_shape, 
-              prior_control$tau_rate)
+  lambda <- c(beta_lambda)
+  # ,
+  #             prior_control$tau_shape, 
+  #             prior_control$tau_rate)
   
   
   ll = length(lambda)
   
   lambdares <- c(rep(NA, ll))
+  
   
   thetares <- matrix(rep(NA, ((K * n_covariates + n_tracers * simmr_in$n_obs) * n_output)),
                      ncol = (K * n_covariates + n_tracers * simmr_in$n_obs),
@@ -288,44 +245,34 @@ cosimmr_ffvb <- function(simmr_in,
   
   lambdaprior <- c(lambda)
   
-  #So we take sigma_beta, get the precision, solve, then get transpose so its lower tri, then convert to vector
-  # lambdastart <-c(mu_beta_ordered, vec_sig,
-  #                 alpha1, beta1, alpha2, beta2)#c(rep(0, length(lambda)))
-  #This is only for temporarily using the JAGS starting values
-  # lambdastart <- c(1.367, -0.8, -0.373, -0.169, -0.65, -0.189,  0.002, 0.897, -1.482, 0.947, 0.562, 0.195, vec_c1, vec_c2, vec_c3, rep(1, length(lambda - 42)))
-  #lambdastart = c(rep(10, length(lambda)))
-  # lambdastart = list_1$l_f_j
+
   lambdastart = lambdaprior
- # l_l = length(lambdastart)
-  #Temporary - want to change the last 4 values to be higher
- # lambdastart[(l_l-3):(l_l)] = lambdastart[(l_l-3):(l_l)] * 10
-  #lambdastart[91:94] = c(39,50,1,11)
+ 
+  l_l = length(lambdastart)
   
+  #We need sd_prior and mu_prior to be n_Covariates * n_sources for beta specifically
+  # FOR NOW JUST SET TO 1 for sd and 0 for mu
+  mu_beta_prior = matrix(c(rep(0, simmr_in$n_covariates * simmr_in$n_sources), nrow = simmr_in$n_covariates))
+  sigma_beta_prior = matrix(c(rep(1, simmr_in$n_covariates * simmr_in$n_sources), nrow = simmr_in$n_covariates))
+
   lambdares <- run_VB_cpp(
-    lambdastart, K, n_tracers, n_covariates, n, c(rep(1,n_tracers)), 
+    lambdastart, K, n_tracers, n_covariates, n, d_prior, 
     concentration_means,
     source_means, correction_means, correction_sds,
     source_sds, y, (x_scaled), ffvb_control$S,
     ffvb_control$P, ffvb_control$beta_1,
     ffvb_control$beta_2, ffvb_control$tau,
     ffvb_control$eps_0, ffvb_control$t_W,
-    c(rep(1,n_tracers)), solo, sig_prior
-  )
-  
-  iteration = (lambdares$iteration) 
-  a = which.max(lambdares$mean_LB[(ffvb_control$tau +2):iteration]) # +2 here for same reason, start from 0 and then greater than
-  use_this = lambdares$lambda_save[(ffvb_control$tau +2)+a,]
-  #lambda_from_JAGS = use_this
-  #Temporary to check sim_theta
-  #use_this = lambdastart
-  
+    c_prior, solo, sigma_beta_prior, mu_beta_prior)
+ 
+  use_this = lambdares$lambda_max_LB
+
   # thetares <- sim_thetacpp0(n_output, lambdares, K, n_tracers, n_covariates, solo)
-  thetares <- sim_thetacpp(n_output, use_this, K, n_tracers, n_covariates, solo)
+  kappa2 = rMVNormCpp(K*n_covariates + n_tracers, c(rep(0, n_output)), diag(n_output))
+  thetares <- sim_thetacpp(n_output, use_this, K, n_tracers, n_covariates, solo, kappa2)
+
   
-  #p <- t(apply(x_scaled %*% thetares[(1 + n_output * (i - 1)):(n_output * i), 1:K*n_covariates], 1, p_fun))
-  
-  
-  sigma <- (1/sqrt(thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)]))
+  sigma <- sqrt(exp((thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)])))
   
   p_sample = array(NA, dim = c(simmr_in$n_obs, n_output, K))
   p_mean_sample = matrix(NA, nrow = n_output, ncol = K)

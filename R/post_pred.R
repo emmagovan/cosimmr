@@ -5,7 +5,7 @@
 #' The simulated posterior predicted values are returned as part of the object 
 #' and can be saved for external use
 #'
-#' @param cosimmr_out A run of the simmr model from \code{\link{cosimmr_ffvb}}.
+#' @param cosimmr_out A run of the cosimmr model from \code{\link{cosimmr_ffvb}}.
 #' @param covariate Which covariate to run it for
 #' @param prob The probability interval for the posterior predictives. The default is 0.5 (i.e. 50pc intervals)
 #' @param plot_ppc Whether to create a bayesplot of the posterior predictive or not.
@@ -19,7 +19,7 @@
 #' @examples
 #' \donttest{
 #' data(geese_data_day1)
-#' simmr_1 <- with(
+#' cosimmr_1 <- with(
 #'   geese_data_day1,
 #'   cosimmr_load(
 #'     formula = mixtures ~ c(1,2,3,2,1,2,3,2,1),
@@ -33,16 +33,16 @@
 #' )
 #'
 #' # Plot
-#' plot(simmr_1)
+#' plot(cosimmr_1)
 #'
 #' # Print
-#' simmr_1
+#' cosimmr_1
 #'
 #' # FFVB run
-#' simmr_1_out <- cosimmr_ffvb(simmr_1)
+#' cosimmr_1_out <- cosimmr_ffvb(cosimmr_1)
 #'
 #' # Prior predictive
-#' post_pred <- posterior_predictive(simmr_1_out)
+#' post_pred <- posterior_predictive(cosimmr_1_out)
 #' }
 posterior_predictive <- function(cosimmr_out,
                                  prob = 0.5,

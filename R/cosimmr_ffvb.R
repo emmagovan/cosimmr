@@ -126,23 +126,22 @@
 #'}
 #' @export cosimmr_ffvb
 cosimmr_ffvb <- function(simmr_in,
-prior_control = list(
-  mu_0 = rep(0, (simmr_in$n_sources * simmr_in$n_covariates + simmr_in$n_tracers)),
-  sigma_0 = 1,
-  tau_shape = rep(1, simmr_in$n_tracers),
-  tau_rate = rep(1, simmr_in$n_tracers)
-),
-ffvb_control = list(
-  n_output = 3600, #3600
-  S = 500, #500
-  P = 100, #100
-  beta_1 = 0.9, #0.9
-  beta_2 = 0.9, #0.9
-  tau = 50, #50
-  eps_0 = 0.005, #0.001
-  t_W =1000 #1000,
-  #lambda = NULL #Null = optimised, can choose their starting values, give a error if length is wrong etc
-)) {
+                         prior_control = list(
+                           mu_0 = rep(0, (simmr_in$n_sources * simmr_in$n_covariates + simmr_in$n_tracers)),
+                           sigma_0 = 1,
+                           tau_shape = rep(1, simmr_in$n_tracers),
+                           tau_rate = rep(1, simmr_in$n_tracers)
+                         ),
+                         ffvb_control = list(
+                           n_output = 3600, #3600
+                           S = 500, #500
+                           P = 100, #100
+                           beta_1 = 0.75, #0.9
+                           beta_2 = 0.75, #0.9
+                           tau = 500, #50
+                           eps_0 = 0.001, #0.001
+                           t_W =500 #1000
+                         )) {
   # Throw a warning if less than 4 observations in a group - 1 is ok as it wil do a solo run
   #  if (min(table(simmr_in$group)) > 1 & min(table(simmr_in$group)) < 4) warning("At least 1 group has less than 4 observations - either put each observation in an individual group or use informative prior information")
   
@@ -155,8 +154,6 @@ ffvb_control = list(
   sigma_a <- prior_control$sigma_0
   n_covariates<- simmr_in$n_covariates
   x_scaled = simmr_in$x_scaled
-  c_prior = prior_control$tau_shape
-  d_prior = prior_control$tau_rate
   
   # sig_prior = matrix(rep(0, n_covariates*K*n_covariates*K), ncol = n_covariates*K, 
   #                    nrow = n_covariates*K)
@@ -245,32 +242,53 @@ ffvb_control = list(
   
   lambdaprior <- c(lambda)
   
-
-  lambdastart = lambdaprior
- 
-  l_l = length(lambdastart)
   
-  #We need sd_prior and mu_prior to be n_Covariates * n_sources for beta specifically
-  # FOR NOW JUST SET TO 1 for sd and 0 for mu
-  mu_beta_prior = matrix(c(rep(0, simmr_in$n_covariates * simmr_in$n_sources), nrow = simmr_in$n_covariates))
-  sigma_beta_prior = matrix(c(rep(1, simmr_in$n_covariates * simmr_in$n_sources), nrow = simmr_in$n_covariates))
-
+  #So we take sigma_beta, get the precision, solve, then get transpose so its lower tri, then convert to vector
+  # lambdastart <-c(mu_beta_ordered, vec_sig,
+  #                 alpha1, beta1, alpha2, beta2)#c(rep(0, length(lambda)))
+  #This is only for temporarily using the JAGS starting values
+  # lambdastart <- c(1.367, -0.8, -0.373, -0.169, -0.65, -0.189,  0.002, 0.897, -1.482, 0.947, 0.562, 0.195, vec_c1, vec_c2, vec_c3, rep(1, length(lambda - 42)))
+  #lambdastart = c(rep(10, length(lambda)))
+  # lambdastart = list_1$l_f_j
+  lambdastart = lambdaprior
+  #lambdastart[91:94] = c(39,50,1,11)
+  
+  l_l = length(lambdastart)
+  #Temporary - want to change the last 4 values to be higher
+  # lambdastart[(l_l-3):(l_l)] = lambdastart[(l_l-3):(l_l)] * 10
+  lambdastart = lambdaprior * 1
+  ### TEMPORARY
+  #lambdastart = c(rep(5, length(lambdaprior)))
+  
+  mu_beta_prior = matrix(c(rep(0, simmr_in$n_covariates * simmr_in$n_sources)), nrow = simmr_in$n_covariates)
+  sigma_beta_prior = matrix(c(rep(1, simmr_in$n_covariates * simmr_in$n_sources)), nrow = simmr_in$n_covariates)
+  
+  
   lambdares <- run_VB_cpp(
-    lambdastart, K, n_tracers, n_covariates, n, d_prior, 
+    lambdastart, K, n_tracers, n_covariates, n, c(rep(1,n_tracers)), 
     concentration_means,
     source_means, correction_means, correction_sds,
     source_sds, y, (x_scaled), ffvb_control$S,
     ffvb_control$P, ffvb_control$beta_1,
     ffvb_control$beta_2, ffvb_control$tau,
     ffvb_control$eps_0, ffvb_control$t_W,
-    c_prior, solo, sigma_beta_prior, mu_beta_prior)
- 
-  use_this = lambdares$lambda_max_LB
-
+    c(rep(1,n_tracers)), solo, sigma_beta_prior, mu_beta_prior)
+  
+  
+  iteration = (lambdares$iteration) 
+  a = which.max(lambdares$mean_LB_bar[(ffvb_control$t_W +2):iteration]) # +2 here for same reason, start from 0 and then greater than
+  use_this = lambdares$lambda_save[(ffvb_control$t_W +1)+a,]
+  #use_this = lambdares$lambda_max_LB
+  #lambda_from_JAGS = use_this
+  #Temporary to check sim_theta
+  #use_this = lambdastart
+  
   # thetares <- sim_thetacpp0(n_output, lambdares, K, n_tracers, n_covariates, solo)
   kappa2 = rMVNormCpp(K*n_covariates + n_tracers, c(rep(0, n_output)), diag(n_output))
   thetares <- sim_thetacpp(n_output, use_this, K, n_tracers, n_covariates, solo, kappa2)
-
+  
+  #p <- t(apply(x_scaled %*% thetares[(1 + n_output * (i - 1)):(n_output * i), 1:K*n_covariates], 1, p_fun))
+  
   
   sigma <- sqrt(exp((thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)])))
   
@@ -301,8 +319,8 @@ ffvb_control = list(
   #It should be n_covariates * K 
   #n_output here is 3600 cause I keep confusing myself
   for(s in 1:n_output){
-    
-    f[,,s] = as.matrix(simmr_in$original_x) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
+    f[,,s] = as.matrix(simmr_in$x_scaled) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
+    # f[,,s] = as.matrix(simmr_in$original_x) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
     f_mean_sample[,s] = matrix(x_sample_mean, nrow = 1) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE) 
   }
   
@@ -369,3 +387,247 @@ ffvb_control = list(
   
   return(output_all)
 }
+# cosimmr_ffvb <- function(simmr_in,
+# prior_control = list(
+#   mu_0 = rep(0, (simmr_in$n_sources * simmr_in$n_covariates + simmr_in$n_tracers)),
+#   sigma_0 = 1,
+#   tau_shape = rep(1, simmr_in$n_tracers),
+#   tau_rate = rep(1, simmr_in$n_tracers)
+# ),
+# ffvb_control = list(
+#   n_output = 3600, #3600
+#   S = 500, #500
+#   P = 100, #100
+#   beta_1 = 0.9, #0.9
+#   beta_2 = 0.9, #0.9
+#   tau = 500, #50
+#   eps_0 = 0.001, #0.001
+#   t_W =500 #1000,
+#   #lambda = NULL #Null = optimised, can choose their starting values, give a error if length is wrong etc
+# )) {
+#   # Throw a warning if less than 4 observations in a group - 1 is ok as it wil do a solo run
+#   #  if (min(table(simmr_in$group)) > 1 & min(table(simmr_in$group)) < 4) warning("At least 1 group has less than 4 observations - either put each observation in an individual group or use informative prior information")
+#   
+#   output <- list #vector("list", length = simmr_in$n_groups)
+#   # names(output) <- levels(simmr_in$group)
+#   K <- simmr_in$n_sources
+#   n_tracers <- simmr_in$n_tracers
+#   n_output <- ffvb_control$n_output
+#   mu_a <- prior_control$mu_0
+#   sigma_a <- prior_control$sigma_0
+#   n_covariates<- simmr_in$n_covariates
+#   x_scaled = simmr_in$x_scaled
+#   c_prior = prior_control$tau_shape
+#   d_prior = prior_control$tau_rate
+#   
+#   # sig_prior = matrix(rep(0, n_covariates*K*n_covariates*K), ncol = n_covariates*K, 
+#   #                    nrow = n_covariates*K)
+#   # count = 0
+#   # sig_prior_vars = rep(sigma_a, (((K*n_covariates) * (K*n_covariates +1))/2))
+#   # 
+#   # for(i in 1:(n_covariates * K)){
+#   #   for(j in 1:(n_covariates * K)){
+#   #   if(j<=i){
+#   #     count = count +1
+#   #     sig_prior[i,j] = sig_prior_vars[count]
+#   #   }
+#   #   }
+#   # }
+#   
+#   # sig_prior = matrix(rep(sigma_a, n_covariates*K*n_covariates*K), ncol = n_covariates*K, 
+#   #                    nrow = n_covariates*K)
+#   
+#   sig_prior = matrix(rep(1, (n_covariates*K+n_tracers)*(n_covariates*K+n_tracers)), ncol = (n_covariates*K + n_tracers), 
+#                      nrow = (n_covariates*K + n_tracers))
+#   
+#   c_0 <- c(1,1)#prior_control$tau_shape #Change to 0.0001
+#   # #d_0 <- prior_control$tau_rate
+#   
+#   # beta_lambda<-c(mu_a, rep(1, (K*n_covariates) * (K*n_covariates) + 1) / 2)))
+#   
+#   #Regular
+#   beta_lambda <-c(mu_a, rep(sigma_a, (((K*n_covariates +n_tracers) * ((K*n_covariates +n_tracers) +1))/2)))
+#   
+#   #Diag
+#   #beta_lambda <-c(mu_a, rep(1, K*n_covariates))
+#   
+#   # lambda <- c((beta_lambda),
+#   #   rep(1, n_tracers * 2)
+#   # )
+#   lambda <- c(beta_lambda)
+#   # ,
+#   #             prior_control$tau_shape, 
+#   #             prior_control$tau_rate)
+#   
+#   
+#   ll = length(lambda)
+#   
+#   lambdares <- c(rep(NA, ll))
+#   
+#   
+#   thetares <- matrix(rep(NA, ((K * n_covariates + n_tracers * simmr_in$n_obs) * n_output)),
+#                      ncol = (K * n_covariates + n_tracers * simmr_in$n_obs),
+#                      nrow = n_output
+#   )
+#   
+#   mylist <- list#vector("list", length = simmr_in$n_groups)
+#   
+#   # names(mylist) <- levels(simmr_in$group)
+#   
+#   p_fun <- function(x) exp(x) / sum(exp(x))
+#   
+#   # Loop through all the groups
+#   # for (i in 1:simmr_in$n_groups) {
+#   #  if (simmr_in$n_groups > 1) message("\nRunning for group", levels(simmr_in$group)[i], "\n\n")
+#   
+#   #   curr_rows <- which(simmr_in$group_int == i)
+#   #  curr_mix <- simmr_in$mixtures[curr_rows, , drop = FALSE]
+#   
+#   # Determine if a single observation or not
+#   if (nrow(simmr_in$mixtures) == 1) {
+#     message("Only 1 mixture value, performing a simmr solo run...\n")
+#     solo <- TRUE
+#     beta_prior = c(rep(100, n_tracers))
+#   } else {
+#     solo <- FALSE
+#     beta_prior = prior_control$tau_rate
+#   }
+#   
+#   n_tracers <- simmr_in$n_tracers
+#   n_sources <- simmr_in$n_sources
+#   s_names <- simmr_in$source_names
+#   K <- simmr_in$n_sources
+#   source_means <- simmr_in$source_means
+#   source_sds <- simmr_in$source_sds
+#   correction_means <- simmr_in$correction_means
+#   correction_sds <- simmr_in$correction_sds
+#   concentration_means <- simmr_in$concentration_means
+#   y <- simmr_in$mixtures
+#   n = nrow(y)
+#   
+#   lambdaprior <- c(lambda)
+#   
+# 
+#   lambdastart = lambdaprior
+#  
+#   l_l = length(lambdastart)
+#   
+#   #We need sd_prior and mu_prior to be n_Covariates * n_sources for beta specifically
+#   # FOR NOW JUST SET TO 1 for sd and 0 for mu
+#   mu_beta_prior = matrix(c(rep(0, simmr_in$n_covariates * simmr_in$n_sources), nrow = simmr_in$n_covariates))
+#   sigma_beta_prior = matrix(c(rep(1, simmr_in$n_covariates * simmr_in$n_sources), nrow = simmr_in$n_covariates))
+# 
+#   lambdares <- run_VB_cpp(
+#     lambdastart, K, n_tracers, n_covariates, n, d_prior, 
+#     concentration_means,
+#     source_means, correction_means, correction_sds,
+#     source_sds, y, (x_scaled), ffvb_control$S,
+#     ffvb_control$P, ffvb_control$beta_1,
+#     ffvb_control$beta_2, ffvb_control$tau,
+#     ffvb_control$eps_0, ffvb_control$t_W,
+#     c_prior, solo, sigma_beta_prior, mu_beta_prior)
+#  
+#   use_this = lambdares$lambda_max_LB
+# 
+#   # thetares <- sim_thetacpp0(n_output, lambdares, K, n_tracers, n_covariates, solo)
+#   kappa2 = rMVNormCpp(K*n_covariates + n_tracers, c(rep(0, n_output)), diag(n_output))
+#   thetares <- sim_thetacpp(n_output, use_this, K, n_tracers, n_covariates, solo, kappa2)
+# 
+#   
+#   sigma <- sqrt(exp((thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)])))
+#   
+#   p_sample = array(NA, dim = c(simmr_in$n_obs, n_output, K))
+#   p_mean_sample = matrix(NA, nrow = n_output, ncol = K)
+#   
+#   #beta1 = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
+#   #The only thing I can potentially think of is that beta is filling wrong
+#   #So change to a matrix and see if that fixes the problem??
+#   beta = thetares[,1:(n_covariates * K)]
+#   
+#   f <- array(NA, dim = c(simmr_in$n_obs, K, n_output)) 
+#   #f_mean_sample <- array(NA, dim = c(1, K, n_output)) 
+#   f_mean_sample = matrix(NA, nrow = K, ncol = n_output)
+#   
+#   if(simmr_in$intercept == TRUE){
+#     x_sample_mean = c(1, rep(0, (ncol(simmr_in$x_scaled) - 1)))
+#   } else if(simmr_in$intercept == FALSE){
+#     x_sample_mean = c(rep(0, (ncol(simmr_in$x_scaled))))
+#   }
+#   
+#   # for(s in 1:n_output){
+#   #   f[,,s] = as.matrix(x_scaled) %*% beta[s,,]
+#   # }
+#   
+#   #I'm not sure if this works or not
+#   #We want beta to be the 4 sources for each covariate, 
+#   #It should be n_covariates * K 
+#   #n_output here is 3600 cause I keep confusing myself
+#   for(s in 1:n_output){
+#     
+#     f[,,s] = as.matrix(simmr_in$original_x) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
+#     f_mean_sample[,s] = matrix(x_sample_mean, nrow = 1) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE) 
+#   }
+#   
+#   for(j in 1:n_output){
+#     for (n_obs in 1:simmr_in$n_obs) {
+#       p_sample[n_obs,j, ] <- exp(f[n_obs,1:K, j]) / (sum((exp(f[n_obs,1:K, j]))))
+#     }
+#   }
+#   
+#   for(j in 1:n_output){
+#     p_mean_sample[j,] = exp(f_mean_sample[1:K,j]) /(sum(exp(f_mean_sample[1:K,j])))
+#   }
+#   
+#   ########################
+#   ##vs old way
+#   # beta1 = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
+#   # f1 <- array(NA, dim = c(simmr_in$n_obs, K, n_output))
+#   # for(s in 1:n_output){
+#   #   f1[,,s] = as.matrix(x_scaled) %*% beta1[s,,]
+#   # }
+#   # p_sample1 = array(NA, dim = c(simmr_in$n_obs, n_output, K))
+#   # for(j in 1:n_output){
+#   #   for (n_obs in 1:simmr_in$n_obs) {
+#   #     p_sample1[n_obs,j, ] <- exp(f1[n_obs,1:K, j]) / (sum((exp(f1[n_obs,1:K, j]))))
+#   #   }
+#   # }
+#   
+#   
+#   #Not sure best way to do this??
+#   #colnames(p[1,,]) <- simmr_in$source_names
+#   
+#   # sims.matrix <- cbind(
+#   #   p,
+#   #   sigma
+#   # )
+#   
+#   # colnames(sims.matrix) <- c(simmr_in$source_names, colnames(simmr_in$mixtures))
+#   
+#   mylist <- list(
+#     source_names = simmr_in$source_names,
+#     theta = thetares,
+#     groupnames = simmr_in$group,
+#     lambdares = lambdares,#$lambda,
+#     # mean_LB = lambdares$mean_LB,
+#     beta = beta,
+#     BUGSoutput = list(
+#       sims.list = list(
+#         p = p_sample,
+#         p_mean = p_mean_sample,
+#         sigma = sigma
+#       )),
+#     model = list(data = list(
+#       mu_f_mean = c(mu_a),
+#       sigma_f_sd = c(rep(sigma_a, K)),
+#       ffvb_control = ffvb_control,
+#       prior_control = prior_control
+#     ))
+#   )
+#   
+#   
+#   output_all <- list(input = simmr_in, output = mylist)
+#   
+#   class(output_all) <- c("cosimmr_output", "ffvb")
+#   
+#   return(output_all)
+# }

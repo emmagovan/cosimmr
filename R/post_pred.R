@@ -52,9 +52,9 @@ posterior_predictive <- function(cosimmr_out,
 }
 #' @export
 posterior_predictive.cosimmr_output <- function(cosimmr_out,
-                                              group = 1,
                                               prob = 0.5,
-                                              plot_ppc = TRUE) {
+                                              plot_ppc = TRUE,
+                                              n_samples = 3600) {
  
   #Okay so what I want to do here is to  take theta matrix and simulate from likelihood
   #So we have y ~ N(mu_y, sigma_y) and we want to sample from that?

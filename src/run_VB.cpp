@@ -205,31 +205,31 @@ double hcpp(int n_sources, int n_isotopes, int n_covariates,
   //   }
   // }
   
-  // for (int i = 0; i < n_covariates; i++) {
-  //   for (int j = 0; j < n_sources; j++) {
-  //     betanorm += - log(sd_prior(i,j)) - 0.5 * log(2 * M_PI) -
-  //       0.5 * pow((beta(i, j) - mu_prior(i,j), 2) / pow(sd_prior(i,j), 2);
-  //   }
-  // }
   for (int i = 0; i < n_covariates; i++) {
     for (int j = 0; j < n_sources; j++) {
-      betanorm += - log(1) - 0.5 * log(2 * M_PI) -
-        0.5 * pow((beta(i, j) - 0), 2) / pow(1, 2);
+      betanorm += - log(sd_prior(i,j)) - 0.5 * log(2 * M_PI) -
+        0.5 * pow(beta(i, j) - mu_prior(i,j), 2) / pow(sd_prior(i,j), 2);
     }
   }
+  // for (int i = 0; i < n_covariates; i++) {
+  //   for (int j = 0; j < n_sources; j++) {
+  //     betanorm += - log(1) - 0.5 * log(2 * M_PI) -
+  //       0.5 * pow((beta(i, j) - 0), 2) / pow(1, 2);
+  //   }
+  // }
   
   // Calculate gammaprior
   double gammaprior = 0.0;
   
-  // for (int i = 0; i < n_isotopes; i++) {
-  //   gammaprior += c_prior(i) * log(d_prior(i)) - lgamma(c_prior(i)) +
-  //     (c_prior(i) - 1) * log(sqrt(exp(theta(i + n_sources * n_covariates)))) -
-  //     d_prior(i) * sqrt(exp(theta(i + n_sources * n_covariates)));
-  // }
-  
   for (int i = 0; i < n_isotopes; i++) {
-    gammaprior += -sqrt(exp(theta(i + n_sources * n_covariates)));
+    gammaprior += c_prior(i) * log(d_prior(i)) - lgamma(c_prior(i)) +
+      (c_prior(i) - 1) * log(sqrt(exp(theta(i + n_sources * n_covariates)))) -
+      d_prior(i) * sqrt(exp(theta(i + n_sources * n_covariates)));
   }
+  
+  // for (int i = 0; i < n_isotopes; i++) {
+  //   gammaprior += -sqrt(exp(theta(i + n_sources * n_covariates)));
+  // }
   
   // Calculate totx
   //double totx = hold + priornorm;//gammaprior + betanorm + hold;
@@ -304,22 +304,26 @@ double log_q_cpp(arma::vec theta, arma::vec lambda,
   //
   
   arma::mat Z = arma::inv(chol_var) * thetaminusmean; //* betaminusmean.t();
-  arma::mat ZtZ = Z * Z.t();
+  arma::mat ZtZ = Z.t() * Z;
   
   double ZtZ_scalar = ZtZ(0, 0);
-  
+  //arma::mat Sigma = chol_var * chol_var.t();
+  //arma::double logdetSigma = log(det(Sigma));
   
   //NumericVector sig(n_cov*n_sources);
   
   
   // prod_sig = log(proddiag(tcholprec));
+  
   // This is just the log determinant - so the log of the product of the diagonal
   double prod_sig = log(arma::prod(chol_var.diag()));
   
   double thetanorm = 0;
   
+  //thetanorm = -  (ncnsnt/2) * log(2 * M_PI) - prod_sig - 0.5 * ZtZ_scalar;
   thetanorm = -  (ncnsnt/2) * log(2 * M_PI) - prod_sig - 0.5 * ZtZ_scalar;
   
+  //thetanorm = -ncnsnt/2 * log(2 * M_PI) - 0.5 * logdetSigma - 0.5 *(thetaminusmean).t() *(Sigma/thetaminusmean);
   
   // double gamman = 0;
   // for (int i=0; i <(n_tracers); i++){
@@ -482,6 +486,67 @@ double h_lambdacpp(int n_sources, int n_isotopes,
 
 
 
+// //Derivatives with respect to theta
+// // [[Rcpp::export]]
+// arma::vec delta_h_lambda_cpp_old(int n_sources, int n_tracers,
+//                              arma::vec beta_prior,
+//                              int n_covariates,
+//                              int S,
+//                              arma::mat concentrationmeans, arma::mat sourcemeans,
+//                              arma::mat correctionmeans,
+//                              arma::mat corrsds, arma::mat sourcesds,
+//                              arma::vec theta, arma::mat y,
+//                              arma::vec lambda,
+//                              arma::mat x_scaled,
+//                              arma::vec c_0,
+//                              arma::mat sd_prior,
+//                              arma::mat mu_prior,
+//                              double eps) {
+// 
+//   int ncnsnt = n_sources * n_covariates + n_tracers;
+//   int mat_size = ((ncnsnt) * (ncnsnt+1))/2;
+//   // eps = 0.001;
+// 
+//   double k = theta.n_elem;
+//   arma::vec ans(k);
+//   arma::vec d(k);
+//   arma::vec thetaplusd(k);
+//   arma::vec thetaminusd(k);
+// 
+// 
+//   for(int i = 0; i<k; i++){
+// 
+//     for (int j = 0; j<k; j++){
+//       d(j) = 0;
+//     }
+//     d(i) = eps;
+// 
+// 
+//     for (int j = 0; j<k; j++){
+//       thetaplusd(j) = theta(j) + d(j);
+//       thetaminusd(j) = theta(j) - d(j);
+//     }
+//     ans(i) = (h_lambdacpp(n_sources, n_tracers, beta_prior,
+//               n_covariates, S,
+//               concentrationmeans, sourcemeans,
+//               correctionmeans,
+//               corrsds,sourcesds, thetaplusd, y,
+//               lambda, x_scaled, c_0, sd_prior, mu_prior) -
+//                 h_lambdacpp(n_sources, n_tracers, beta_prior,
+//                             n_covariates, S,
+//                             concentrationmeans, sourcemeans,
+//                             correctionmeans,
+//                             corrsds,sourcesds, thetaminusd, y,
+//                             lambda, x_scaled, c_0, sd_prior, mu_prior))/(2 * eps);
+// 
+//      // ans(i) = (log_q_cpp(thetaplusd, lambda, n_sources, n_tracers, S, n_covariates) -
+//      //   log_q_cpp(thetaminusd, lambda, n_sources, n_tracers, S, n_covariates))/(2 * eps);
+//   }
+// 
+// 
+//   return  ans;
+// }
+
 //Derivatives with respect to theta
 // [[Rcpp::export]]
 arma::vec delta_h_lambda_cpp(int n_sources, int n_tracers,
@@ -509,6 +574,25 @@ arma::vec delta_h_lambda_cpp(int n_sources, int n_tracers,
   arma::vec thetaplusd(k);
   arma::vec thetaminusd(k);
   
+  arma::vec sig = lambda.subvec(ncnsnt, ncnsnt + mat_size -1);
+  
+  
+  
+  arma::mat chol_var(ncnsnt, ncnsnt, arma::fill::zeros);
+  
+  int count = 0;
+  
+  for(int i = 0; i<ncnsnt; i++){
+    for(int j = 0; j<ncnsnt; j++){
+      if (j <= i){
+        count +=1;
+        chol_var((i),(j)) = sig(count-1);
+        
+      }
+      
+    }
+  }
+  
   
   for(int i = 0; i<k; i++){
     
@@ -522,23 +606,135 @@ arma::vec delta_h_lambda_cpp(int n_sources, int n_tracers,
       thetaplusd(j) = theta(j) + d(j);
       thetaminusd(j) = theta(j) - d(j);
     }
-    ans(i) = (h_lambdacpp(n_sources, n_tracers, beta_prior,
-              n_covariates, S,
+    ans(i) = (hcpp(n_sources, n_tracers,
+              n_covariates,
+              beta_prior,
+              x_scaled,
               concentrationmeans, sourcemeans,
               correctionmeans,
-              corrsds,sourcesds, thetaplusd, y,
-              lambda, x_scaled, c_0, sd_prior, mu_prior) -
-                h_lambdacpp(n_sources, n_tracers, beta_prior,
-                            n_covariates, S,
-                            concentrationmeans, sourcemeans,
-                            correctionmeans,
-                            corrsds,sourcesds, thetaminusd, y,
-                            lambda, x_scaled, c_0, sd_prior, mu_prior))/(2 * eps);
+              corrsds, sourcesds,
+              thetaplusd, y,
+              c_0,
+              sd_prior,
+              mu_prior) -
+                hcpp(n_sources, n_tracers,
+                     n_covariates,
+                     beta_prior,
+                     x_scaled,
+                     concentrationmeans, sourcemeans,
+                     correctionmeans,
+                     corrsds, sourcesds,
+                     thetaminusd, y,
+                     c_0,
+                     sd_prior,
+                     mu_prior))/(2 * eps);
   }
   
+  arma::vec log_q_deriv = - arma::inv(chol_var).t() * arma::inv(chol_var)* (theta - lambda.subvec(0, ncnsnt-1));
   
-  return  ans;
+  // arma::vec log_q_deriv = - (chol_var) * (chol_var.t())* (theta - lambda.subvec(0, ncnsnt-1));
+  arma::vec final_ans =  ans - log_q_deriv;
+  
+  return  final_ans;
 }
+
+// //Nabla LB is the mean of delta_h_lambda times kappa_transpose
+// // [[Rcpp::export]]
+// arma::vec nabla_LB_cpp(arma::vec lambda, arma::mat theta,
+//                        int n_sources, int n_tracers, arma::vec beta_prior,
+//                        int S, int n_covariates,
+//                        arma::mat x_scaled,
+//                        arma::mat concentrationmeans,
+//                        arma::mat sourcemeans,
+//                        arma::mat correctionmeans,
+//                        arma::mat corrsds, arma::mat sourcesds,
+//                        arma::mat y,
+//                        arma::vec c_0,
+//                        arma::mat sd_prior,
+//                        arma::mat mu_prior,
+//                        arma::mat kappa){
+//
+//   //int thetanrow = theta.n_rows; //THIS IS JUST S OOPS
+//   int lambdalength = lambda.n_elem;
+//   int ncnsnt = n_sources * n_covariates + n_tracers;
+//   int mat_size = ncnsnt * (ncnsnt +1)/2;
+//   arma::mat kappa_transpose = kappa.t();
+//   arma::vec ans(lambdalength);
+//
+//
+//   arma::mat big_delta_h_lambda(S, ncnsnt, arma::fill::zeros);
+//
+//
+//   for(int i = 0; i <S; i++){
+//     big_delta_h_lambda.row(i) = delta_h_lambda_cpp(n_sources, n_tracers,
+//                            beta_prior, n_covariates, S, concentrationmeans, sourcemeans,
+//                            correctionmeans,
+//                            corrsds,
+//                            sourcesds,
+//                            theta.row(i).t(), y, lambda, x_scaled, c_0, sd_prior, mu_prior, 0.0001).t();
+//   }
+//
+//
+//   // This creates the big_delta_h_lambda which is S * ncnsnt (transpose to get ncnsnt *S)
+//   // We take each col in turn (so we have ncnsnt * 1)
+//   // Multiply by each col of kappaT(1 * ncnsnt)
+//   // Get the vech of this (so then its mat_size)
+//   //Repeat S times
+//
+//   arma::mat big_delta_h_lambda_transpose = big_delta_h_lambda.t();
+//   //This is ll *S
+//
+//   //First thing we want to do is just get the average of this over cols
+//   // This is the nabla_mu_LB_lambda
+//   for (int i = 0; i < ncnsnt; i++) {
+//     ans(i) = arma::mean(big_delta_h_lambda_transpose.row(i));
+//   }
+//
+//
+//   // Now we want to take each col of big_delta_h_lambda_transpose (lt,1)
+//   // Multiply by each row of kappatranspose (1 * lt)
+//   // Get the vech of this (same code as reverse chol_prec thingy)
+//   //Loop over S
+//   //Save in an (lt, lt, S) array
+//   // Then vech each (lt,lt) - so we have matsize * S
+//   // Then average of all the vechs
+//   //Then output
+//   //
+//   arma::cube myArray(ncnsnt, ncnsnt, S, arma::fill::zeros);
+//
+//   for(int i=0; i<S; i++){
+//     myArray.slice(i) = big_delta_h_lambda_transpose.col(i) * kappa_transpose.row(i);
+//   }
+//
+//   // // Now we want to vech these so we get matsize * S
+//   //
+//   arma::mat vecharray(mat_size, S, arma::fill::zeros);
+//
+//
+//   for(int s = 0; s<S; s++){
+//     int count2 = 0;
+//     for(int i = 0; i<ncnsnt; i++){
+//       for(int j = 0; j<ncnsnt; j++){
+//         if (j <= i){
+//           count2 +=1;
+//           vecharray(count2-1, s) = myArray(i,j,s);
+//
+//         }
+//
+//       }
+//     }
+//   }
+//   //
+//   //
+//   for(int i = 0; i<mat_size; i++){
+//
+//     ans(i+ncnsnt) = mean(vecharray.row(i));
+//
+//   }
+//
+//
+//   return ans;
+// }
 
 //Nabla LB is the mean of delta_h_lambda times kappa_transpose
 // [[Rcpp::export]]
@@ -581,7 +777,7 @@ arma::vec nabla_LB_cpp(arma::vec lambda, arma::mat theta,
   // We take each col in turn (so we have ncnsnt * 1)
   // Multiply by each col of kappaT(1 * ncnsnt)
   // Get the vech of this (so then its mat_size)
-  //Repeat S times 
+  //Repeat S times
   
   arma::mat big_delta_h_lambda_transpose = big_delta_h_lambda.t();
   //This is ll *S
@@ -601,7 +797,7 @@ arma::vec nabla_LB_cpp(arma::vec lambda, arma::mat theta,
   // Then vech each (lt,lt) - so we have matsize * S
   // Then average of all the vechs
   //Then output
-  // 
+  //
   arma::cube myArray(ncnsnt, ncnsnt, S, arma::fill::zeros);
   
   for(int i=0; i<S; i++){
@@ -609,7 +805,7 @@ arma::vec nabla_LB_cpp(arma::vec lambda, arma::mat theta,
   }
   
   // // Now we want to vech these so we get matsize * S
-  // 
+  //
   arma::mat vecharray(mat_size, S, arma::fill::zeros);
   
   
@@ -626,8 +822,8 @@ arma::vec nabla_LB_cpp(arma::vec lambda, arma::mat theta,
       }
     }
   }
-  // 
-  // 
+  //
+  //
   for(int i = 0; i<mat_size; i++){
     
     ans(i+ncnsnt) = mean(vecharray.row(i));
@@ -637,6 +833,10 @@ arma::vec nabla_LB_cpp(arma::vec lambda, arma::mat theta,
   
   return ans;
 }
+
+
+
+
 
 
 
@@ -795,11 +995,11 @@ List run_VB_cpp(arma::vec lambdastart,
   arma::mat var_kappa = arma::mat(S,S,arma::fill::eye);
   kappa = rMVNormCpp(ncnsnt, mean_kappa, var_kappa);
   
-  // 
+  //
   arma::mat theta = sim_thetacpp(S, lambdastart, n_sources, n_tracers, n_covariates, solo, kappa);
-  // 
-  // 
-  // 
+  //
+  //
+  //
   arma::vec g_0 = nabla_LB_cpp(lambdastart, theta,
                                n_sources, n_tracers,
                                beta_prior,
@@ -834,8 +1034,8 @@ List run_VB_cpp(arma::vec lambdastart,
   arma::mat lambda_save(10000, lambda.n_elem);
   arma::vec h_lambda_cpp_save(10000);
   arma::vec lambda_max_LB(lambda.n_elem);
-  // 
-  // 
+  //
+  //
   while(!stop){
     
     //// NEED TO GENERATE EPS HERE
@@ -854,38 +1054,38 @@ List run_VB_cpp(arma::vec lambdastart,
                        S, n_covariates, x_scaled, concentrationmeans,
                        sourcemeans, correctionmeans, corrsds, sourcesds,
                        y, c_prior, sd_prior, mu_prior, kappa_loop);
-    // 
+    //
     //     // This is where we would have gradient clipping
     //     // So it would be some threshold/norm(g_t) * g_t
-    // 
-    // double norm_g_t = arma::norm(g_t, 2);
-    // if(norm_g_t >10){
-    //   g_t = 10/norm_g_t * g_t;
-    // }
-    // 
-    // 
-    // 
+    //
+    double norm_g_t = arma::norm(g_t, 2);
+    if(norm_g_t >100){
+      g_t = 100/norm_g_t * g_t;
+    }
+    //
+    //
+    //
     nu_t = arma::square(g_t);
-    // 
-    // 
+    //
+    //
     g_bar = beta_1 * g_bar + (1 - beta_1) * g_t;
     nu_bar = beta_2 * nu_bar + (1 - beta_2) * nu_t;
-    // 
-    // 
+    //
+    //
     arma::vec alpha_min(2);
     alpha_min(0) = eps_0;
     alpha_min(1) = eps_0 * (tau / (t + 1));
-    // 
+    //
     alpha_t = arma::min(alpha_min);
-    // 
+    //
     //     // h_lambda_cpp_save(t) = h_lambdacpp(n_sources, n_tracers, beta_prior,
     //     //                   n_covariates, S,
     //     //                   concentrationmeans, sourcemeans,
     //     //                   correctionmeans,
     //     //                   corrsds,sourcesds, theta.t(), y,
     //     //                   lambda, x_scaled, c_0, sd_prior);
-    // 
-    // 
+    //
+    //
     // Update lambda
     for(int i = 0; i<lsl; i++){
       
@@ -918,7 +1118,7 @@ List run_VB_cpp(arma::vec lambdastart,
     }
     
     ///////////////////
-    // 
+    //
     //Compute the moving average LB if out of warm-up
     if(t<=t_W){
       
@@ -981,7 +1181,7 @@ List run_VB_cpp(arma::vec lambdastart,
                             Rcpp::Named("theta") = theta,
                             Rcpp::Named("g_o") = g_0 ,
                             Rcpp::Named("lambda") = lambda,
-                            Rcpp::Named("mean_LB") = VB_save,
+                            Rcpp::Named("mean_LB_bar") = VB_save,
                             Rcpp::Named("lambda_save") = lambda_save,
                             Rcpp::Named("iteration") = t,
                             Rcpp::Named("h_lambda") = h_lambda_cpp_save,

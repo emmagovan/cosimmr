@@ -15,8 +15,10 @@
 #' @param binwidth The width of the bins for the histogram. Defaults to 0.05
 #' @param alpha The degree of transparency of the plots. Not relevant for
 #' matrix plots
+#' @param ind The individual number you wish to plot
+#' @param covariates The covariate you wish to plot (for beta plots)
 #' @param title The title of the plot.
-#' @param ggargs Extra arguments to be included in the ggplot (e.g. axis limits)
+#' @param n_output The number of theta samples you wish to plot with. Defaults to 3600
 #' @param ...  Currently not used
 #'
 #' @import ggplot2

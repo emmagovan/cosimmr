@@ -43,7 +43,8 @@ matrix where the number of rows is the number of sources and the number of
 columns is the number of tracers. These should be between 0 and 1. If not
 provided these are all set to 1.}
 
-\item{group}{A grouping variable. These can be a character or factor variable}
+\item{scale_x}{Whether or not you wish to scale the x values provided, or run 
+the model using the original x values. Defaults to TRUE.}
 }
 \value{
 An object of class \code{cosimmr_input} with the following elements:

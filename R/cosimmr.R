@@ -9,4 +9,4 @@
 #' @useDynLib cosimmr
 #' @name cosimmr
 #' @aliases <cosimmr>-package
-NULL  
+NULL

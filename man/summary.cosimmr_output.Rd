@@ -12,13 +12,15 @@
 )
 }
 \arguments{
+\item{object}{An object of class \code{cosimmr_output} produced by the
+function \code{\link{cosimmr_ffvb}}}
+
 \item{type}{The type of output required. At least none of quantiles', 
 'statistics', or 'correlations'.}
 
-\item{...}{Not used}
+\item{individual}{The individual to generate a summary for. Defaults to 1.}
 
-\item{cosimmr_out}{An object of class \code{cosimmr_output} produced by the
-function  \code{\link{simmr_ffvb}}}
+\item{...}{Not used}
 }
 \value{
 A list containing the following components: 

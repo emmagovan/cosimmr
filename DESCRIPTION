@@ -3,7 +3,7 @@ Type: Package
 Title: A package for running Stable Isotope Mixing Models and including Covariates
 Version: 1.0
 Date: 2023-08-15
-Authors@R:c(person("Emma", "Govan", email = "emma.govan.2021@mumail.ie", role = c("cre","aut")),
+Authors@R: c(person("Emma", "Govan", email = "emma.govan.2021@mumail.ie", role = c("cre","aut")),
           person("Andrew", "Parnell", role = "aut"),
           person("Brice", "Semmens", role = "ctb"),
           person("Eric", "Ward", role = "ctb"),
@@ -26,7 +26,12 @@ LinkingTo: Rcpp,
            RcppArmadillo,
            RcppDist
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    knitr,
+    markdown
 Config/testthat/edition: 3
 RoxygenNote: 7.2.3
 Encoding: UTF-8
+Depends: 
+    R (>= 2.10)
+LazyData: true

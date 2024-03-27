@@ -16,7 +16,9 @@
 #' @param alpha The degree of transparency of the plots. Not relevant for
 #' matrix plots
 #' @param title The title of the plot.
-#' @param ggargs Extra arguments to be included in the ggplot (e.g. axis limits)
+#' @param individuals The individual number you wish to plot
+#' @param covariates The covariate you wish to plot (for beta plots)
+#' @param n_output The number of theta samples you wish to plot with. Defaults to 3600
 #' @param ...  Currently not used
 #'
 #' @import ggplot2
@@ -62,12 +64,11 @@
 #'plot(simmr_1_out, type = c("isospace", "beta_hist"))
 #' }
 #' @export
-plot.cosimmr_output <-
+plot.cosimmr_pred_out <-
   function(x,
            type = c("beta_histogram",
              "beta_boxplot",
-             "p_ind",
-             "p_mean"
+             "p_ind"
            ),
            individuals = 1,
            covariates = 1,
@@ -124,75 +125,28 @@ plot.cosimmr_output <-
         }
       }
       
-      if("p_mean" %in% type){
-        #I think I'm right in saying that the mean should be
-        #When all the x's equal zero because its mean centred
-        #Also need to check for intercept I guess?
-        
-        if(is.null(title_input) == TRUE){
-          title = "p_mean_plot"
-        } else{title = title_input}
-        
-        
-        #So check if intercept = TRUE and then print a vector
-        if(x$input$intercept == TRUE){
-          x_pred = c(1, rep(0, (ncol(x$input$x_scaled) - 1)))
-        } else if(x$input$intercept == FALSE){
-          x_pred = c(rep(0, (ncol(x$input$x_scaled))))
-        }
-        
-        thetares= x$theta
-        K = x$input$n_sources
-        n_tracers = x$input$n_tracers
-        n_covariates = ncol(x$input$x_scaled)
-        
-        
-        
-        sigma <- (1/sqrt(thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)]))
-        
-        #p_sample = array(NA, dim = c(1, n_output, K))
-        p_sample = matrix(ncol = K, nrow = n_output)
-        
-        beta = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
-        
-        f <- array(NA, dim = c(1, K, n_output))
-        
-        for(s in 1:n_output){
-          f[,,s] = (x_pred) %*% beta[s,,]
-        }
-        
-        for(j in 1:n_output){
-          # p_sample[1,j, ] 
-          p_sample[j,] <- exp(f[1,1:K, j]) / (sum((exp(f[1,1:K, j]))))
-        }
-        
-        colnames(p_sample) = x$input$source_names
-        
-        df_p_mean <- reshape2::melt(p_sample)
-        
-        
-        colnames(df_p_mean) = c("Num", "Source", "Proportion")
-        
-        g <- ggplot(df_p_mean, aes(
-          x = Proportion
-        )) +
-          scale_fill_viridis(discrete = TRUE) +
-          geom_histogram(binwidth = binwidth, alpha = alpha) +
-          theme_bw() +
-          ggtitle(title) +
-          facet_wrap("~ Source") +
-          theme(legend.position = "none")
-        print(g)
-        
-        
-        
-      }
+
       
       #Prep data
       #Data needs to be edited I think to make life easier
-      
       for( i in 1:length(covariates)){
-        out_all_beta = x$beta[,i,]
+        
+        
+        
+        beta = array(NA, dim = c(x$input$n_covariates, nrow(x$beta), x$input$n_sources))
+        
+        for(s in 1:nrow(x$theta)){
+          for(k in 1:x$input$n_covariates){
+            for(j in 1:x$input$n_sources){
+              beta[k,s, j] = x$beta[s, (k-1)*x$input$n_sources + (j)]
+            }
+          }
+        }
+        
+        #This is slightly wrong
+        #I need to just think about it more
+        
+        out_all_beta = beta[i,,]
         colnames(out_all_beta) = x$input$source_names
         #I don't actually understand what this is doing
         df_beta <- reshape2::melt(out_all_beta)
@@ -254,6 +208,7 @@ plot.cosimmr_output <-
         
       }
     }
+
     
     if (exists("g")) invisible(g) 
   }

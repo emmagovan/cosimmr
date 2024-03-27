@@ -74,7 +74,7 @@ prior_viz.cosimmr_output <- function(cosimmr_out,
     # Now simulate some ps
     p_prior_sim <- matrix(NA, ncol = n_sources, nrow = n_sims)
     for (i in 1:n_sims) {
-      f <- rnorm(n_sources, mean = mu_f_mean, sd = sigma_f_sd)
+      f <- stats::rnorm(n_sources, mean = mu_f_mean, sd = sigma_f_sd)
       p_prior_sim[i, ] <- exp(f) / sum(exp(f))
     }
     colnames(p_prior_sim) <- cosimmr_out$input$source_names
@@ -84,7 +84,7 @@ prior_viz.cosimmr_output <- function(cosimmr_out,
       if(cosimmr_out$input$intercept == TRUE){
         x_pred = c(1, rep(0, (ncol(cosimmr_out$input$x_scaled) - 1)))
       } else if(cosimmr_out$input$intercept == FALSE){
-        x_pred = c(rep(0, (ncol(x$input$x_scaled))))
+        x_pred = c(rep(0, (ncol(cosimmr_out$input$x_scaled))))
       }
       
       thetares= cosimmr_out$output$theta

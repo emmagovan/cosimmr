@@ -12,10 +12,11 @@
 #' user to judge which sources are non-identifiable.
 #'
 #'
-#' @param cosimmr_out An object of class \code{cosimmr_output} produced by the
-#' function  \code{\link{simmr_ffvb}}
+#' @param object An object of class \code{cosimmr_output} produced by the
+#' function \code{\link{cosimmr_ffvb}}
 #' @param type The type of output required. At least none of quantiles', 
 #' 'statistics', or 'correlations'.
+#' @param individual The individual to generate a summary for. Defaults to 1.
 #' @param ...  Not used
 #' @return A list containing the following components: 
 #' \item{quantiles }{The quantiles of each parameter from the posterior 
@@ -91,13 +92,13 @@ function(object, type = c("quantiles", "statistics", "correlations"), individual
                          object$output$BUGSoutput$sims.list$sigma)
         colnames(out_all) = c(object$input$source_names, colnames(object$input$mixtures))
         
-        # Get objects
+        # Get cosimmr_outs
         out_quantiles[[i]] <- t(apply(out_all, 2, "quantile", probs = c(0.025, 0.25, 0.5, 0.75, 0.975)))
-        #  coda:::summary.mcmc.list(object$output)$quantiles
+        #  coda:::summary.mcmc.list(cosimmr_$output)$quantiles
         out_statistics[[i]] <- t(apply(out_all, 2, function(x) {
           return(c(mean = mean(x), sd = stats::sd(x)))
         }))
-        # coda:::summary.mcmc.list(object$output)$statistics[,1:2]
+        # coda:::summary.mcmc.list(cosimmr_$output)$statistics[,1:2]
         out_cor[[i]] <- stats::cor(out_all)
         
         

@@ -6,15 +6,17 @@
 Bayes(FFVB) function}
 \usage{
 cosimmr_ffvb(
-  simmr_in,
-  prior_control = list(mu_0 = rep(0, (simmr_in$n_sources * simmr_in$n_covariates +
-    simmr_in$n_tracers)), sigma_0 = 1, tau_shape = rep(1, simmr_in$n_tracers), tau_rate =
-    rep(1, simmr_in$n_tracers)),
-  ffvb_control = list(n_output = 3600, S = 500, P = 100, beta_1 = 0.9, beta_2 = 0.9, tau
-    = 50, eps_0 = 0.005, t_W = 1000)
+  cosimmr_in,
+  prior_control = list(mu_0 = rep(0, (cosimmr_in$n_sources * cosimmr_in$n_covariates +
+    cosimmr_in$n_tracers)), sigma_0 = 1, tau_shape = rep(1, cosimmr_in$n_tracers),
+    tau_rate = rep(1, cosimmr_in$n_tracers)),
+  ffvb_control = list(n_output = 3600, S = 500, P = 100, beta_1 = 0.75, beta_2 = 0.75,
+    tau = 500, eps_0 = 0.001, t_W = 500)
 )
 }
 \arguments{
+\item{cosimmr_in}{An object created via the function \code{\link{cosimmr_load}}}
+
 \item{prior_control}{A list of values including arguments named \code{mu_0}
 (prior for mu), and \code{sigma_0} (prior for sigma).}
 
@@ -24,13 +26,11 @@ iteration of the algorithm), \code{P} (patience parameter), \code{beta_1}
 and \code{beta_2} (adaptive learning weights), \code{tau} (threshold for
 exploring learning space), \code{eps_0} (fixed learning rate),
 \code{t_W} (rolling window size)}
-
-\item{cosimmr_in}{An object created via the function \code{\link{cosimmr_load}}}
 }
 \value{
 An object of class \code{cosimmr_output} with two named top-level
 components: \item{input }{The \code{cosimmr_input} object given to the
-\code{simmr_ffvb} function} \item{output }{A set of outputs produced by
+\code{cosimmr_ffvb} function} \item{output }{A set of outputs produced by
 the FFVB function. These can be analysed using the
 \code{\link{summary.cosimmr_output}} and \code{\link{plot.cosimmr_output}}
 functions.}

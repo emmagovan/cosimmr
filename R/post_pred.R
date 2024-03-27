@@ -6,9 +6,10 @@
 #' and can be saved for external use
 #'
 #' @param cosimmr_out A run of the cosimmr model from \code{\link{cosimmr_ffvb}}.
-#' @param covariate Which covariate to run it for
 #' @param prob The probability interval for the posterior predictives. The default is 0.5 (i.e. 50pc intervals)
 #' @param plot_ppc Whether to create a bayesplot of the posterior predictive or not.
+#' @param ind The individual number you wish to plot. Defaults to 1.
+#' @param n_samples The number of samples you wish to generate for y_pred. Defaults to 3600.
 #'
 #'@return plot of posterior predictives and simulated values
 
@@ -45,7 +46,8 @@
 #' post_pred <- posterior_predictive(cosimmr_1_out)
 #' }
 posterior_predictive <- function(cosimmr_out,
-                                 prob = 0.5,
+                                 prob = 0.5, 
+                                 ind = 1,
                                  plot_ppc = TRUE,
                                  n_samples = 3600) {
   UseMethod("posterior_predictive")
@@ -53,6 +55,7 @@ posterior_predictive <- function(cosimmr_out,
 #' @export
 posterior_predictive.cosimmr_output <- function(cosimmr_out,
                                               prob = 0.5,
+                                              ind = 1,
                                               plot_ppc = TRUE,
                                               n_samples = 3600) {
  
@@ -67,9 +70,9 @@ posterior_predictive.cosimmr_output <- function(cosimmr_out,
   x_pred = cosimmr_out$input$x_scaled
   n_obs = cosimmr_out$input$n_obs
   
-  #This is p_mean
-  #Could change it so they opt for p mean?
-  p = cosimmr_out$output$BUGSoutput$sims.list$p_mean
+#Need to specify an individual I guess?
+  p = cosimmr_out$output$BUGSoutput$sims.list$p[ind,,]
+  sigma = (cosimmr_out$output$BUGSoutput$sims.list$sigma)
   #Need to add proper loops here to do it properly
   #But think the general idea is then do rnorm(mean_y, sigma_y)
   
@@ -86,7 +89,7 @@ posterior_predictive.cosimmr_output <- function(cosimmr_out,
     mean[i,j] = sum(p[i, ] * q[, j] * (mu_s[, j] + mu_c[, j])) /
           sum(p[i, ] * q[, j])
     sd[i,j] = sqrt(sum(p[i, ]^2 * q[, j]^2 * (sigma_s[, j]^2 + sigma_c[, j]^2)) /
-          sum(p[i, ]^2 * q[, j]^2) + 1/tau[j])
+          sum(p[i, ]^2 * q[, j]^2) + sigma[i,j])
       
 
       
@@ -98,7 +101,7 @@ posterior_predictive.cosimmr_output <- function(cosimmr_out,
   y_post_pred = array(NA, dim = c(n_samples, n_obs, n_tracers))
   for(k in 1:n_tracers){
     for(i in 1:n_obs){
-y_post_pred[,i,k] = rnorm(n_samples, mean = mean[i,k], sd = sd[i,k])
+y_post_pred[,i,k] = stats::rnorm(n_samples, mean = mean[i,k], sd = sd[i,k])
     }
   }
   

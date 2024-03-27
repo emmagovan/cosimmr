@@ -20,7 +20,7 @@
 #' \code{t_W} (rolling window size)
 #' @return An object of class \code{cosimmr_output} with two named top-level
 #' components: \item{input }{The \code{cosimmr_input} object given to the
-#' \code{simmr_ffvb} function} \item{output }{A set of outputs produced by
+#' \code{cosimmr_ffvb} function} \item{output }{A set of outputs produced by
 #' the FFVB function. These can be analysed using the
 #' \code{\link{summary.cosimmr_output}} and \code{\link{plot.cosimmr_output}}
 #' functions.}
@@ -125,12 +125,12 @@
 #' plot(simmr_2_out, type = "beta_histogram")
 #'}
 #' @export cosimmr_ffvb
-cosimmr_ffvb <- function(simmr_in,
+cosimmr_ffvb <- function(cosimmr_in,
                          prior_control = list(
-                           mu_0 = rep(0, (simmr_in$n_sources * simmr_in$n_covariates + simmr_in$n_tracers)),
+                           mu_0 = rep(0, (cosimmr_in$n_sources * cosimmr_in$n_covariates + cosimmr_in$n_tracers)),
                            sigma_0 = 1,
-                           tau_shape = rep(1, simmr_in$n_tracers),
-                           tau_rate = rep(1, simmr_in$n_tracers)
+                           tau_shape = rep(1, cosimmr_in$n_tracers),
+                           tau_rate = rep(1, cosimmr_in$n_tracers)
                          ),
                          ffvb_control = list(
                            n_output = 3600, #3600
@@ -143,17 +143,17 @@ cosimmr_ffvb <- function(simmr_in,
                            t_W =500 #1000
                          )) {
   # Throw a warning if less than 4 observations in a group - 1 is ok as it wil do a solo run
-  #  if (min(table(simmr_in$group)) > 1 & min(table(simmr_in$group)) < 4) warning("At least 1 group has less than 4 observations - either put each observation in an individual group or use informative prior information")
+  #  if (min(table(cosimmr_in$group)) > 1 & min(table(cosimmr_in$group)) < 4) warning("At least 1 group has less than 4 observations - either put each observation in an individual group or use informative prior information")
   
-  output <- list #vector("list", length = simmr_in$n_groups)
-  # names(output) <- levels(simmr_in$group)
-  K <- simmr_in$n_sources
-  n_tracers <- simmr_in$n_tracers
+  output <- list #vector("list", length = cosimmr_in$n_groups)
+  # names(output) <- levels(cosimmr_in$group)
+  K <- cosimmr_in$n_sources
+  n_tracers <- cosimmr_in$n_tracers
   n_output <- ffvb_control$n_output
   mu_a <- prior_control$mu_0
   sigma_a <- prior_control$sigma_0
-  n_covariates<- simmr_in$n_covariates
-  x_scaled = simmr_in$x_scaled
+  n_covariates<- cosimmr_in$n_covariates
+  x_scaled = cosimmr_in$x_scaled
   
   # sig_prior = matrix(rep(0, n_covariates*K*n_covariates*K), ncol = n_covariates*K, 
   #                    nrow = n_covariates*K)
@@ -200,26 +200,26 @@ cosimmr_ffvb <- function(simmr_in,
   lambdares <- c(rep(NA, ll))
   
   
-  thetares <- matrix(rep(NA, ((K * n_covariates + n_tracers * simmr_in$n_obs) * n_output)),
-                     ncol = (K * n_covariates + n_tracers * simmr_in$n_obs),
+  thetares <- matrix(rep(NA, ((K * n_covariates + n_tracers * cosimmr_in$n_obs) * n_output)),
+                     ncol = (K * n_covariates + n_tracers * cosimmr_in$n_obs),
                      nrow = n_output
   )
   
-  mylist <- list#vector("list", length = simmr_in$n_groups)
+  mylist <- list#vector("list", length = cosimmr_in$n_groups)
   
-  # names(mylist) <- levels(simmr_in$group)
+  # names(mylist) <- levels(cosimmr_in$group)
   
   p_fun <- function(x) exp(x) / sum(exp(x))
   
   # Loop through all the groups
-  # for (i in 1:simmr_in$n_groups) {
-  #  if (simmr_in$n_groups > 1) message("\nRunning for group", levels(simmr_in$group)[i], "\n\n")
+  # for (i in 1:cosimmr_in$n_groups) {
+  #  if (cosimmr_in$n_groups > 1) message("\nRunning for group", levels(cosimmr_in$group)[i], "\n\n")
   
-  #   curr_rows <- which(simmr_in$group_int == i)
-  #  curr_mix <- simmr_in$mixtures[curr_rows, , drop = FALSE]
+  #   curr_rows <- which(cosimmr_in$group_int == i)
+  #  curr_mix <- cosimmr_in$mixtures[curr_rows, , drop = FALSE]
   
   # Determine if a single observation or not
-  if (nrow(simmr_in$mixtures) == 1) {
+  if (nrow(cosimmr_in$mixtures) == 1) {
     message("Only 1 mixture value, performing a simmr solo run...\n")
     solo <- TRUE
     beta_prior = c(rep(100, n_tracers))
@@ -228,16 +228,16 @@ cosimmr_ffvb <- function(simmr_in,
     beta_prior = prior_control$tau_rate
   }
   
-  n_tracers <- simmr_in$n_tracers
-  n_sources <- simmr_in$n_sources
-  s_names <- simmr_in$source_names
-  K <- simmr_in$n_sources
-  source_means <- simmr_in$source_means
-  source_sds <- simmr_in$source_sds
-  correction_means <- simmr_in$correction_means
-  correction_sds <- simmr_in$correction_sds
-  concentration_means <- simmr_in$concentration_means
-  y <- simmr_in$mixtures
+  n_tracers <- cosimmr_in$n_tracers
+  n_sources <- cosimmr_in$n_sources
+  s_names <- cosimmr_in$source_names
+  K <- cosimmr_in$n_sources
+  source_means <- cosimmr_in$source_means
+  source_sds <- cosimmr_in$source_sds
+  correction_means <- cosimmr_in$correction_means
+  correction_sds <- cosimmr_in$correction_sds
+  concentration_means <- cosimmr_in$concentration_means
+  y <- cosimmr_in$mixtures
   n = nrow(y)
   
   lambdaprior <- c(lambda)
@@ -260,8 +260,8 @@ cosimmr_ffvb <- function(simmr_in,
   ### TEMPORARY
   #lambdastart = c(rep(5, length(lambdaprior)))
   
-  mu_beta_prior = matrix(c(rep(0, simmr_in$n_covariates * simmr_in$n_sources)), nrow = simmr_in$n_covariates)
-  sigma_beta_prior = matrix(c(rep(1, simmr_in$n_covariates * simmr_in$n_sources)), nrow = simmr_in$n_covariates)
+  mu_beta_prior = matrix(c(rep(0, cosimmr_in$n_covariates * cosimmr_in$n_sources)), nrow = cosimmr_in$n_covariates)
+  sigma_beta_prior = matrix(c(rep(1, cosimmr_in$n_covariates * cosimmr_in$n_sources)), nrow = cosimmr_in$n_covariates)
   
   
   lambdares <- run_VB_cpp(
@@ -292,7 +292,7 @@ cosimmr_ffvb <- function(simmr_in,
   
   sigma <- sqrt(exp((thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)])))
   
-  p_sample = array(NA, dim = c(simmr_in$n_obs, n_output, K))
+  p_sample = array(NA, dim = c(cosimmr_in$n_obs, n_output, K))
   p_mean_sample = matrix(NA, nrow = n_output, ncol = K)
   
   #beta1 = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
@@ -300,14 +300,14 @@ cosimmr_ffvb <- function(simmr_in,
   #So change to a matrix and see if that fixes the problem??
   beta = thetares[,1:(n_covariates * K)]
   
-  f <- array(NA, dim = c(simmr_in$n_obs, K, n_output)) 
+  f <- array(NA, dim = c(cosimmr_in$n_obs, K, n_output)) 
   #f_mean_sample <- array(NA, dim = c(1, K, n_output)) 
   f_mean_sample = matrix(NA, nrow = K, ncol = n_output)
   
-  if(simmr_in$intercept == TRUE){
-    x_sample_mean = c(1, rep(0, (ncol(simmr_in$x_scaled) - 1)))
-  } else if(simmr_in$intercept == FALSE){
-    x_sample_mean = c(rep(0, (ncol(simmr_in$x_scaled))))
+  if(cosimmr_in$intercept == TRUE){
+    x_sample_mean = c(1, rep(0, (ncol(cosimmr_in$x_scaled) - 1)))
+  } else if(cosimmr_in$intercept == FALSE){
+    x_sample_mean = c(rep(0, (ncol(cosimmr_in$x_scaled))))
   }
   
   # for(s in 1:n_output){
@@ -319,13 +319,13 @@ cosimmr_ffvb <- function(simmr_in,
   #It should be n_covariates * K 
   #n_output here is 3600 cause I keep confusing myself
   for(s in 1:n_output){
-    f[,,s] = as.matrix(simmr_in$x_scaled) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
-    # f[,,s] = as.matrix(simmr_in$original_x) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
+    f[,,s] = as.matrix(cosimmr_in$x_scaled) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
+    # f[,,s] = as.matrix(cosimmr_in$original_x) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
     f_mean_sample[,s] = matrix(x_sample_mean, nrow = 1) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE) 
   }
   
   for(j in 1:n_output){
-    for (n_obs in 1:simmr_in$n_obs) {
+    for (n_obs in 1:cosimmr_in$n_obs) {
       p_sample[n_obs,j, ] <- exp(f[n_obs,1:K, j]) / (sum((exp(f[n_obs,1:K, j]))))
     }
   }
@@ -337,32 +337,32 @@ cosimmr_ffvb <- function(simmr_in,
   ########################
   ##vs old way
   # beta1 = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
-  # f1 <- array(NA, dim = c(simmr_in$n_obs, K, n_output))
+  # f1 <- array(NA, dim = c(cosimmr_in$n_obs, K, n_output))
   # for(s in 1:n_output){
   #   f1[,,s] = as.matrix(x_scaled) %*% beta1[s,,]
   # }
-  # p_sample1 = array(NA, dim = c(simmr_in$n_obs, n_output, K))
+  # p_sample1 = array(NA, dim = c(cosimmr_in$n_obs, n_output, K))
   # for(j in 1:n_output){
-  #   for (n_obs in 1:simmr_in$n_obs) {
+  #   for (n_obs in 1:cosimmr_in$n_obs) {
   #     p_sample1[n_obs,j, ] <- exp(f1[n_obs,1:K, j]) / (sum((exp(f1[n_obs,1:K, j]))))
   #   }
   # }
   
   
   #Not sure best way to do this??
-  #colnames(p[1,,]) <- simmr_in$source_names
+  #colnames(p[1,,]) <- cosimmr_in$source_names
   
   # sims.matrix <- cbind(
   #   p,
   #   sigma
   # )
   
-  # colnames(sims.matrix) <- c(simmr_in$source_names, colnames(simmr_in$mixtures))
+  # colnames(sims.matrix) <- c(cosimmr_in$source_names, colnames(cosimmr_in$mixtures))
   
   mylist <- list(
-    source_names = simmr_in$source_names,
+    source_names = cosimmr_in$source_names,
     theta = thetares,
-    groupnames = simmr_in$group,
+    groupnames = cosimmr_in$group,
     lambdares = lambdares,#$lambda,
     # mean_LB = lambdares$mean_LB,
     beta = beta,
@@ -381,18 +381,18 @@ cosimmr_ffvb <- function(simmr_in,
   )
   
   
-  output_all <- list(input = simmr_in, output = mylist)
+  output_all <- list(input = cosimmr_in, output = mylist)
   
   class(output_all) <- c("cosimmr_output", "ffvb")
   
   return(output_all)
 }
-# cosimmr_ffvb <- function(simmr_in,
+# cosimmr_ffvb <- function(cosimmr_in,
 # prior_control = list(
-#   mu_0 = rep(0, (simmr_in$n_sources * simmr_in$n_covariates + simmr_in$n_tracers)),
+#   mu_0 = rep(0, (cosimmr_in$n_sources * cosimmr_in$n_covariates + cosimmr_in$n_tracers)),
 #   sigma_0 = 1,
-#   tau_shape = rep(1, simmr_in$n_tracers),
-#   tau_rate = rep(1, simmr_in$n_tracers)
+#   tau_shape = rep(1, cosimmr_in$n_tracers),
+#   tau_rate = rep(1, cosimmr_in$n_tracers)
 # ),
 # ffvb_control = list(
 #   n_output = 3600, #3600
@@ -406,17 +406,17 @@ cosimmr_ffvb <- function(simmr_in,
 #   #lambda = NULL #Null = optimised, can choose their starting values, give a error if length is wrong etc
 # )) {
 #   # Throw a warning if less than 4 observations in a group - 1 is ok as it wil do a solo run
-#   #  if (min(table(simmr_in$group)) > 1 & min(table(simmr_in$group)) < 4) warning("At least 1 group has less than 4 observations - either put each observation in an individual group or use informative prior information")
+#   #  if (min(table(cosimmr_in$group)) > 1 & min(table(cosimmr_in$group)) < 4) warning("At least 1 group has less than 4 observations - either put each observation in an individual group or use informative prior information")
 #   
-#   output <- list #vector("list", length = simmr_in$n_groups)
-#   # names(output) <- levels(simmr_in$group)
-#   K <- simmr_in$n_sources
-#   n_tracers <- simmr_in$n_tracers
+#   output <- list #vector("list", length = cosimmr_in$n_groups)
+#   # names(output) <- levels(cosimmr_in$group)
+#   K <- cosimmr_in$n_sources
+#   n_tracers <- cosimmr_in$n_tracers
 #   n_output <- ffvb_control$n_output
 #   mu_a <- prior_control$mu_0
 #   sigma_a <- prior_control$sigma_0
-#   n_covariates<- simmr_in$n_covariates
-#   x_scaled = simmr_in$x_scaled
+#   n_covariates<- cosimmr_in$n_covariates
+#   x_scaled = cosimmr_in$x_scaled
 #   c_prior = prior_control$tau_shape
 #   d_prior = prior_control$tau_rate
 #   
@@ -465,26 +465,26 @@ cosimmr_ffvb <- function(simmr_in,
 #   lambdares <- c(rep(NA, ll))
 #   
 #   
-#   thetares <- matrix(rep(NA, ((K * n_covariates + n_tracers * simmr_in$n_obs) * n_output)),
-#                      ncol = (K * n_covariates + n_tracers * simmr_in$n_obs),
+#   thetares <- matrix(rep(NA, ((K * n_covariates + n_tracers * cosimmr_in$n_obs) * n_output)),
+#                      ncol = (K * n_covariates + n_tracers * cosimmr_in$n_obs),
 #                      nrow = n_output
 #   )
 #   
-#   mylist <- list#vector("list", length = simmr_in$n_groups)
+#   mylist <- list#vector("list", length = cosimmr_in$n_groups)
 #   
-#   # names(mylist) <- levels(simmr_in$group)
+#   # names(mylist) <- levels(cosimmr_in$group)
 #   
 #   p_fun <- function(x) exp(x) / sum(exp(x))
 #   
 #   # Loop through all the groups
-#   # for (i in 1:simmr_in$n_groups) {
-#   #  if (simmr_in$n_groups > 1) message("\nRunning for group", levels(simmr_in$group)[i], "\n\n")
+#   # for (i in 1:cosimmr_in$n_groups) {
+#   #  if (cosimmr_in$n_groups > 1) message("\nRunning for group", levels(cosimmr_in$group)[i], "\n\n")
 #   
-#   #   curr_rows <- which(simmr_in$group_int == i)
-#   #  curr_mix <- simmr_in$mixtures[curr_rows, , drop = FALSE]
+#   #   curr_rows <- which(cosimmr_in$group_int == i)
+#   #  curr_mix <- cosimmr_in$mixtures[curr_rows, , drop = FALSE]
 #   
 #   # Determine if a single observation or not
-#   if (nrow(simmr_in$mixtures) == 1) {
+#   if (nrow(cosimmr_in$mixtures) == 1) {
 #     message("Only 1 mixture value, performing a simmr solo run...\n")
 #     solo <- TRUE
 #     beta_prior = c(rep(100, n_tracers))
@@ -493,16 +493,16 @@ cosimmr_ffvb <- function(simmr_in,
 #     beta_prior = prior_control$tau_rate
 #   }
 #   
-#   n_tracers <- simmr_in$n_tracers
-#   n_sources <- simmr_in$n_sources
-#   s_names <- simmr_in$source_names
-#   K <- simmr_in$n_sources
-#   source_means <- simmr_in$source_means
-#   source_sds <- simmr_in$source_sds
-#   correction_means <- simmr_in$correction_means
-#   correction_sds <- simmr_in$correction_sds
-#   concentration_means <- simmr_in$concentration_means
-#   y <- simmr_in$mixtures
+#   n_tracers <- cosimmr_in$n_tracers
+#   n_sources <- cosimmr_in$n_sources
+#   s_names <- cosimmr_in$source_names
+#   K <- cosimmr_in$n_sources
+#   source_means <- cosimmr_in$source_means
+#   source_sds <- cosimmr_in$source_sds
+#   correction_means <- cosimmr_in$correction_means
+#   correction_sds <- cosimmr_in$correction_sds
+#   concentration_means <- cosimmr_in$concentration_means
+#   y <- cosimmr_in$mixtures
 #   n = nrow(y)
 #   
 #   lambdaprior <- c(lambda)
@@ -514,8 +514,8 @@ cosimmr_ffvb <- function(simmr_in,
 #   
 #   #We need sd_prior and mu_prior to be n_Covariates * n_sources for beta specifically
 #   # FOR NOW JUST SET TO 1 for sd and 0 for mu
-#   mu_beta_prior = matrix(c(rep(0, simmr_in$n_covariates * simmr_in$n_sources), nrow = simmr_in$n_covariates))
-#   sigma_beta_prior = matrix(c(rep(1, simmr_in$n_covariates * simmr_in$n_sources), nrow = simmr_in$n_covariates))
+#   mu_beta_prior = matrix(c(rep(0, cosimmr_in$n_covariates * cosimmr_in$n_sources), nrow = cosimmr_in$n_covariates))
+#   sigma_beta_prior = matrix(c(rep(1, cosimmr_in$n_covariates * cosimmr_in$n_sources), nrow = cosimmr_in$n_covariates))
 # 
 #   lambdares <- run_VB_cpp(
 #     lambdastart, K, n_tracers, n_covariates, n, d_prior, 
@@ -536,7 +536,7 @@ cosimmr_ffvb <- function(simmr_in,
 #   
 #   sigma <- sqrt(exp((thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)])))
 #   
-#   p_sample = array(NA, dim = c(simmr_in$n_obs, n_output, K))
+#   p_sample = array(NA, dim = c(cosimmr_in$n_obs, n_output, K))
 #   p_mean_sample = matrix(NA, nrow = n_output, ncol = K)
 #   
 #   #beta1 = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
@@ -544,14 +544,14 @@ cosimmr_ffvb <- function(simmr_in,
 #   #So change to a matrix and see if that fixes the problem??
 #   beta = thetares[,1:(n_covariates * K)]
 #   
-#   f <- array(NA, dim = c(simmr_in$n_obs, K, n_output)) 
+#   f <- array(NA, dim = c(cosimmr_in$n_obs, K, n_output)) 
 #   #f_mean_sample <- array(NA, dim = c(1, K, n_output)) 
 #   f_mean_sample = matrix(NA, nrow = K, ncol = n_output)
 #   
-#   if(simmr_in$intercept == TRUE){
-#     x_sample_mean = c(1, rep(0, (ncol(simmr_in$x_scaled) - 1)))
-#   } else if(simmr_in$intercept == FALSE){
-#     x_sample_mean = c(rep(0, (ncol(simmr_in$x_scaled))))
+#   if(cosimmr_in$intercept == TRUE){
+#     x_sample_mean = c(1, rep(0, (ncol(cosimmr_in$x_scaled) - 1)))
+#   } else if(cosimmr_in$intercept == FALSE){
+#     x_sample_mean = c(rep(0, (ncol(cosimmr_in$x_scaled))))
 #   }
 #   
 #   # for(s in 1:n_output){
@@ -564,12 +564,12 @@ cosimmr_ffvb <- function(simmr_in,
 #   #n_output here is 3600 cause I keep confusing myself
 #   for(s in 1:n_output){
 #     
-#     f[,,s] = as.matrix(simmr_in$original_x) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
+#     f[,,s] = as.matrix(cosimmr_in$original_x) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
 #     f_mean_sample[,s] = matrix(x_sample_mean, nrow = 1) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE) 
 #   }
 #   
 #   for(j in 1:n_output){
-#     for (n_obs in 1:simmr_in$n_obs) {
+#     for (n_obs in 1:cosimmr_in$n_obs) {
 #       p_sample[n_obs,j, ] <- exp(f[n_obs,1:K, j]) / (sum((exp(f[n_obs,1:K, j]))))
 #     }
 #   }
@@ -581,32 +581,32 @@ cosimmr_ffvb <- function(simmr_in,
 #   ########################
 #   ##vs old way
 #   # beta1 = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
-#   # f1 <- array(NA, dim = c(simmr_in$n_obs, K, n_output))
+#   # f1 <- array(NA, dim = c(cosimmr_in$n_obs, K, n_output))
 #   # for(s in 1:n_output){
 #   #   f1[,,s] = as.matrix(x_scaled) %*% beta1[s,,]
 #   # }
-#   # p_sample1 = array(NA, dim = c(simmr_in$n_obs, n_output, K))
+#   # p_sample1 = array(NA, dim = c(cosimmr_in$n_obs, n_output, K))
 #   # for(j in 1:n_output){
-#   #   for (n_obs in 1:simmr_in$n_obs) {
+#   #   for (n_obs in 1:cosimmr_in$n_obs) {
 #   #     p_sample1[n_obs,j, ] <- exp(f1[n_obs,1:K, j]) / (sum((exp(f1[n_obs,1:K, j]))))
 #   #   }
 #   # }
 #   
 #   
 #   #Not sure best way to do this??
-#   #colnames(p[1,,]) <- simmr_in$source_names
+#   #colnames(p[1,,]) <- cosimmr_in$source_names
 #   
 #   # sims.matrix <- cbind(
 #   #   p,
 #   #   sigma
 #   # )
 #   
-#   # colnames(sims.matrix) <- c(simmr_in$source_names, colnames(simmr_in$mixtures))
+#   # colnames(sims.matrix) <- c(cosimmr_in$source_names, colnames(cosimmr_in$mixtures))
 #   
 #   mylist <- list(
-#     source_names = simmr_in$source_names,
+#     source_names = cosimmr_in$source_names,
 #     theta = thetares,
-#     groupnames = simmr_in$group,
+#     groupnames = cosimmr_in$group,
 #     lambdares = lambdares,#$lambda,
 #     # mean_LB = lambdares$mean_LB,
 #     beta = beta,
@@ -625,7 +625,7 @@ cosimmr_ffvb <- function(simmr_in,
 #   )
 #   
 #   
-#   output_all <- list(input = simmr_in, output = mylist)
+#   output_all <- list(input = cosimmr_in, output = mylist)
 #   
 #   class(output_all) <- c("cosimmr_output", "ffvb")
 #   

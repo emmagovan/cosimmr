@@ -36,10 +36,10 @@ the prior on the posterior distribution.
 \examples{
 \donttest{
 data(geese_data_day1)
-simmr_1 <- with(
+cosimmr_1 <- with(
   geese_data_day1,
-  simmr_load(
-    mixtures = mixtures,
+  cosimmr_load(
+    formula = mixtures ~ 1,
     source_names = source_names,
     source_means = source_means,
     source_sds = source_sds,
@@ -50,16 +50,16 @@ simmr_1 <- with(
 )
 
 # Plot
-plot(simmr_1)
+plot(cosimmr_1)
 
 # Print
-simmr_1
+cosimmr_1
 
-# MCMC run
-simmr_1_out <- simmr_mcmc(simmr_1)
+# FFVB run
+cosimmr_1_out <- cosimmr_ffvb(cosimmr_1)
 
 # Prior predictive
-prior <- prior_viz(simmr_1_out)
+prior <- prior_viz(cosimmr_1_out)
 head(prior$p_prior_sim)
 summary(prior$p_prior_sim)
 }

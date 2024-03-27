@@ -12,10 +12,11 @@
 #' user to judge which sources are non-identifiable.
 #'
 #'
-#' @param cosimmr_out An object of class \code{cosimmr_output} produced by the
-#' function  \code{\link{simmr_ffvb}}
+#' @param object An object of class \code{cosimmr_output} produced by the
+#' function  \code{\link{cosimmr_ffvb}}
 #' @param type The type of output required. At least none of quantiles', 
 #' 'statistics', or 'correlations'.
+#' @param individual The individual to generate a summary for. Defaults to 1.
 #' @param ...  Not used
 #' @return A list containing the following components: 
 #' \item{quantiles }{The quantiles of each parameter from the posterior 
@@ -122,7 +123,7 @@ summary.cosimmr_pred_out <-
       
     } else {
       (return(message("incorrect object passed to function. This function is for objects
-                      created using the `predict` function on a cosimmr_output object")))
+                      created using the `predict` function on a objectput object")))
     }
   }
 

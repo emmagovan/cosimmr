@@ -37,7 +37,8 @@
 #' matrix where the number of rows is the number of sources and the number of
 #' columns is the number of tracers. These should be between 0 and 1. If not
 #' provided these are all set to 1.
-#' @param group A grouping variable. These can be a character or factor variable
+#' @param scale_x Whether or not you wish to scale the x values provided, or run 
+#' the model using the original x values. Defaults to TRUE.
 #'
 #' @import checkmate
 #'

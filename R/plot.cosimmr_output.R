@@ -70,8 +70,7 @@ plot.cosimmr_output <-
              "isospace",
              "beta_histogram",
              "beta_boxplot",
-             "p_ind",
-             "p_mean"
+             "p_ind"
              ),
            ind = 1,
            covariates = 1,
@@ -134,87 +133,13 @@ plot.cosimmr_output <-
         }
       }
       
-      if("p_mean" %in% type){
-        #I think I'm right in saying that the mean should be
-        #When all the x's equal zero because its mean centred
-        #Also need to check for intercept I guess?
-        
-        if(is.null(title_input) == TRUE){
-            title = "p_mean_plot"
-          } else{title = title_input}
-       
-
-      # #So check if intercept = TRUE and then print a vector
-      #   if(x$input$intercept == TRUE){
-      #     x_pred = c(1, rep(0, (ncol(x$input$x_scaled) - 1)))
-      #   } else if(x$input$intercept == FALSE){
-      #     x_pred = c(rep(0, (ncol(x$input$x_scaled))))
-      #   }
-      # 
-      #   thetares= x$output$theta
-      #   K = x$input$n_sources
-      #   n_tracers = x$input$n_tracers
-      #   n_covariates = ncol(x$input$x_scaled)
-      # 
-      # 
-      # 
-      #   sigma <- (1/sqrt(thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)]))
-      # 
-      #   #p_sample = array(NA, dim = c(1, n_output, K))
-      #   p_sample = matrix(ncol = K, nrow = n_output)
-      # 
-      #   beta = array(thetares[,1:(n_covariates * K)], dim = c(n_output, n_covariates, K))
-      # 
-      #   f <- array(NA, dim = c(1, K, n_output))
-      # 
-      #   for(s in 1:n_output){
-      #     f[,,s] = as.matrix(x_pred) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
-      #   }
-      # 
-      #   for(j in 1:n_output){
-      #      # p_sample[1,j, ] 
-      #    p_sample[j,] <- exp(f[1,1:K, j]) / (sum((exp(f[1,1:K, j]))))
-      #   }
-        p_m_sample = x$output$BUGSoutput$sims.list$p_mean
-        colnames(p_m_sample) = x$input$source_names
-
-        df_p_mean <- reshape2::melt(p_m_sample)
-
-
-        colnames(df_p_mean) = c("Num", "Source", "Proportion")
-
-        g <- ggplot(df_p_mean, aes(
-          x = Proportion
-        )) +
-          scale_fill_viridis(discrete = TRUE) +
-          geom_histogram(binwidth = binwidth, alpha = alpha) +
-          theme_bw() +
-          ggtitle(title) +
-          facet_wrap("~ Source") +
-          theme(legend.position = "none")
-        print(g)
-
-
-
-         }
   
       #Prep data
       #Data needs to be edited I think to make life easier
       
     for( i in 1:length(covariates)){
       
-      #I think I need to make a beta array here?? 
-      # out_all_p = x$output$BUGSoutput$sims.list$p[curr_ind,,]
-      # 
-      # 
-      # colnames(out_all_p) = x$input$source_names
-      # 
-      # df <- reshape2::melt(out_all_p)
-      # 
-      # 
-      # colnames(df) = c("Num", "Source", "Proportion")
-      # 
-      
+
 
       beta = array(NA, dim = c(x$input$n_covariates, nrow(x$output$beta), x$input$n_sources))
       

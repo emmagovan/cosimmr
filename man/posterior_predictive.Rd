@@ -7,6 +7,7 @@
 posterior_predictive(
   cosimmr_out,
   prob = 0.5,
+  ind = 1,
   plot_ppc = TRUE,
   n_samples = 3600
 )
@@ -16,9 +17,11 @@ posterior_predictive(
 
 \item{prob}{The probability interval for the posterior predictives. The default is 0.5 (i.e. 50pc intervals)}
 
+\item{ind}{The individual number you wish to plot. Defaults to 1.}
+
 \item{plot_ppc}{Whether to create a bayesplot of the posterior predictive or not.}
 
-\item{covariate}{Which covariate to run it for}
+\item{n_samples}{The number of samples you wish to generate for y_pred. Defaults to 3600.}
 }
 \value{
 plot of posterior predictives and simulated values

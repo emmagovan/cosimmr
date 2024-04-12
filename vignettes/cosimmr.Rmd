@@ -115,3 +115,114 @@ We can then use the `predict` function to predict for each group
 pred_matrix = data.frame(Groups = c("Period 1", "Period 3"))
 groups_predict = predict(cosimmr_2_out, x_pred = pred_matrix)
 ```
+
+We can also create plots using the `plot` function
+```{r}
+plot(cosimmr_2_out)
+```
+
+
+
+
+We can look at Alligator data from Nifong et al, 2015
+For this example we just use Length as the covariate - but the dataset contains other covariates that can be looked at too.
+First we load in the data into R - this data is included in cosimmr:
+```{r}
+data("alligator_data")
+```
+
+Then we use `cosimmr_load` to create a "cosimmr_in" object
+```{r}
+cosimmr_ali <-cosimmr_load(
+    formula = as.matrix(alligator_data$mixtures) ~ alligator_data$length,
+    source_names = alligator_data$source_names,
+    source_means = as.matrix(alligator_data$source_means),
+    source_sds = as.matrix(alligator_data$source_sds),
+    correction_means = as.matrix(alligator_data$TEF_means),
+    correction_sds = as.matrix(alligator_data$TEF_sds))
+```
+
+We then plot our data to make sure our iso-space plot looks good
+```{r}
+plot(cosimmr_ali)
+```
+
+Then we can run the mixing model:
+```{r}
+cosimmr_ali_out = cosimmr_ffvb(cosimmr_ali)
+```
+
+We can then look at a summary of the data. This defaults to individual 1
+```{r}
+summary(cosimmr_ali_out, type = "statistics")
+```
+
+We can create plots of our data. This code creates a proportion plot and a histogram plot of beta value for individuals 1 and 2
+```{r}
+plot(cosimmr_ali_out, type = c("p_ind", "beta_histogram"), binwidth = 0.01, ind = c(1,2))
+```
+
+We can use the predict function to predict proportions for individuals of lengths 100, 210, and 203 by creating a data frame and then using the `predict` function
+```{r}
+x_pred = data.frame(length = c(100,210,302))
+alli_pred = predict(cosimmr_ali_out, x_pred)
+```
+
+"alli_pred" can be treated like a normal cosimmr_out object - we can get summary values for each individual or we can create plots
+```{r}
+summary(alli_pred, ind = c(1,2,3), type = "statistics")
+
+plot(alli_pred, type = "beta_boxplot")
+```
+
+
+We can also access the outputs from cosimmr if we wish to make more complex plots.
+For example, this code generates plots showing how the proportion of each food eaten changes as the length changes.
+```{r}
+a = matrix(cosimmr_ali_out$output$BUGSoutput$sims.list$p[,,1], nrow = 181, ncol = 3600)
+mean_A = rowMeans(a)
+save_sd = c(rep(NA, 181))
+for(i in 1:181){
+  save_sd[i] = sd(a[i,])
+}
+
+df_plot = data.frame(mean = mean_A, 
+                     sd = save_sd, 
+                     length = cosimmr_ali_out$input$original_x[,2], 
+                     psd = (mean_A + save_sd),
+                     nsd = (mean_A - save_sd))
+
+library(ggplot2)
+ggplot(data = df_plot, aes(x = length, y = mean)) + geom_point() + 
+  geom_errorbar(data = df_plot, min = df_plot$nsd, max = df_plot$psd) + ggtitle("Marine") +xlab("length") + ylab("proportion")
+
+ggplot(data = df_plot, aes(x = length, y = mean))  + 
+  geom_ribbon(data = df_plot, aes(ymin = nsd, ymax = psd), alpha = 0.2, fill = "blue") + geom_line() + ggtitle("Marine") +xlab("length") + ylab("proportion")
+
+
+
+#Second source
+b = matrix(cosimmr_ali_out$output$BUGSoutput$sims.list$p[,,2], nrow = 181, ncol = 3600)
+#mean_b = rowMeans(b)
+mean_b = c(rep(NA, 181))
+save_sdb = c(rep(NA, 181))
+for(i in 1:181){
+  mean_b[i] = mean(b[i,])
+  save_sdb[i] = sd(b[i,])
+}
+
+df_plotb = data.frame(mean = mean_b, sd = save_sdb, 
+                     length = cosimmr_ali_out$input$original_x[,2], 
+                     psd = (mean_b + save_sdb),
+                     nsd = (mean_b - save_sdb))
+
+
+ggplot(data = df_plotb, aes(x = alligator_data.length, y = mean)) + geom_point() + 
+  geom_errorbar(min = df_plotb$nsd, max = df_plotb$psd) +ylim(0,1) + ggtitle("Freshwater")
+
+ggplot(data = df_plotb, aes(x = length, y = mean))  + 
+  geom_ribbon(data = df_plotb, aes(ymin = nsd, ymax = psd), alpha = 0.2, fill = "blue") + geom_line() + ggtitle("Freshwater") +xlab("length") + ylab("proportion")
+
+
+```
+

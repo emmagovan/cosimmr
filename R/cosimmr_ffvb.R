@@ -25,7 +25,7 @@
 #' \code{\link{summary.cosimmr_output}} and \code{\link{plot.cosimmr_output}}
 #' functions.}
 #'
-#' @author Emma Govan <emma.govan.2021@@mumail.ie>
+#' @author Emma Govan <emmagovan@@gmail.com>, Andrew Parnell
 #'
 #' @seealso \code{\link{cosimmr_load}} for creating objects suitable for this
 #' function, \code{\link{plot.cosimmr_input}} for creating isospace plots,
@@ -89,40 +89,6 @@
 #' # Compare multiple sources
 #' compare_sources(cosimmr_1_out)
 #'
-#' #####################################################################################
-#'
-#' # A version with just one observation
-#' data(geese_data_day1)
-#' cosimmr_2 <- with(
-#'   geese_data_day1,
-#'   simmr_loadcov(
-#'     formula = mixtures[1, , drop = FALSE] ~ c(1),
-#'     source_names = source_names,
-#'     source_means = source_means,
-#'     source_sds = source_sds,
-#'     correction_means = correction_means,
-#'     correction_sds = correction_sds,
-#'     concentration_means = concentration_means
-#'   )
-#' )
-#'
-#' # Plot
-#' plot(cosimmr_2)
-#'
-#' # FFVB run - automatically detects the single observation
-#' cosimmr_2_out <- simmr_ffvb(cosimmr_2)
-#'
-#' # Print it
-#' print(cosimmr_2_out)
-#'
-#' # Summary
-#' summary(cosimmr_2_out)
-#' ans <- summary(cosimmr_2_out, type = c("quantiles"))
-#'
-#' # Plot
-#' plot(cosimmr_2_out)
-#' plot(cosimmr_2_out, type = "beta_boxplot")
-#' plot(simmr_2_out, type = "beta_histogram")
 #'}
 #' @export cosimmr_ffvb
 cosimmr_ffvb <- function(cosimmr_in,
@@ -172,10 +138,10 @@ cosimmr_ffvb <- function(cosimmr_in,
   # sig_prior = matrix(rep(sigma_a, n_covariates*K*n_covariates*K), ncol = n_covariates*K, 
   #                    nrow = n_covariates*K)
   
-  sig_prior = matrix(rep(1, (n_covariates*K+n_tracers)*(n_covariates*K+n_tracers)), ncol = (n_covariates*K + n_tracers), 
-                     nrow = (n_covariates*K + n_tracers))
+  # sig_prior = matrix(rep(sigma_a, (n_covariates*K+n_tracers)*(n_covariates*K+n_tracers)), ncol = (n_covariates*K + n_tracers), 
+  #                    nrow = (n_covariates*K + n_tracers))
   
-  c_0 <- c(1,1)#prior_control$tau_shape #Change to 0.0001
+  #c_0 <- c(1,1)#prior_control$tau_shape #Change to 0.0001
   # #d_0 <- prior_control$tau_rate
   
   # beta_lambda<-c(mu_a, rep(1, (K*n_covariates) * (K*n_covariates) + 1) / 2)))
@@ -260,19 +226,19 @@ cosimmr_ffvb <- function(cosimmr_in,
   ### TEMPORARY
   #lambdastart = c(rep(5, length(lambdaprior)))
   
-  mu_beta_prior = matrix(c(rep(0, cosimmr_in$n_covariates * cosimmr_in$n_sources)), nrow = cosimmr_in$n_covariates)
-  sigma_beta_prior = matrix(c(rep(1, cosimmr_in$n_covariates * cosimmr_in$n_sources)), nrow = cosimmr_in$n_covariates)
+  mu_beta_prior = matrix(prior_control$mu_0, nrow = cosimmr_in$n_covariates)
+  sigma_beta_prior = matrix(c(rep(prior_control$sigma_0, cosimmr_in$n_covariates * cosimmr_in$n_sources)), nrow = cosimmr_in$n_covariates)
   
   
   lambdares <- run_VB_cpp(
-    lambdastart, K, n_tracers, n_covariates, n, c(rep(1,n_tracers)), 
+    lambdastart, K, n_tracers, n_covariates, n, beta_prior, 
     concentration_means,
     source_means, correction_means, correction_sds,
     source_sds, y, (x_scaled), ffvb_control$S,
     ffvb_control$P, ffvb_control$beta_1,
     ffvb_control$beta_2, ffvb_control$tau,
     ffvb_control$eps_0, ffvb_control$t_W,
-    c(rep(1,n_tracers)), solo, sigma_beta_prior, mu_beta_prior)
+    prior_control$tau_shape, solo, sigma_beta_prior, mu_beta_prior)
   
   
   iteration = (lambdares$iteration) 

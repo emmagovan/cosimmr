@@ -1,12 +1,15 @@
-#' cosimmr
+#' cosimmr: An R package for Stable Isotope Mixing Models
 #' 
-#' simmr with covariates
+#' cosimmr is a package that has been developed to allow for running of Stable 
+#' Isotope Mixing Models in R. It allows for the inclusion of covariates and 
+#' has been designed to be easy to use for non-expert users. cosimmr uses Fixed
+#' Form Variational Bayes to run SIMMs, instead of MCMC. This allows for faster
+#' running of models without any issues with convergence
 #' 
-#' @docType cosimmr
-#' @author Emma Govan <emma.govan.2021@@mumail.ie>
+#' @name cosimmr
+#' @author Emma Govan <emmagovan@@gmail.com>, Andrew Parnell
 #' @import Rcpp 
 #' @importFrom Rcpp evalCpp
 #' @useDynLib cosimmr
-#' @name cosimmr
 #' @aliases <cosimmr>-package
 NULL

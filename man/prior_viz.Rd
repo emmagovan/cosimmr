@@ -25,6 +25,8 @@ prior_viz(
 }
 \value{
 A list containing \code{plot}: the ggplot object (useful if requires customisation), and \code{sim}: the simulated prior values which can be compared with the posterior densities
+
+#' @author Emma Govan <emmagovan@gmail.com> Andrew Parnell
 }
 \description{
 This function takes the output from \code{\link{cosimmr_ffvb}} and plots the 
@@ -63,4 +65,8 @@ prior <- prior_viz(cosimmr_1_out)
 head(prior$p_prior_sim)
 summary(prior$p_prior_sim)
 }
+}
+\seealso{
+\code{\link{cosimmr_ffvb}} for creating objects suitable for this
+function
 }

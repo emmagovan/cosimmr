@@ -50,17 +50,17 @@ Further detail about these plots is provided in the vignette.
 }
 \examples{
 
-\dontrun{
+\donttest{
 # A simple example with 10 observations, 2 tracers and 4 sources
 
 # The data
 data(geese_data_day1)
 
 # Load into simmr
-simmr_1 <- with(
+cosimmr_1 <- with(
   geese_data_day1,
   cosimmr_load(
-    formula = mixtures ~ c(1,2,3,3,2,3,2,1,2),
+    formula = mixtures ~ 1,
     source_names = source_names,
     source_means = source_means,
     source_sds = source_sds,
@@ -70,13 +70,13 @@ simmr_1 <- with(
   )
 )
 # Plot
-plot(simmr_1)
+plot(cosimmr_1)
 
 
 # FFVB run
-simmr_1_out <- cosimmr_ffvb(simmr_1)
+cosimmr_1_out <- cosimmr_ffvb(cosimmr_1)
 
-plot(simmr_1_out, type = c("isospace", "beta_hist"))
+plot(cosimmr_1_out, type = c("isospace", "beta_hist"))
 }
 }
 \seealso{
@@ -86,5 +86,5 @@ also \code{\link{cosimmr_load}} for creating simmr objects,
 \code{\link{plot.cosimmr_input}} for creating isospace plots.
 }
 \author{
-Andrew Parnell <andrew.parnell@mu.ie>
+Emma Govan <emmagovan@gmail.com>>, Andrew Parnell
 }

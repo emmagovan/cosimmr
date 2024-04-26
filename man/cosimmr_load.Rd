@@ -76,13 +76,14 @@ source in question and should be given in proportion format between 0 and 1.
 At present there is no means to include concentration standard deviations.
 }
 \examples{
+\dontrun{
 
 # A simple example with 10 observations, 2 tracers and 4 sources
 data(geese_data_day1)
 simmr_1 <- with(
   geese_data_day1,
   cosimmr_load(
-    formula = mixtures ~ c(1,2,3,2,3,1,2,1,1),
+    formula = mixtures ~ 1,
     source_names = source_names,
     source_means = source_means,
     source_sds = source_sds,
@@ -93,17 +94,14 @@ simmr_1 <- with(
   )
 )
 
-Options: either input as matrix ~ whatever covariates
-OR y1 + y2 ~ x1 + x2 + x3
-And then use the `Formula` package
-So then it would be 
-mixtures = as.matrix(model.frame(Formula(formula))[,1:ncol(source_means)])
+
 
 print(simmr_1)
+}
 }
 \seealso{
 See \code{\link{cosimmr_ffvb}} for complete examples.
 }
 \author{
-Emma Govan <emma.govan.2021@mumail.ie>
+Emma Govan <emmagovan@gmail.com>, Andrew Parnell
 }

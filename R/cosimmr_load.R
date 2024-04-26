@@ -51,16 +51,17 @@
 #' }{The number of observations} \item{n_tracers }{The number of
 #' tracers/isotopes} \item{n_sources }{The number of sources} \item{n_groups
 #' }{The number of groups}
-#' @author Emma Govan <emma.govan.2021@@mumail.ie>
+#' @author Emma Govan <emmagovan@@gmail.com>, Andrew Parnell
 #' @seealso See \code{\link{cosimmr_ffvb}} for complete examples.
 #' @examples
+#' \dontrun{
 #'
 #' # A simple example with 10 observations, 2 tracers and 4 sources
 #' data(geese_data_day1)
 #' simmr_1 <- with(
 #'   geese_data_day1,
 #'   cosimmr_load(
-#'     formula = mixtures ~ c(1,2,3,2,3,1,2,1,1),
+#'     formula = mixtures ~ 1,
 #'     source_names = source_names,
 #'     source_means = source_means,
 #'     source_sds = source_sds,
@@ -71,13 +72,10 @@
 #'   )
 #' )
 #' 
-#' Options: either input as matrix ~ whatever covariates
-#' OR y1 + y2 ~ x1 + x2 + x3
-#' And then use the `Formula` package
-#'So then it would be 
-#'mixtures = as.matrix(model.frame(Formula(formula))[,1:ncol(source_means)])
+#' 
 #'
 #' print(simmr_1)
+#' }
 #' @export cosimmr_load
 cosimmr_load <- function(formula,
 source_names,

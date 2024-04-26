@@ -53,7 +53,7 @@ data(geese_data_day1)
 cosimmr_1 <- with(
   geese_data_day1,
   cosimmr_load(
-    formula = mixtures ~ c(1,2,3,3,2,3,1,2,1),
+    formula = mixtures ~ 1,
     source_names = source_names,
     source_means = source_means,
     source_sds = source_sds,
@@ -67,8 +67,8 @@ cosimmr_1 <- with(
 plot(cosimmr_1)
 
 
-# MCMC run
-cosimmr_1_out <- cosimmr_ffvb(simmr_1)
+# FFVB run
+cosimmr_1_out <- cosimmr_ffvb(cosimmr_1)
 
 # Summarise
 summary(cosimmr_1_out) # This outputs all the summaries
@@ -87,5 +87,5 @@ See also \code{\link{cosimmr_load}} for creating cosimmr objects,
 \code{\link{plot.cosimmr_output}} for plotting output.
 }
 \author{
-Andrew Parnell <andrew.parnell@mu.ie>, Emma Govan
+Emma Govan <emmagovan@gmail.com> Andrew Parnell
 }

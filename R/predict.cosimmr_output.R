@@ -10,7 +10,7 @@
 #' @param n_output the number of posterior samples to generate. Defaults to 3600.
 
 #'
-#' @author Emma Govan <emma.govan.2021@mumail.ie>
+#' @author Emma Govan <emmagovan@@gmail.com> Andrew Parnell
 #'
 #' @seealso \code{\link{cosimmr_load}} for creating objects suitable for this
 #' function,  and
@@ -21,14 +21,10 @@
 #' David J. Kelly, and Richard Inger. Bayesian stable isotope mixing models.
 #' Environmetrics, 24(6):387–399, 2013.
 #'
-#' Andrew C Parnell, Richard Inger, Stuart Bearhop, and Andrew L Jackson.
-#' Source partitioning using stable isotopes: coping with too much variation.
-#' PLoS ONE, 5(3):5, 2010.
-#'
 #' @importFrom R2jags jags
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' ## See the package vignette for a detailed run through of these 4 examples
 #'
 #' # Data set 1: 10 obs on 2 isos, 4 sources, with tefs and concdep
@@ -62,8 +58,10 @@
 #' # Plot
 #' plot(simmr_1_out, type = "isospace")
 #' plot(simmr_1_out, type = "beta_hist")
+#' 
+#' x_pred = data.frame(pred = c(1,5))
 #'
-#'pred_array<-cosimmr_predict(simmr_out = simmr_1_out, x_pred = c(1,5))
+#'pred_array<-predict(simmr_1_out, x_pred)
 #'
 #' }
 #' @export

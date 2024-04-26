@@ -34,15 +34,15 @@
 #' @import ggplot2
 #' @import viridis
 #'
-#' @author Andrew Parnell <andrew.parnell@@mu.ie>, Emma Govan
+#' @author Emma Govan <emmagovan@@gmail.com>, Andrew Parnell
 #' @seealso See \code{\link{plot.cosimmr_output}} for plotting the output of a
-#' simmr run. See \code{\link{cosimmr_ffvb}} for running a simmr object once the
+#' simmr run. See \code{\link{cosimmr_ffvb}} for running a cosimmr object once the
 #' iso-space is deemed acceptable.
 #' @examples
-#'
+#' \dontrun{
 #' # A simple example with 10 observations, 4 food sources and 2 tracers
 #' data(geese_data_day1)
-#' simmr_1 <- with(
+#' cosimmr_1 <- with(
 #'   geese_data_day1,
 #'   cosimmr_load(
 #'     formula = mixtures ~ c(1,2,3,2,3,1,2,3,1),
@@ -56,14 +56,14 @@
 #' )
 #'
 #' # Plot
-#' plot(simmr_1)
+#' plot(cosimmr_1)
 #'
 #' ### A more complicated example with 30 obs, 3 tracers and 4 sources
 #' data(simmr_data_2)
-#' simmr_3 <- with(
+#' cosimmr_3 <- with(
 #'   simmr_data_2,
 #'   cosimmr_load(
-#'     formula = mixtures ~ c(rep(1, nrow(mixtures))),
+#'     formula = mixtures ~ 1,
 #'     source_names = source_names,
 #'     source_means = source_means,
 #'     source_sds = source_sds,
@@ -74,12 +74,13 @@
 #' )
 #'
 #' # Plot 3 times - first default d13C vs d15N
-#' plot(simmr_3)
+#' plot(cosimmr_3)
 #' # Now plot d15N vs d34S
-#' plot(simmr_3, tracers = c(2, 3))
+#' plot(cosimmr_3, tracers = c(2, 3))
 #' # and finally d13C vs d34S
-#' plot(simmr_3, tracers = c(1, 3))
+#' plot(cosimmr_3, tracers = c(1, 3))
 #' # See vignette('cosimmr') for fancier x-axis labels
+#' }
 #' @export
 plot.cosimmr_input <-
   function(x,

@@ -12,7 +12,12 @@
 #' @param n_samples The number of samples you wish to generate for y_pred. Defaults to 3600.
 #'
 #'@return plot of posterior predictives and simulated values
-
+#'
+#'#' @author Emma Govan <emmagovan@@gmail.com> Andrew Parnell
+#'
+#' @seealso \code{\link{cosimmr_ffvb}} for creating objects suitable for this
+#' function
+#' 
 #' @importFrom bayesplot ppc_intervals
 #'
 #' @export

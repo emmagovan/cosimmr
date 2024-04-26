@@ -241,7 +241,7 @@ double hcpp(int n_sources, int n_isotopes, int n_covariates,
 // // // instead of set prior values
 
 //[[Rcpp::export]]
-double log_q_cpp(arma::vec theta, arma::vec lambda,
+double  log_q_cpp(arma::vec theta, arma::vec lambda,
                  int n_sources, int n_tracers, int S, int n_cov){
   
   int ncnsnt = n_sources * n_cov + n_tracers;
@@ -1093,7 +1093,7 @@ List run_VB_cpp(arma::vec lambdastart,
       
     }
     
-    for(int i=0; i<lambda.n_elem; i++){
+    for(int i=0; i<lsl; i++){
       lambda_save(t,i) = lambda(i);
     }
     

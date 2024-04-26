@@ -2,7 +2,8 @@
 title: "Stable Isotope Mixing Models with Covariates in R using cosimmr"
 author: "Emma Govan and Andrew Parnell"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette:
+output: 
+  rmarkdown::html_vignette:
   toc: true
 vignette: >
   %\VignetteIndexEntry{cosimmr}
@@ -50,6 +51,9 @@ data(geese_data_day1)
 
 This data can then be loaded into cosimmr using the function `cosimmr_load`
 
+```{r,include = FALSE}
+library(cosimmr)
+```
 ```{r}
 cosimmr_1 <- with(
   geese_data_day1,
@@ -193,9 +197,6 @@ df_plot = data.frame(mean = mean_A,
                      nsd = (mean_A - save_sd))
 
 library(ggplot2)
-ggplot(data = df_plot, aes(x = length, y = mean)) + geom_point() + 
-  geom_errorbar(data = df_plot, min = df_plot$nsd, max = df_plot$psd) + ggtitle("Marine") +xlab("length") + ylab("proportion")
-
 ggplot(data = df_plot, aes(x = length, y = mean))  + 
   geom_ribbon(data = df_plot, aes(ymin = nsd, ymax = psd), alpha = 0.2, fill = "blue") + geom_line() + ggtitle("Marine") +xlab("length") + ylab("proportion")
 
@@ -215,10 +216,6 @@ df_plotb = data.frame(mean = mean_b, sd = save_sdb,
                      length = cosimmr_ali_out$input$original_x[,2], 
                      psd = (mean_b + save_sdb),
                      nsd = (mean_b - save_sdb))
-
-
-ggplot(data = df_plotb, aes(x = alligator_data.length, y = mean)) + geom_point() + 
-  geom_errorbar(min = df_plotb$nsd, max = df_plotb$psd) +ylim(0,1) + ggtitle("Freshwater")
 
 ggplot(data = df_plotb, aes(x = length, y = mean))  + 
   geom_ribbon(data = df_plotb, aes(ymin = nsd, ymax = psd), alpha = 0.2, fill = "blue") + geom_line() + ggtitle("Freshwater") +xlab("length") + ylab("proportion")

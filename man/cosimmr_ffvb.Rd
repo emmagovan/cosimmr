@@ -88,40 +88,6 @@ compare_sources(cosimmr_1_out, source_names = c("Zostera", "Enteromorpha"))
 # Compare multiple sources
 compare_sources(cosimmr_1_out)
 
-#####################################################################################
-
-# A version with just one observation
-data(geese_data_day1)
-cosimmr_2 <- with(
-  geese_data_day1,
-  simmr_loadcov(
-    formula = mixtures[1, , drop = FALSE] ~ c(1),
-    source_names = source_names,
-    source_means = source_means,
-    source_sds = source_sds,
-    correction_means = correction_means,
-    correction_sds = correction_sds,
-    concentration_means = concentration_means
-  )
-)
-
-# Plot
-plot(cosimmr_2)
-
-# FFVB run - automatically detects the single observation
-cosimmr_2_out <- simmr_ffvb(cosimmr_2)
-
-# Print it
-print(cosimmr_2_out)
-
-# Summary
-summary(cosimmr_2_out)
-ans <- summary(cosimmr_2_out, type = c("quantiles"))
-
-# Plot
-plot(cosimmr_2_out)
-plot(cosimmr_2_out, type = "beta_boxplot")
-plot(simmr_2_out, type = "beta_histogram")
 }
 }
 \references{
@@ -141,5 +107,5 @@ function, \code{\link{plot.cosimmr_input}} for creating isospace plots,
 \code{\link{plot.cosimmr_output}} for plotting output.
 }
 \author{
-Emma Govan <emma.govan.2021@mumail.ie>
+Emma Govan <emmagovan@gmail.com>, Andrew Parnell
 }

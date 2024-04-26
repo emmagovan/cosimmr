@@ -25,6 +25,8 @@ posterior_predictive(
 }
 \value{
 plot of posterior predictives and simulated values
+
+#' @author Emma Govan <emmagovan@gmail.com> Andrew Parnell
 }
 \description{
 This function takes the output from  \code{\link{cosimmr_ffvb}} and plots 
@@ -60,4 +62,8 @@ cosimmr_1_out <- cosimmr_ffvb(cosimmr_1)
 # Prior predictive
 post_pred <- posterior_predictive(cosimmr_1_out)
 }
+}
+\seealso{
+\code{\link{cosimmr_ffvb}} for creating objects suitable for this
+function
 }

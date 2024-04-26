@@ -60,7 +60,7 @@ data(geese_data_day1)
 simmr_1 <- with(
   geese_data_day1,
   cosimmr_load(
-    formula = mixtures ~ c(1,2,3,3,2,3,2,1,2),
+    formula = mixtures ~ 1,
     source_names = source_names,
     source_means = source_means,
     source_sds = source_sds,
@@ -86,5 +86,5 @@ also \code{\link{cosimmr_load}} for creating simmr objects,
 \code{\link{plot.cosimmr_input}} for creating isospace plots.
 }
 \author{
-Andrew Parnell <andrew.parnell@mu.ie>
+Emma Govan <emmagovan@gmail.com>, Andrew Parnell
 }

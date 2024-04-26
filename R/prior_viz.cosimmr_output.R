@@ -14,6 +14,11 @@
 #'
 #' @returns A list containing \code{plot}: the ggplot object (useful if requires customisation), and \code{sim}: the simulated prior values which can be compared with the posterior densities
 #'
+#'#' @author Emma Govan <emmagovan@@gmail.com> Andrew Parnell
+#'
+#' @seealso \code{\link{cosimmr_ffvb}} for creating objects suitable for this
+#' function
+#'
 #' @export
 #'
 #' @examples

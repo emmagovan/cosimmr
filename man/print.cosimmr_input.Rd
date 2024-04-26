@@ -9,11 +9,17 @@
 \arguments{
 \item{x}{An object of class \code{cosimmr_input}}
 
-\item{...}{Other arguments (not supported)}
+\item{...}{Other arguments (not supported)
+
+#' @author Emma Govan <emmagovan@gmail.com> Andrew Parnell}
 }
 \value{
 A neat presentation of your simmr object.
 }
 \description{
 Print simmr input object
+}
+\seealso{
+\code{\link{cosimmr_load}} for creating objects suitable for this
+function
 }

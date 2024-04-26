@@ -67,12 +67,12 @@ cosimmr_1 <- with(
 plot(cosimmr_1)
 
 
-# MCMC run
-cosimmr_1_out <- cosimmr_ffvb(simmr_1)
+# FFVB run
+cosimmr_1_out <- cosimmr_ffvb(cosimmr_1)
 
 # Summarise
 summary(cosimmr_1_out) # This outputs all the summaries
-summary(cosimmr_1_out, type = "quanties") # Just the diagnostics
+summary(cosimmr_1_out, type = "quantiles") # Just the diagnostics
 # Store the output in an
 ans <- summary(cosimmr_1_out,
   type = c("quantiles", "statistics")
@@ -87,5 +87,5 @@ See also \code{\link{cosimmr_load}} for creating cosimmr objects,
 \code{\link{plot.cosimmr_output}} for plotting output.
 }
 \author{
-Andrew Parnell <andrew.parnell@mu.ie>, Emma Govan
+Emma Govan <emmagovan@gmail.com> Andrew Parnell
 }

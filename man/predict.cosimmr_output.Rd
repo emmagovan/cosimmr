@@ -20,7 +20,7 @@ numeric values can be set as characters and this causes incorrect calculations.}
 Predicts proportion of each source in a mixture, based on values provided for covariates
 }
 \examples{
-\dontrun{
+\donttest{
 ## See the package vignette for a detailed run through of these 4 examples
 
 # Data set 1: 10 obs on 2 isos, 4 sources, with tefs and concdep
@@ -55,7 +55,9 @@ print(simmr_1_out)
 plot(simmr_1_out, type = "isospace")
 plot(simmr_1_out, type = "beta_hist")
 
-pred_array<-cosimmr_predict(simmr_out = simmr_1_out, x_pred = c(1,5))
+x_pred = data.frame(pred = c(1,5))
+
+pred_array<-predict(simmr_1_out, x_pred)
 
 }
 }
@@ -64,10 +66,6 @@ Andrew C. Parnell, Donald L. Phillips, Stuart Bearhop, Brice X.
 Semmens, Eric J. Ward, Jonathan W. Moore, Andrew L. Jackson, Jonathan Grey,
 David J. Kelly, and Richard Inger. Bayesian stable isotope mixing models.
 Environmetrics, 24(6):387–399, 2013.
-
-Andrew C Parnell, Richard Inger, Stuart Bearhop, and Andrew L Jackson.
-Source partitioning using stable isotopes: coping with too much variation.
-PLoS ONE, 5(3):5, 2010.
 }
 \seealso{
 \code{\link{cosimmr_load}} for creating objects suitable for this
@@ -75,5 +73,5 @@ function,  and
 \code{\link{plot.cosimmr_output}} for plotting output.
 }
 \author{
-Emma Govan <emma.govan.2021@mumail.ie>
+Emma Govan <emmagovan@gmail.com> Andrew Parnell
 }

@@ -1,17 +1,11 @@
 Package: cosimmr
 Type: Package
-Title: A package for running Stable Isotope Mixing Models and including Covariates
+Title: A Package for Fast Fitting of Stable Isotope Mixing Models with Covariates
 Version: 1.0
-Date: 2023-08-15
-Authors@R: c(person("Emma", "Govan", email = "emma.govan.2021@mumail.ie", role = c("cre","aut")),
-          person("Andrew", "Parnell", role = "aut"),
-          person("Brice", "Semmens", role = "ctb"),
-          person("Eric", "Ward", role = "ctb"),
-          person("Brian", "Stock", role = "ctb"),
-          person("Andrew", "Jackson", role = "ctb"),
-          person("Donald", "Phillips", role = "ctb"))
-Maintainer: Emma Govan <emma.govan.2021@mumail.ie>
-Description: cosimmr is a package for running Stable Isotope Mixing Models in R. It 
+Date: 2024-04-25
+Authors@R: c(person("Emma", "Govan", email = "emmagovan@gmail.com", role = c("cre","aut")),
+          person("Andrew", "Parnell", role = "aut"))
+Description: Fast fitting of Stable Isotope Mixing Models in R. It 
              allows for the inclusion of covariates. The package also has built-in summary functions
              and plot functions which allow for the creation of isospace plots.
 License: GPL (>= 2)
@@ -29,6 +23,7 @@ Suggests:
     testthat (>= 3.0.0),
     knitr,
     markdown
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 RoxygenNote: 7.2.3
 Encoding: UTF-8

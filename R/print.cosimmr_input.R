@@ -3,6 +3,11 @@
 #' @param x An object of class \code{cosimmr_input}
 #' @param ... Other arguments (not supported)
 #'
+#'#' @author Emma Govan <emmagovan@@gmail.com> Andrew Parnell
+#'
+#' @seealso \code{\link{cosimmr_load}} for creating objects suitable for this
+#' function
+#'
 #' @return A neat presentation of your simmr object.
 #' @export print.cosimmr_input
 print.cosimmr_input <-

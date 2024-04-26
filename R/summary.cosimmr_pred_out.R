@@ -25,7 +25,7 @@
 #' correlations between the parameters} Note that this object is reported
 #' silently so will be discarded unless the function is called with an object
 #' as in the example below.
-#' @author Andrew Parnell <andrew.parnell@@mu.ie>, Emma Govan
+#' @author Emma Govan <emmagovan@@gmail.com> Andrew Parnell
 #' @seealso See \code{\link{cosimmr_ffvb}}for creating objects suitable for 
 #' this function, and many more examples.
 #' See also \code{\link{cosimmr_load}} for creating cosimmr objects,
@@ -57,12 +57,12 @@
 #' plot(cosimmr_1)
 #'
 #'
-#' # MCMC run
-#' cosimmr_1_out <- cosimmr_ffvb(simmr_1)
+#' # FFVB run
+#' cosimmr_1_out <- cosimmr_ffvb(cosimmr_1)
 #'
 #' # Summarise
 #' summary(cosimmr_1_out) # This outputs all the summaries
-#' summary(cosimmr_1_out, type = "quanties") # Just the diagnostics
+#' summary(cosimmr_1_out, type = "quantiles") # Just the diagnostics
 #' # Store the output in an
 #' ans <- summary(cosimmr_1_out,
 #'   type = c("quantiles", "statistics")

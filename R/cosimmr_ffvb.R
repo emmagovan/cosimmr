@@ -93,7 +93,8 @@
 #' @export cosimmr_ffvb
 cosimmr_ffvb <- function(cosimmr_in,
                          prior_control = list(
-                           mu_0 = rep(0, (cosimmr_in$n_sources * cosimmr_in$n_covariates + cosimmr_in$n_tracers)),
+                           mu_0 = rep(0, (cosimmr_in$n_sources * cosimmr_in$n_covariates)), #this is currently both the prior value AND the starting lambda value - should change?
+                           mu_log_sig_sq_0 = rep(0, cosimmr_in$n_tracers),
                            sigma_0 = 1,
                            tau_shape = rep(1, cosimmr_in$n_tracers),
                            tau_rate = rep(1, cosimmr_in$n_tracers)
@@ -147,7 +148,7 @@ cosimmr_ffvb <- function(cosimmr_in,
   # beta_lambda<-c(mu_a, rep(1, (K*n_covariates) * (K*n_covariates) + 1) / 2)))
   
   #Regular
-  beta_lambda <-c(mu_a, rep(sigma_a, (((K*n_covariates +n_tracers) * ((K*n_covariates +n_tracers) +1))/2)))
+  beta_lambda <-c(mu_a, prior_control$mu_log_sig_sq_0, rep(sigma_a, (((K*n_covariates +n_tracers) * ((K*n_covariates +n_tracers) +1))/2)))
   
   #Diag
   #beta_lambda <-c(mu_a, rep(1, K*n_covariates))

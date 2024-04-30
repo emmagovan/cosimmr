@@ -22,10 +22,10 @@ LinkingTo: Rcpp,
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
-    markdown
+    rmarkdown
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Encoding: UTF-8
 Depends: 
     R (>= 2.10)

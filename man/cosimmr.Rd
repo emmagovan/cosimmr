@@ -2,7 +2,7 @@
 % Please edit documentation in R/cosimmr.R
 \name{cosimmr}
 \alias{cosimmr}
-\alias{<cosimmr>-package}
+\alias{cosimmr-package}
 \title{cosimmr: An R package for Stable Isotope Mixing Models}
 \description{
 cosimmr is a package that has been developed to allow for running of Stable 

@@ -2,7 +2,8 @@
 #'
 #'
 #'
-#' @param cosimmr_out An object created via the function \code{\link{cosimmr_ffvb}}
+#' @param object An object of class \code{cosimmr_output} created via the 
+#' function \code{\link{cosimmr_ffvb}}
 #' @param x_pred A data.frame of covariate values that the user wishes
 #' to predict source proportions for, provided in the same order that the 
 #' original covariance matrix was. Important for this to be a data.frame otherwise 
@@ -65,12 +66,12 @@
 #'
 #' }
 #' @export
-predict.cosimmr_output <- function(cosimmr_out,
+predict.cosimmr_output <- function(object,
                           x_pred,
                           n_output = 3600) {
   
 #Makes sure the object is the correct class
-  if(inherits(cosimmr_out, "cosimmr_output") == TRUE){
+  if(inherits(object, "cosimmr_output") == TRUE){
     
     ##Need to add something in here to check if its numeric data or categogrical
     
@@ -79,32 +80,32 @@ predict.cosimmr_output <- function(cosimmr_out,
     #just turn everything into categorical so it wont work
     if(inherits(x_pred, "data.frame") == FALSE) stop("x_pred must be of type `data.frame` to make predictions with")
     
-    scale_x = cosimmr_out$input$scale_x
+    scale_x = object$input$scale_x
 
   
   #Creating a max and min vector so we can check if the new x_pred falls outside the range of the original data
   #Create vectors here but do comparison after all data has been scaled
-  max_vec = c(rep(NA, ncol(cosimmr_out$input$x_scaled)))
-  min_vec = c(rep(NA, ncol(cosimmr_out$input$x_scaled)))
+  max_vec = c(rep(NA, ncol(object$input$x_scaled)))
+  min_vec = c(rep(NA, ncol(object$input$x_scaled)))
   
-   for(i in 1:(ncol(cosimmr_out$input$x_scaled))){
-     max_vec[i] = max(cosimmr_out$input$x_scaled[,i])
-     min_vec[i] = min(cosimmr_out$input$x_scaled[,i])
+   for(i in 1:(ncol(object$input$x_scaled))){
+     max_vec[i] = max(object$input$x_scaled[,i])
+     min_vec[i] = min(object$input$x_scaled[,i])
    }
   
 
   
   
-  thetares= cosimmr_out$output$theta
-  K = cosimmr_out$input$n_sources
-  n_tracers = cosimmr_out$input$n_tracers
-  n_covariates = ncol(cosimmr_out$input$x_scaled)
-  mixtures = cosimmr_out$input$mixtures
+  thetares= object$output$theta
+  K = object$input$n_sources
+  n_tracers = object$input$n_tracers
+  n_covariates = ncol(object$input$x_scaled)
+  mixtures = object$input$mixtures
   
   #So now what we want to do is to add x_pred onto the bottom of the original x matrix,
   #scale all, then remove original x mat
   
-  original_x = data.frame(cosimmr_out$input$covariates_df)
+  original_x = data.frame(object$input$covariates_df)
   
   #Add check that col names match
   #Otherwise next line wont work
@@ -130,19 +131,19 @@ predict.cosimmr_output <- function(cosimmr_out,
     new_x == new_x
   } else{
     if(scale_x == TRUE){
-      if(cosimmr_out$input$intercept == TRUE){
+      if(object$input$intercept == TRUE){
         # Original code
         scaled_full_mat = scale(stats::model.matrix(~ . -1, data=new_x), 
-                           center = cosimmr_out$input$scaled_center,
-                          scale = cosimmr_out$input$scaled_scale)
+                           center = object$input$scaled_center,
+                          scale = object$input$scaled_scale)
         scaled_full_mat = cbind(c(rep(1,nrow(scaled_full_mat))), scaled_full_mat)
         
         x_pred_mat = matrix(scaled_full_mat[-c(1:nrow(original_x)),], ncol = ncol(scaled_full_mat))
         
-      }else if(cosimmr_out$input$intercept == FALSE){
+      }else if(object$input$intercept == FALSE){
         scaled_full_mat = scale(stats::model.matrix(~ ., data=new_x), 
-                                center = cosimmr_out$input$scaled_center,
-                                scale = cosimmr_out$input$scaled_scale)
+                                center = object$input$scaled_center,
+                                scale = object$input$scaled_scale)
       
         
         x_pred_mat = matrix(scaled_full_mat[-c(1:nrow(original_x)),], ncol = ncol(scaled_full_mat))
@@ -150,11 +151,11 @@ predict.cosimmr_output <- function(cosimmr_out,
       }
       
     }else if(scale_x == FALSE){
-      if(cosimmr_out$input$intercept == TRUE){
+      if(object$input$intercept == TRUE){
         scaled_full_mat = (stats::model.matrix(~ ., data=new_x))
         
         x_pred_mat = scaled_full_mat[-c(1:nrow(original_x)),]
-      }else if(cosimmr_out$input$intercept == FALSE){
+      }else if(object$input$intercept == FALSE){
         scaled_full_mat = stats::model.matrix(~ .-1, data=new_x)
         
         x_pred_mat = scaled_full_mat[-c(1:nrow(original_x)),]
@@ -167,7 +168,7 @@ predict.cosimmr_output <- function(cosimmr_out,
   
   #Checks that all the values are above or equal to the min and below or equal to the max
   for(j in 1:(nrow(x_pred_mat))){
-    for(i in 1:(ncol(cosimmr_out$input$x_scaled))){
+    for(i in 1:(ncol(object$input$x_scaled))){
       if(x_pred_mat[j,i] >= min_vec[i] & x_pred_mat[j,i] <= max_vec[i]){
        #message("Data falls within range of data used in original model, okay to predict with")
         print_err = FALSE
@@ -202,7 +203,7 @@ predict.cosimmr_output <- function(cosimmr_out,
     p = p_sample,
     beta = beta,
     sigma = sigma,
-    input = cosimmr_out$input,
+    input = object$input,
     theta = thetares
   )
   

@@ -12,8 +12,8 @@
 #' user to judge which sources are non-identifiable.
 #'
 #'
-#' @param object An object of class \code{cosimmr_output} produced by the
-#' function  \code{\link{cosimmr_ffvb}}
+#' @param object An object of class \code{cosimmr_pred_output} produced by the
+#' function  \code{\link{predict.cosimmr_output}}
 #' @param type The type of output required. At least none of quantiles', 
 #' 'statistics', or 'correlations'.
 #' @param individual The individual to generate a summary for. Defaults to 1.
@@ -70,8 +70,7 @@
 #' }
 #' @export
 summary.cosimmr_pred_out <-
-  function(object, type = c("quantiles", "statistics", "correlations"), 
-           individual = 1, ...) {
+function(object, type = c("quantiles", "statistics", "correlations"), individual = 1, ...) {
     if (inherits(object, "cosimmr_pred_out") == TRUE) {
         # Get the specified type
         type <- match.arg(type, several.ok = TRUE)
@@ -89,6 +88,7 @@ summary.cosimmr_pred_out <-
         for (i in 1:length(individual)) {
           message("\nSummary for Individual ",  individual[i], "\n")
           out_all <- object$p[individual[i],,]
+          colnames(out_all) = object$input$source_names
           
           # Get objects
           out_quantiles[[i]] <- t(apply(out_all, 2, "quantile", probs = c(0.025, 0.25, 0.5, 0.75, 0.975)))
@@ -123,7 +123,7 @@ summary.cosimmr_pred_out <-
       
     } else {
       (return(message("incorrect object passed to function. This function is for objects
-                      created using the `predict` function on a objectput object")))
+                      created using the `predict` function on a cosimmr_output object")))
     }
   }
 

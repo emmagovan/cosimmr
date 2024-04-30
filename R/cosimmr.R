@@ -11,5 +11,10 @@
 #' @import Rcpp 
 #' @importFrom Rcpp evalCpp
 #' @useDynLib cosimmr
-#' @aliases <cosimmr>-package
+#' @aliases cosimmr-package
+## usethis namespace: start
+#' @importFrom Rcpp sourceCpp
+#' @useDynLib cosimmr, .registration = TRUE
+## usethis namespace: end
+NULL
 NULL

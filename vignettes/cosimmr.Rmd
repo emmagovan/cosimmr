@@ -125,6 +125,35 @@ We can also create plots using the `plot` function
 plot(cosimmr_2_out)
 ```
 
+We can also look at the posterior predictive plot at 50%
+```{r}
+post_pred_geese = posterior_predictive(cosimmr_2_out)
+post_pred_geese
+```
+
+boxplots to show change in prop over different covariates?
+```{r}
+#Look at the change over food source 1 ()
+a = matrix(cosimmr_ali_out$output$BUGSoutput$sims.list$p[,,1], nrow = 181, ncol = 3600)
+mean_A = rowMeans(a)
+save_sd = c(rep(NA, 181))
+for(i in 1:181){
+  save_sd[i] = sd(a[i,])
+}
+
+df_plot = data.frame(mean = mean_A, 
+                     sd = save_sd, 
+                     length = cosimmr_ali_out$input$original_x[,2], 
+                     psd = (mean_A + save_sd),
+                     nsd = (mean_A - save_sd))
+
+ggplot(data = df_plotb, aes(x = length, y = mean))  + 
+  geom_ribbon(data = df_plotb, aes(ymin = nsd, ymax = psd), alpha = 0.2, fill = "blue") + geom_line() + ggtitle("Freshwater") +xlab("length") + ylab("proportion")
+
+```
+
+
+
 
 
 

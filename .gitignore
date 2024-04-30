@@ -1,7 +1,6 @@
-#Potentially don't need these, unsure
-#.Rdata
-#.httr-oauth
-#.DS_Store
+.Rdata
+.httr-oauth
+.DS_Store
 
 
 # History files
@@ -41,7 +40,7 @@ NUL
 tests/testthat/Rplots.pdf
 tests/testthat/Rplots.pdf
 tests/testthat/Rplots.pdf
-simmr.Rcheck
+cosimmr.Rcheck
 CRAN-SUBMISSION
 /doc/
 /Meta/

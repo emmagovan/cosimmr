@@ -106,7 +106,7 @@ cosimmr_ffvb <- function(cosimmr_in,
                            beta_1 = 0.75, #0.9
                            beta_2 = 0.75, #0.9
                            tau = 500, #50
-                           eps_0 = 0.001, #0.001
+                           eps_0 = 0.0011, #0.001
                            t_W =500 #1000
                          )) {
   # Throw a warning if less than 4 observations in a group - 1 is ok as it wil do a solo run

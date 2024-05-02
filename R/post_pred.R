@@ -8,7 +8,6 @@
 #' @param cosimmr_out A run of the cosimmr model from \code{\link{cosimmr_ffvb}}.
 #' @param prob The probability interval for the posterior predictives. The default is 0.5 (i.e. 50pc intervals)
 #' @param plot_ppc Whether to create a bayesplot of the posterior predictive or not.
-#' @param ind The individual number you wish to plot. Defaults to 1.
 #' @param n_samples The number of samples you wish to generate for y_pred. Defaults to 3600.
 #'
 #'@return plot of posterior predictives and simulated values
@@ -52,7 +51,6 @@
 #' }
 posterior_predictive <- function(cosimmr_out,
                                  prob = 0.5, 
-                                 ind = 1,
                                  plot_ppc = TRUE,
                                  n_samples = 3600) {
   UseMethod("posterior_predictive")
@@ -60,7 +58,6 @@ posterior_predictive <- function(cosimmr_out,
 #' @export
 posterior_predictive.cosimmr_output <- function(cosimmr_out,
                                               prob = 0.5,
-                                              ind = 1,
                                               plot_ppc = TRUE,
                                               n_samples = 3600) {
  
@@ -75,12 +72,9 @@ posterior_predictive.cosimmr_output <- function(cosimmr_out,
   x_pred = cosimmr_out$input$x_scaled
   n_obs = cosimmr_out$input$n_obs
   
-#Need to specify an individual I guess?
-  p = cosimmr_out$output$BUGSoutput$sims.list$p[ind,,]
+
+  p = cosimmr_out$output$BUGSoutput$sims.list$p
   sigma = (cosimmr_out$output$BUGSoutput$sims.list$sigma)
-  #Need to add proper loops here to do it properly
-  #But think the general idea is then do rnorm(mean_y, sigma_y)
-  
   q = cosimmr_out$input$concentration_means
   mu_s = cosimmr_out$input$source_means
   sigma_s = cosimmr_out$input$source_sds
@@ -89,12 +83,13 @@ posterior_predictive.cosimmr_output <- function(cosimmr_out,
   
   mean = matrix(NA, nrow = n_obs, ncol = n_tracers)
   sd = matrix(NA, nrow = n_obs, ncol = n_tracers)
+  
   for (i in 1:n_obs) {
     for (j in 1:n_tracers) {
-    mean[i,j] = sum(p[i, ] * q[, j] * (mu_s[, j] + mu_c[, j])) /
-          sum(p[i, ] * q[, j])
-    sd[i,j] = sqrt(sum(p[i, ]^2 * q[, j]^2 * (sigma_s[, j]^2 + sigma_c[, j]^2)) /
-          sum(p[i, ]^2 * q[, j]^2) + sigma[i,j])
+    mean[i,j] = sum(p[i,, ] * q[, j] * (mu_s[, j] + mu_c[, j])) /
+          sum(p[i,, ] * q[, j])
+    sd[i,j] = sqrt(sum(p[i,, ]^2 * q[, j]^2 * (sigma_s[, j]^2 + sigma_c[, j]^2)) /
+          sum(p[i,, ]^2 * q[, j]^2) + sigma[i,j])
       
 
       
@@ -104,9 +99,9 @@ posterior_predictive.cosimmr_output <- function(cosimmr_out,
   
   
   y_post_pred = array(NA, dim = c(n_samples, n_obs, n_tracers))
-  for(k in 1:n_tracers){
+  for(j in 1:n_tracers){
     for(i in 1:n_obs){
-y_post_pred[,i,k] = stats::rnorm(n_samples, mean = mean[i,k], sd = sd[i,k])
+y_post_pred[,i,j] = stats::rnorm(n_samples, mean = mean[i,j], sd = sd[i,j])
     }
   }
   
@@ -121,13 +116,20 @@ y_post_pred[,i,k] = stats::rnorm(n_samples, mean = mean[i,k], sd = sd[i,k])
                            "quantile",
                            prob = c(low_prob, high_prob)
    )
-  y_post_pred_out <- data.frame(
-    interval = matrix(y_post_pred_ci,
-                      ncol = cosimmr_out$input$n_tracers,
-                      byrow = TRUE
-    ),
-    data = as.vector(cosimmr_out$input$mixtures)
-  )
+
+   
+   interval <- aperm(y_post_pred_ci, c(2, 3, 1))
+   
+   interval <- matrix(interval, nrow = n_obs * n_tracers, ncol = 2, byrow = FALSE)
+   
+   
+   
+   y_post_pred_out = data.frame(
+     interval = interval,
+     data = as.vector(cosimmr_out$input$mixtures)
+   )
+   
+   
   
   y_post_pred_out$outside <- y_post_pred_out[, 3] > y_post_pred_out[, 2] |
     y_post_pred_out[, 3] < y_post_pred_out[, 1]

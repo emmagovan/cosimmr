@@ -88,7 +88,7 @@ summary(cosimmr_1_out, type = "statistics")
 
 The output of this can be plotted, using the plot function. There are several different options available in the plot function.
 ```{r}
-plot(cosimmr_1_out, type ="beta_histogram", ind = 7)
+plot(cosimmr_1_out, type ="beta_histogram", ind = 1)
 ```
 
 More complex examples can also be run. Here we include the group the geese belong to as a covariate
@@ -105,6 +105,7 @@ cosimmr_2 <-cosimmr_load(
     correction_sds = geese_data$correction_sds,
     concentration_means = geese_data$concentration_means)
 
+
 cosimmr_2_out = cosimmr_ffvb(cosimmr_2)
 ```
 
@@ -120,6 +121,12 @@ pred_matrix = data.frame(Groups = c("Period 1", "Period 3"))
 groups_predict = predict(cosimmr_2_out, x_pred = pred_matrix)
 ```
 
+The plot and summary functions can be used on the `groups_predict` object
+```{r}
+summary(groups_predict, type = "quantiles")
+```
+
+
 We can also create plots using the `plot` function
 ```{r}
 plot(cosimmr_2_out)
@@ -134,21 +141,33 @@ post_pred_geese
 boxplots to show change in prop over different covariates?
 ```{r}
 #Look at the change over food source 1 ()
-a = matrix(cosimmr_ali_out$output$BUGSoutput$sims.list$p[,,1], nrow = 181, ncol = 3600)
-mean_A = rowMeans(a)
-save_sd = c(rep(NA, 181))
-for(i in 1:181){
-  save_sd[i] = sd(a[i,])
-}
+n_samples = length(cosimmr_2_out$output$BUGSoutput$sims.list$p[1,,1])
+n_ind = cosimmr_2$n_obs
+a = matrix(cosimmr_2_out$output$BUGSoutput$sims.list$p[c(1,10,39,113, 124, 164, 184, 216),,1], ncol = n_samples)
+#Extract samples for each group - need to sort by hand I think
 
-df_plot = data.frame(mean = mean_A, 
-                     sd = save_sd, 
-                     length = cosimmr_ali_out$input$original_x[,2], 
-                     psd = (mean_A + save_sd),
-                     nsd = (mean_A - save_sd))
 
-ggplot(data = df_plotb, aes(x = length, y = mean))  + 
-  geom_ribbon(data = df_plotb, aes(ymin = nsd, ymax = psd), alpha = 0.2, fill = "blue") + geom_line() + ggtitle("Freshwater") +xlab("length") + ylab("proportion")
+Group = c(rep("Group 1", 3600), rep("Group 2", 3600), rep("Group 3", 3600),
+          rep("Group 4", 3600), rep("Group 5", 3600), rep("Group 6", 3600),
+          rep("Group 7", 3600), rep("Group 8", 3600))
+
+ind1 = cosimmr_2_out$output$BUGSoutput$sims.list$p[1,,1]
+ind2 = cosimmr_2_out$output$BUGSoutput$sims.list$p[10,,1]
+ind3 = cosimmr_2_out$output$BUGSoutput$sims.list$p[39,,1]
+ind4 = cosimmr_2_out$output$BUGSoutput$sims.list$p[113,,1]
+ind5 = cosimmr_2_out$output$BUGSoutput$sims.list$p[124,,1]
+ind6 = cosimmr_2_out$output$BUGSoutput$sims.list$p[164,,1]
+ind7 = cosimmr_2_out$output$BUGSoutput$sims.list$p[184,,1]
+ind8 = cosimmr_2_out$output$BUGSoutput$sims.list$p[216,,1]
+
+
+vec = c(ind1, ind2, ind3, ind4, ind5, ind6, ind7, ind8)
+
+
+df_plot = data.frame(samples = vec, Group = Group)
+
+
+ggplot(data = df_plot, aes(x = Group, y = samples, colour = Group))  + geom_boxplot() + ggtitle("Boxplot of XXX consumed by each group") +xlab("Group") + ylab("mean proportion of XXX consumed")
 
 ```
 

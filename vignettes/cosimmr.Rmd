@@ -167,7 +167,7 @@ vec = c(ind1, ind2, ind3, ind4, ind5, ind6, ind7, ind8)
 df_plot = data.frame(samples = vec, Group = Group)
 
 library(ggplot2)
-ggplot(data = df_plot, aes(x = Group, y = samples, colour = Group))  + geom_boxplot() + ggtitle("Zostera consumed by each group") +xlab("Group") + ylab("Proportion of Zostera consumed")
+ggplot(data = df_plot, aes(x = Group, y = samples, colour = Group))  + geom_boxplot() + ggtitle("Zostera consumed by each group") +xlab("Group") + ylab("Proportion of Zostera consumed") +theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ```
 

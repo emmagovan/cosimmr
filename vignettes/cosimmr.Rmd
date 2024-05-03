@@ -166,8 +166,8 @@ vec = c(ind1, ind2, ind3, ind4, ind5, ind6, ind7, ind8)
 
 df_plot = data.frame(samples = vec, Group = Group)
 
-
-ggplot(data = df_plot, aes(x = Group, y = samples, colour = Group))  + geom_boxplot() + ggtitle("Boxplot of XXX consumed by each group") +xlab("Group") + ylab("mean proportion of XXX consumed")
+library(ggplot2)
+ggplot(data = df_plot, aes(x = Group, y = samples, colour = Group))  + geom_boxplot() + ggtitle("Zostera consumed by each group") +xlab("Group") + ylab("Proportion of Zostera consumed")
 
 ```
 
@@ -244,7 +244,7 @@ df_plot = data.frame(mean = mean_A,
                      psd = (mean_A + save_sd),
                      nsd = (mean_A - save_sd))
 
-library(ggplot2)
+
 ggplot(data = df_plot, aes(x = length, y = mean))  + 
   geom_ribbon(data = df_plot, aes(ymin = nsd, ymax = psd), alpha = 0.2, fill = "blue") + geom_line() + ggtitle("Marine") +xlab("length") + ylab("proportion")
 

@@ -49,7 +49,7 @@
 #' # Prior predictive
 #' post_pred <- posterior_predictive(cosimmr_1_out)
 #' }
-posterior_predictive <- function(cosimmr_out,
+posterior_predictive.cosimmr_output <- function(cosimmr_out,
                                  prob = 0.5, 
                                  plot_ppc = TRUE,
                                  n_samples = 3600) {

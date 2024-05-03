@@ -102,7 +102,7 @@ cosimmr_ffvb <- function(cosimmr_in,
                          ffvb_control = list(
                            n_output = 3600, #3600
                            S = 500, #500
-                           P = 100, #100
+                           P = 50, #100
                            beta_1 = 0.75, #0.9
                            beta_2 = 0.75, #0.9
                            tau = 500, #50

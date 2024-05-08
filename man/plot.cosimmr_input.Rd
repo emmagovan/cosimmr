@@ -11,10 +11,11 @@
   xlab = colnames(x$mixtures)[tracers[1]],
   ylab = colnames(x$mixtures)[tracers[2]],
   sigmas = 1,
-  group = 1:x$n_groups,
   mix_name = "Mixtures",
-  ggargs = NULL,
   colour = TRUE,
+  colour_by_cov = FALSE,
+  cov_col_name = NULL,
+  ggargs = NULL,
   ...
 )
 }
@@ -36,15 +37,19 @@ per mil but can be changed as with the x-axis label}
 \item{sigmas}{The number of standard deviations to plot on the source
 values. Defaults to 1.}
 
-\item{group}{Which groups to plot. Can be a single group or multiple groups}
-
 \item{mix_name}{A optional string containing the name of the mixture
 objects, e.g. Geese.}
 
-\item{ggargs}{Extra arguments to be included in the ggplot (e.g. axis limits)}
-
 \item{colour}{If TRUE (default) creates a plot. If not, puts the plot in
 black and white}
+
+\item{colour_by_cov}{if TRUE this allows users to colour the mixtures on the 
+isospace plot by a specified covariate. Defaults to FALSE}
+
+\item{cov_col_name}{The name of the covariate the user wishes to colour the 
+mixture points on the plot by}
+
+\item{ggargs}{Extra arguments to be included in the ggplot (e.g. axis limits)}
 
 \item{...}{Not used}
 }

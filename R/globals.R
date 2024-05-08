@@ -5,7 +5,12 @@ if (getRversion() >= "2.15.1") {
       "Proportion",
       "Source",
       "Type",
-      "density"
+      "density",
+      "Group",
+      "cov",
+      "nsd",
+      "psd",
+      "samples"
     ),
     package = "cosimmr",
     add = FALSE

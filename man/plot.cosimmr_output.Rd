@@ -6,13 +6,14 @@
 \usage{
 \method{plot}{cosimmr_output}(
   x,
-  type = c("isospace", "beta_histogram", "beta_boxplot", "p_ind"),
-  ind = 1,
+  type = c("isospace", "beta_histogram", "beta_boxplot", "prop_obs", "covariates_plot"),
+  obs = 1,
   covariates = 1,
   binwidth = 0.1,
   alpha = 0.5,
   title = NULL,
   n_output = 3600,
+  source = NULL,
   ...
 )
 }
@@ -21,11 +22,11 @@
 \code{\link{cosimmr_ffvb}}.}
 
 \item{type}{The type of plot required. Can be one or more of 'isospace', 
-'betahistogram'}
+'beta_histogram', 'beta_boxplot', 'covariates_plot'}
 
-\item{ind}{The individual number you wish to plot}
+\item{obs}{The observation number you wish to plot}
 
-\item{covariates}{The covariate you wish to plot (for beta plots)}
+\item{covariates}{The covariate you wish to plot (for beta and covariates plot)}
 
 \item{binwidth}{The width of the bins for the histogram. Defaults to 0.05}
 
@@ -35,6 +36,9 @@ matrix plots}
 \item{title}{The title of the plot.}
 
 \item{n_output}{The number of theta samples you wish to plot with. Defaults to 3600}
+
+\item{source}{The number or name of the source you wish to plot over for 
+'covariates_plot', defaults to NULL which means all sources are used}
 
 \item{...}{Currently not used}
 }

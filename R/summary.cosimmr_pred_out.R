@@ -16,7 +16,7 @@
 #' function  \code{\link{predict.cosimmr_output}}
 #' @param type The type of output required. At least none of quantiles', 
 #' 'statistics', or 'correlations'.
-#' @param individual The individual to generate a summary for. Defaults to 1.
+#' @param obs The observation to generate a summary for. Defaults to 1.
 #' @param ...  Not used
 #' @return A list containing the following components: 
 #' \item{quantiles }{The quantiles of each parameter from the posterior 
@@ -70,7 +70,7 @@
 #' }
 #' @export
 summary.cosimmr_pred_out <-
-function(object, type = c("quantiles", "statistics", "correlations"), individual = 1, ...) {
+function(object, type = c("quantiles", "statistics", "correlations"), obs = 1, ...) {
     if (inherits(object, "cosimmr_pred_out") == TRUE) {
         # Get the specified type
         type <- match.arg(type, several.ok = TRUE)
@@ -78,16 +78,16 @@ function(object, type = c("quantiles", "statistics", "correlations"), individual
         
         
         # Set up containers
-        out_bgr <- out_quantiles <- out_statistics <- out_cor <- vector("list", length = length(individual))
-        names(out_bgr) <- paste0("individual_", individual)
-        names(out_quantiles) <- paste0("individual_", individual)
-        names(out_statistics) <- paste0("individual_", individual)
-        names(out_cor) <- paste0("individual_", individual)
+        out_bgr <- out_quantiles <- out_statistics <- out_cor <- vector("list", length = length(obs))
+        names(out_bgr) <- paste0("obs_", obs)
+        names(out_quantiles) <- paste0("obs_", obs)
+        names(out_statistics) <- paste0("obs_", obs)
+        names(out_cor) <- paste0("obs_", obs)
         
         # Loop through groups
-        for (i in 1:length(individual)) {
-          message("\nSummary for Individual ",  individual[i], "\n")
-          out_all <- object$p[individual[i],,]
+        for (i in 1:length(obs)) {
+          message("\nSummary for Observation",  obs[i], "\n")
+          out_all <- object$p[obs[i],,]
           colnames(out_all) = object$input$source_names
           
           # Get objects

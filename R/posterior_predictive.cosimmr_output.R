@@ -49,7 +49,7 @@
 #' # Prior predictive
 #' post_pred <- posterior_predictive(cosimmr_1_out)
 #' }
-posterior_predictive.cosimmr_output <- function(cosimmr_out,
+posterior_predictive <- function(cosimmr_out,
                                  prob = 0.5, 
                                  plot_ppc = TRUE,
                                  n_samples = 3600) {
@@ -136,23 +136,27 @@ y_post_pred[,i,j] = stats::rnorm(n_samples, mean = mean[i,j], sd = sd[i,j])
   prop_outside <- mean(y_post_pred_out$outside)
   
   if (plot_ppc) {
-    y_rep <- y_post_pred
-    dim(y_rep) <- c(dim(y_post_pred)[1], dim(y_post_pred)[2] * dim(y_post_pred)[3])
+    for(j in 1:n_tracers){
+    y_rep <- y_post_pred[,,j]
+    dim(y_rep) <- c(dim(y_post_pred)[1], dim(y_post_pred)[2])
  
-    curr_mix <- cosimmr_out$input$mixtures
+    curr_mix <- as.matrix(cosimmr_out$input$mixtures[,j], ncol = 1)
     bayesplot::color_scheme_set("viridis")
     bayesplot::bayesplot_theme_set(new = theme_bw())
     g <- ppc_intervals(
       y = unlist(as.vector(curr_mix)),
       yrep = y_rep,
-      x = rep(1:nrow(curr_mix), cosimmr_out$input$n_tracers),
+      x = 1:nrow(curr_mix),
       prob = prob,
       fatten = 1
-    ) + ggplot2::ylab("Tracer value") +
+    ) + ggplot2::ylab(paste0("Tracer value, tracer ", j)) +
       ggplot2::xlab("Observation") +
       ggplot2::ggtitle(paste0(prob * 100, "% posterior predictive")) +
-      ggplot2::scale_x_continuous(breaks = 1:cosimmr_out$input$n_obs)
+      ggplot2::scale_x_continuous(breaks = 1:cosimmr_out$input$n_obs) +
+      theme(axis.text.x=element_blank(), 
+            axis.ticks.x=element_blank())
     print(g)
+    }
   }
   # Return the simulations
   invisible(list(

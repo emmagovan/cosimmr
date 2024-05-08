@@ -4,10 +4,11 @@
 \alias{predict.cosimmr_output}
 \title{Predicts proportion of each source in a mixture, based on values provided for covariates}
 \usage{
-\method{predict}{cosimmr_output}(cosimmr_out, x_pred, n_output = 3600)
+\method{predict}{cosimmr_output}(object, x_pred, n_output = 3600)
 }
 \arguments{
-\item{cosimmr_out}{An object created via the function \code{\link{cosimmr_ffvb}}}
+\item{object}{An object of class \code{cosimmr_output} created via the 
+function \code{\link{cosimmr_ffvb}}}
 
 \item{x_pred}{A data.frame of covariate values that the user wishes
 to predict source proportions for, provided in the same order that the 

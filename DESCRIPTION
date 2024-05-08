@@ -15,7 +15,9 @@ Imports: Rcpp (>= 1.0.10),
          checkmate,
          ggplot2,
          viridis,
-         reshape2
+         reshape2,
+         stats,
+         ggnewscale
 LinkingTo: Rcpp,
            RcppArmadillo,
            RcppDist

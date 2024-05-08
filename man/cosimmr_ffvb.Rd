@@ -7,11 +7,11 @@ Bayes(FFVB) function}
 \usage{
 cosimmr_ffvb(
   cosimmr_in,
-  prior_control = list(mu_0 = rep(0, (cosimmr_in$n_sources * cosimmr_in$n_covariates +
-    cosimmr_in$n_tracers)), sigma_0 = 1, tau_shape = rep(1, cosimmr_in$n_tracers),
-    tau_rate = rep(1, cosimmr_in$n_tracers)),
-  ffvb_control = list(n_output = 3600, S = 500, P = 100, beta_1 = 0.75, beta_2 = 0.75,
-    tau = 500, eps_0 = 0.001, t_W = 500)
+  prior_control = list(mu_0 = rep(0, (cosimmr_in$n_sources * cosimmr_in$n_covariates)),
+    mu_log_sig_sq_0 = rep(0, cosimmr_in$n_tracers), sigma_0 = 1, tau_shape = rep(1,
+    cosimmr_in$n_tracers), tau_rate = rep(1, cosimmr_in$n_tracers)),
+  ffvb_control = list(n_output = 3600, S = 500, P = 50, beta_1 = 0.75, beta_2 = 0.75, tau
+    = 500, eps_0 = 0.0011, t_W = 500)
 )
 }
 \arguments{

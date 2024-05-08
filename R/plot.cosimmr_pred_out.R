@@ -16,7 +16,7 @@
 #' @param alpha The degree of transparency of the plots. Not relevant for
 #' matrix plots
 #' @param title The title of the plot.
-#' @param individuals The individual number you wish to plot
+#' @param obs The observation you wish to plot
 #' @param covariates The covariate you wish to plot (for beta plots)
 #' @param n_output The number of theta samples you wish to plot with. Defaults to 3600
 #' @param ...  Currently not used
@@ -68,9 +68,9 @@ plot.cosimmr_pred_out <-
   function(x,
            type = c("beta_histogram",
              "beta_boxplot",
-             "p_ind"
+             "prop_obs"
            ),
-           individuals = 1,
+           obs = 1,
            covariates = 1,
            binwidth = 0.1,
            alpha = 0.5,
@@ -86,18 +86,18 @@ plot.cosimmr_pred_out <-
       # Add in extra dots here as they can be sent to this plot function
 
       
-      if("p_ind" %in% type){
+      if("prop_obs" %in% type){
         
         #Need to have a separate matrix for each ind value
         #So do all this in loop and repeat I think is easiest
-        for(i in 1:length(individuals)){
+        for(i in 1:length(obs)){
           if(is.null(title_input) == TRUE){
-            title = c(rep(NA, length(individuals)))
-            for(j in 1:length(individuals)){
-              title[j] = paste("p_ind plot: individual", individuals[j])
+            title = c(rep(NA, length(obs)))
+            for(j in 1:length(obs)){
+              title[j] = paste("Proportions: Observation", obs[j])
             }
-          } else{title = rep(title_input, length(individuals))}
-          curr_ind = individuals[i]
+          } else{title = rep(title_input, length(obs))}
+          curr_ind = obs[i]
           out_all_p = x$p[curr_ind,,]
           
           
@@ -143,8 +143,7 @@ plot.cosimmr_pred_out <-
           }
         }
         
-        #This is slightly wrong
-        #I need to just think about it more
+
         
         out_all_beta = beta[i,,]
         colnames(out_all_beta) = x$input$source_names

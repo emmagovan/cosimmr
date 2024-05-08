@@ -96,7 +96,9 @@ scale_x = TRUE) {
   original_x = stats::model.matrix(formula)
   
   #Need to add some method here to keep the column names
-  covariates = (stats::model.frame(formula)[,-1])
+  cnames = colnames(stats::model.frame(formula))[-1]
+  covariates = data.frame((stats::model.frame(formula)[,-1]))
+  colnames(covariates) = cnames
   
   
   # model.matrix(~ ., data=c_df, 

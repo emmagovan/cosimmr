@@ -6,8 +6,8 @@
 \usage{
 \method{plot}{cosimmr_pred_out}(
   x,
-  type = c("beta_histogram", "beta_boxplot", "p_ind"),
-  individuals = 1,
+  type = c("beta_histogram", "beta_boxplot", "prop_obs"),
+  obs = 1,
   covariates = 1,
   binwidth = 0.1,
   alpha = 0.5,
@@ -23,7 +23,7 @@
 \item{type}{The type of plot required. Can be one or more of 'isospace', 
 'betahistogram'}
 
-\item{individuals}{The individual number you wish to plot}
+\item{obs}{The observation you wish to plot}
 
 \item{covariates}{The covariate you wish to plot (for beta plots)}
 

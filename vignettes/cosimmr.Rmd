@@ -129,8 +129,10 @@ summary(groups_predict, type = "quantiles")
 
 We can also create plots using the `plot` function
 ```{r}
-plot(cosimmr_2_out)
+plot(cosimmr_2_out, type = "beta_boxplot")
 ```
+This plot produces histograms of the beta values. This shows the relationship between the covariate and the consumption of each food source.
+
 
 We can also look at the posterior predictive plot at 50%
 ```{r}
@@ -138,45 +140,16 @@ post_pred_geese = posterior_predictive(cosimmr_2_out)
 post_pred_geese
 ```
 
-boxplots to show change in prop over different covariates?
+We can then create a `covariates_plot`. This shows the change in consumption of
+a food source across a specified covariate
 ```{r}
-#Look at the change over food source 1 ()
-n_samples = length(cosimmr_2_out$output$BUGSoutput$sims.list$p[1,,1])
-n_ind = cosimmr_2$n_obs
-a = matrix(cosimmr_2_out$output$BUGSoutput$sims.list$p[c(1,10,39,113, 124, 164, 184, 216),,1], ncol = n_samples)
-#Extract samples for each group - need to sort by hand I think
-
-
-Group = c(rep("Group 1", 3600), rep("Group 2", 3600), rep("Group 3", 3600),
-          rep("Group 4", 3600), rep("Group 5", 3600), rep("Group 6", 3600),
-          rep("Group 7", 3600), rep("Group 8", 3600))
-
-ind1 = cosimmr_2_out$output$BUGSoutput$sims.list$p[1,,1]
-ind2 = cosimmr_2_out$output$BUGSoutput$sims.list$p[10,,1]
-ind3 = cosimmr_2_out$output$BUGSoutput$sims.list$p[39,,1]
-ind4 = cosimmr_2_out$output$BUGSoutput$sims.list$p[113,,1]
-ind5 = cosimmr_2_out$output$BUGSoutput$sims.list$p[124,,1]
-ind6 = cosimmr_2_out$output$BUGSoutput$sims.list$p[164,,1]
-ind7 = cosimmr_2_out$output$BUGSoutput$sims.list$p[184,,1]
-ind8 = cosimmr_2_out$output$BUGSoutput$sims.list$p[216,,1]
-
-
-vec = c(ind1, ind2, ind3, ind4, ind5, ind6, ind7, ind8)
-
-
-df_plot = data.frame(samples = vec, Group = Group)
-
-library(ggplot2)
-ggplot(data = df_plot, aes(x = Group, y = samples, colour = Group))  + geom_boxplot() + ggtitle("Zostera consumed by each group") +xlab("Group") + ylab("Proportion of Zostera consumed") +theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
+plot(cosimmr_2_out, type = "covariates_plot", source = c("U.lactuca"))
 ```
+This lets us see the change in consumption of Ulva lactuca over the different Groups.
 
 
 
-
-
-
-We can look at Alligator data from Nifong et al, 2015
+For another example, with a continuous covariate, we can look at Alligator data from Nifong et al, 2015.
 For this example we just use Length as the covariate - but the dataset contains other covariates that can be looked at too.
 First we load in the data into R - this data is included in cosimmr:
 ```{r}
@@ -228,46 +201,8 @@ plot(alli_pred, type = "beta_boxplot")
 ```
 
 
-We can also access the outputs from cosimmr if we wish to make more complex plots.
-For example, this code generates plots showing how the proportion of each food eaten changes as the length changes.
+We can create a `covariates_plot` to show the change in consumption of Freshwater as an individual increases in Length
 ```{r}
-a = matrix(cosimmr_ali_out$output$BUGSoutput$sims.list$p[,,1], nrow = 181, ncol = 3600)
-mean_A = rowMeans(a)
-save_sd = c(rep(NA, 181))
-for(i in 1:181){
-  save_sd[i] = sd(a[i,])
-}
-
-df_plot = data.frame(mean = mean_A, 
-                     sd = save_sd, 
-                     length = cosimmr_ali_out$input$original_x[,2], 
-                     psd = (mean_A + save_sd),
-                     nsd = (mean_A - save_sd))
-
-
-ggplot(data = df_plot, aes(x = length, y = mean))  + 
-  geom_ribbon(data = df_plot, aes(ymin = nsd, ymax = psd), alpha = 0.2, fill = "blue") + geom_line() + ggtitle("Marine") +xlab("length") + ylab("proportion")
-
-
-
-#Second source
-b = matrix(cosimmr_ali_out$output$BUGSoutput$sims.list$p[,,2], nrow = 181, ncol = 3600)
-#mean_b = rowMeans(b)
-mean_b = c(rep(NA, 181))
-save_sdb = c(rep(NA, 181))
-for(i in 1:181){
-  mean_b[i] = mean(b[i,])
-  save_sdb[i] = sd(b[i,])
-}
-
-df_plotb = data.frame(mean = mean_b, sd = save_sdb, 
-                     length = cosimmr_ali_out$input$original_x[,2], 
-                     psd = (mean_b + save_sdb),
-                     nsd = (mean_b - save_sdb))
-
-ggplot(data = df_plotb, aes(x = length, y = mean))  + 
-  geom_ribbon(data = df_plotb, aes(ymin = nsd, ymax = psd), alpha = 0.2, fill = "blue") + geom_line() + ggtitle("Freshwater") +xlab("length") + ylab("proportion")
-
-
+plot(cosimmr_ali_out, type = "covariates_plot", source = "Freshwater")
 ```
 

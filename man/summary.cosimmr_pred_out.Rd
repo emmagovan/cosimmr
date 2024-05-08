@@ -7,18 +7,18 @@
 \method{summary}{cosimmr_pred_out}(
   object,
   type = c("quantiles", "statistics", "correlations"),
-  individual = 1,
+  obs = 1,
   ...
 )
 }
 \arguments{
-\item{object}{An object of class \code{cosimmr_output} produced by the
-function  \code{\link{cosimmr_ffvb}}}
+\item{object}{An object of class \code{cosimmr_pred_output} produced by the
+function  \code{\link{predict.cosimmr_output}}}
 
 \item{type}{The type of output required. At least none of quantiles', 
 'statistics', or 'correlations'.}
 
-\item{individual}{The individual to generate a summary for. Defaults to 1.}
+\item{obs}{The observation to generate a summary for. Defaults to 1.}
 
 \item{...}{Not used}
 }

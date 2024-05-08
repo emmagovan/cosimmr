@@ -7,7 +7,7 @@
 \method{summary}{cosimmr_output}(
   object,
   type = c("quantiles", "statistics", "correlations"),
-  individual = 1,
+  obs = 1,
   ...
 )
 }
@@ -18,7 +18,7 @@ function \code{\link{cosimmr_ffvb}}}
 \item{type}{The type of output required. At least none of quantiles', 
 'statistics', or 'correlations'.}
 
-\item{individual}{The individual to generate a summary for. Defaults to 1.}
+\item{obs}{The observation to generate a summary for. Defaults to 1.}
 
 \item{...}{Not used}
 }

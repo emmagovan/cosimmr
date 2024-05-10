@@ -92,6 +92,11 @@ plot.cosimmr_output <-
       #want to extract the right covariate number using the name?
       n_cov = length(cov_name)
       covariates = c(rep(NA, n_cov))
+      if(ncol(x$input$original_x) ==1 & x$input$intercept == TRUE){
+       # message("You have selected `beta_histogram` or `beta_boxplot` but the model does not contain
+        #        covariates. Please reselect model or plots to create and rerun.")
+        stop()
+      } else{
       if(x$input$intercept == FALSE){
       for(i in 1:n_cov){
         covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$original_x), value = FALSE)
@@ -100,6 +105,7 @@ plot.cosimmr_output <-
           for(i in 1:n_cov){
             covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$original_x)[-c(1)], value = FALSE)
           }
+        }
       }
       
       
@@ -179,7 +185,6 @@ plot.cosimmr_output <-
     for(l in 1:length(covariates)){
       cov_ind =covariates[l]
 
-
       beta = array(NA, dim = c(x$input$n_covariates, nrow(x$output$beta), x$input$n_sources))
 
       for(s in 1:nrow(x$output$theta)){
@@ -199,7 +204,7 @@ plot.cosimmr_output <-
       colnames(df_beta) = c("Num", "Source", "Beta")
 
       if("beta_histogram" %in% type){
-
+ 
           if(is.null(title_input) == TRUE){
             title = c(rep(NA, length(covariates)))
             for(c in 1:length(covariates)){
@@ -224,7 +229,7 @@ plot.cosimmr_output <-
         #Boxplot
 
         print(g)
-      }
+      } 
 
       if("beta_boxplot" %in% type){
 

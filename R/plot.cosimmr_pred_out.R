@@ -86,6 +86,7 @@ plot.cosimmr_pred_out <-
       
       # Iso-space plot is special as all groups go on one plot
       # Add in extra dots here as they can be sent to this plot function
+      
 
       n_cov = length(cov_name)
       covariates = c(rep(NA, n_cov))

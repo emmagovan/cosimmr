@@ -86,9 +86,10 @@ function(object, type = c("quantiles", "statistics", "correlations"), obs = 1, .
         
         # Loop through groups
         for (i in 1:length(obs)) {
-          message("\nSummary for Observation",  obs[i], "\n")
+          message("\nSummary for Observation ",  obs[i], "\n")
           out_all <- object$p[obs[i],,]
-          colnames(out_all) = object$input$source_names
+
+          colnames(out_all) = c(paste0("P(", object$input$source_names, ")"))
           
           # Get objects
           out_quantiles[[i]] <- t(apply(out_all, 2, "quantile", probs = c(0.025, 0.25, 0.5, 0.75, 0.975)))

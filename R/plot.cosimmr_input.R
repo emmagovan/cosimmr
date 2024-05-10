@@ -216,7 +216,7 @@ plot.cosimmr_input <-
           cols = viridis::mako(x$n_sources + 1) #Filling it with viridis pallette
           
           cols[int_mix] = c("Mixtures" = "black") #Making the right colour black for mixtures circle
-          
+          group_data$Source = as.numeric(group_data$Source) #Was getting an error otherwise - somewhere along the line this converts to chr
           
           g <- ggplot() +
             theme_bw() +
@@ -235,7 +235,7 @@ plot.cosimmr_input <-
               values = c(shapes, "Mixtures" = 16)
             ) +
             ggnewscale::new_scale_color() +
-            geom_point(data = group_data, aes(x = x, y = y, color = x), size = 3) +
+            geom_point(data = group_data, aes(x = x, y = y, color = Source), size = 3) +
             scale_color_viridis_c(
               name = cov_col_name,
               guide = guide_colorbar(

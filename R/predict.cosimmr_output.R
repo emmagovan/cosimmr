@@ -68,7 +68,8 @@
 #' @export
 predict.cosimmr_output <- function(object,
                           x_pred,
-                          n_output = 3600) {
+                          n_output = 3600,
+                          ...) {
   
 #Makes sure the object is the correct class
   if(inherits(object, "cosimmr_output") == TRUE){
@@ -133,15 +134,16 @@ predict.cosimmr_output <- function(object,
     if(scale_x == TRUE){
       if(object$input$intercept == TRUE){
         # Original code
-        scaled_full_mat = scale(stats::model.matrix(~ . -1, data=new_x), 
-                           center = object$input$scaled_center,
-                          scale = object$input$scaled_scale)
+        ncol_scaled =  (ncol(stats::model.matrix(~ ., data=new_x))) - 1
+        scaled_full_mat = matrix(scale(stats::model.matrix(~ ., data=new_x), 
+                           center = c(1,object$input$scaled_center),
+                          scale = c(1, object$input$scaled_scale))[,-c(1)], ncol = ncol_scaled)
         scaled_full_mat = cbind(c(rep(1,nrow(scaled_full_mat))), scaled_full_mat)
         
         x_pred_mat = matrix(scaled_full_mat[-c(1:nrow(original_x)),], ncol = ncol(scaled_full_mat))
         
       }else if(object$input$intercept == FALSE){
-        scaled_full_mat = scale(stats::model.matrix(~ ., data=new_x), 
+        scaled_full_mat = scale(stats::model.matrix(~ . -1, data=new_x), 
                                 center = object$input$scaled_center,
                                 scale = object$input$scaled_scale)
       

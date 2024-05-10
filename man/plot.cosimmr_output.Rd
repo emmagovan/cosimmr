@@ -6,10 +6,11 @@
 \usage{
 \method{plot}{cosimmr_output}(
   x,
-  type = c("isospace", "beta_histogram", "beta_boxplot", "prop_obs", "covariates_plot"),
+  type = c("isospace", "beta_histogram", "beta_boxplot", "prop_histogram",
+    "prop_density", "covariates_plot"),
   obs = 1,
-  covariates = 1,
-  binwidth = 0.1,
+  cov_name = NULL,
+  binwidth = 0.05,
   alpha = 0.5,
   title = NULL,
   n_output = 3600,
@@ -26,8 +27,6 @@
 
 \item{obs}{The observation number you wish to plot}
 
-\item{covariates}{The covariate you wish to plot (for beta and covariates plot)}
-
 \item{binwidth}{The width of the bins for the histogram. Defaults to 0.05}
 
 \item{alpha}{The degree of transparency of the plots. Not relevant for
@@ -41,6 +40,8 @@ matrix plots}
 'covariates_plot', defaults to NULL which means all sources are used}
 
 \item{...}{Currently not used}
+
+\item{covariates}{The covariate you wish to plot (for beta and covariates plot)}
 }
 \description{
 This function allows for 4 different types of plots of the simmr output

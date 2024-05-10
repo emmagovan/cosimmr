@@ -72,13 +72,13 @@ plot.cosimmr_output <-
              "isospace",
              "beta_histogram",
              "beta_boxplot",
-             "prop_obs",
+             "prop_histogram",
+             "prop_density",
              "covariates_plot"
              ),
            obs = 1,
-           covariates = 1,
-         #  cov_name = NULL, #I think drop this and just use the numbers??
-           binwidth = 0.1,
+           cov_name = NULL, 
+           binwidth = 0.05,
            alpha = 0.5,
            title = NULL,
            n_output = 3600,
@@ -88,6 +88,20 @@ plot.cosimmr_output <-
       title_input = title
       # Get the specified type
       type <- match.arg(type, several.ok = TRUE)
+      
+      #want to extract the right covariate number using the name?
+      n_cov = length(cov_name)
+      covariates = c(rep(NA, n_cov))
+      if(x$input$intercept == FALSE){
+      for(i in 1:n_cov){
+        covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$original_x), value = FALSE)
+      }
+        }else if(x$input$intercept == TRUE){
+          for(i in 1:n_cov){
+            covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$original_x)[-c(1)], value = FALSE)
+          }
+      }
+      
       
       # Iso-space plot is special as all groups go on one plot
       # Add in extra dots here as they can be sent to this plot function
@@ -99,7 +113,9 @@ plot.cosimmr_output <-
         
       }
       
-      if("prop_obs" %in% type){
+      
+      
+    
         
         #Need to have a separate matrix for each ind value
         #So do all this in loop and repeat I think is easiest
@@ -122,9 +138,10 @@ plot.cosimmr_output <-
         colnames(df) = c("Num", "Source", "Proportion")
         
         #add other plot types here maybe
-        
+        if("prop_histogram" %in% type){
           g <- ggplot(df, aes(
-            x = Proportion
+            x = Proportion,
+            fill = Source
           )) +
             scale_fill_viridis(discrete = TRUE) +
             geom_histogram(binwidth = binwidth, alpha = alpha) +
@@ -136,7 +153,24 @@ plot.cosimmr_output <-
           
           
         }
+      
+      
+      if("prop_density" %in% type){
+        g <- ggplot(df, aes(
+          x = Proportion,
+          fill = Source
+        )) +
+          scale_fill_viridis(discrete = TRUE) +
+          geom_density(aes(y = after_stat(density)), alpha = alpha, linetype = 0) +
+          theme_bw() +
+          theme(legend.position = "none") +
+          ggtitle(title[i]) +
+          ylab("Density") +
+          facet_wrap("~ Source")
+        print(g)
       }
+        }
+      
       
   
       #Prep data
@@ -172,7 +206,7 @@ plot.cosimmr_output <-
               title[c] = paste("beta histogram plot: covariate", covariates[c])
             }
           } else{title = rep(title_input, length(covariates))}
-        print_title = title[l]
+        
 
         #Histograms
         g <- ggplot(df_beta, aes(x = Beta)) +

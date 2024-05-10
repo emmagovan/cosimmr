@@ -88,7 +88,7 @@ summary(cosimmr_1_out, type = "statistics")
 
 The output of this can be plotted, using the plot function. There are several different options available in the plot function.
 ```{r}
-plot(cosimmr_1_out, type ="beta_histogram", ind = 1)
+plot(cosimmr_1_out, type ="beta_histogram", obs = 1)
 ```
 
 More complex examples can also be run. Here we include the group the geese belong to as a covariate
@@ -143,7 +143,7 @@ post_pred_geese
 We can then create a `covariates_plot`. This shows the change in consumption of
 a food source across a specified covariate
 ```{r}
-plot(cosimmr_2_out, type = "covariates_plot", source = c("U.lactuca"))
+plot(cosimmr_2_out, type = "covariates_plot", source = c("U.lactuca"), cov_name = "Group")
 ```
 This lets us see the change in consumption of Ulva lactuca over the different Groups.
 
@@ -184,7 +184,7 @@ summary(cosimmr_ali_out, type = "statistics")
 
 We can create plots of our data. This code creates a proportion plot and a histogram plot of beta value for individuals 1 and 2
 ```{r}
-plot(cosimmr_ali_out, type = c("p_ind", "beta_histogram"), binwidth = 0.01, ind = c(1,2))
+plot(cosimmr_ali_out, type = c("prop_histogram", "beta_histogram"), binwidth = 0.01, obs = c(1,2))
 ```
 
 We can use the predict function to predict proportions for individuals of lengths 100, 210, and 203 by creating a data frame and then using the `predict` function
@@ -195,7 +195,7 @@ alli_pred = predict(cosimmr_ali_out, x_pred)
 
 "alli_pred" can be treated like a normal cosimmr_out object - we can get summary values for each individual or we can create plots
 ```{r}
-summary(alli_pred, ind = c(1,2,3), type = "statistics")
+summary(alli_pred, obs = c(1,2,3), type = "statistics")
 
 plot(alli_pred, type = "beta_boxplot")
 ```

@@ -66,13 +66,15 @@
 #' @export
 plot.cosimmr_pred_out <-
   function(x,
-           type = c("beta_histogram",
+           type = c(
+             "beta_histogram",
              "beta_boxplot",
-             "prop_obs"
+             "prop_obs",
+             "prop_density"
            ),
            obs = 1,
-           covariates = 1,
-           binwidth = 0.1,
+           cov_name = NULL,
+           binwidth = 0.05,
            alpha = 0.5,
            title = NULL,
            n_output = 3600,
@@ -85,18 +87,31 @@ plot.cosimmr_pred_out <-
       # Iso-space plot is special as all groups go on one plot
       # Add in extra dots here as they can be sent to this plot function
 
+      n_cov = length(cov_name)
+      covariates = c(rep(NA, n_cov))
+      if(x$input$intercept == FALSE){
+        for(i in 1:n_cov){
+          covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$original_x), value = FALSE)
+        }
+      }else if(x$input$intercept == TRUE){
+        for(i in 1:n_cov){
+          covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$original_x)[-c(1)], value = FALSE)
+        }
+      }
       
-      if("prop_obs" %in% type){
+      for(i in 1:length(obs)){ 
+     
         
         #Need to have a separate matrix for each ind value
         #So do all this in loop and repeat I think is easiest
-        for(i in 1:length(obs)){
+
           if(is.null(title_input) == TRUE){
             title = c(rep(NA, length(obs)))
             for(j in 1:length(obs)){
-              title[j] = paste("Proportions: Observation", obs[j])
+              title[j] = paste("Proportions: Prediction", obs[j])
             }
           } else{title = rep(title_input, length(obs))}
+        
           curr_ind = obs[i]
           out_all_p = x$p[curr_ind,,]
           
@@ -108,10 +123,11 @@ plot.cosimmr_pred_out <-
           
           colnames(df) = c("Num", "Source", "Proportion")
           
-          #add other plot types here maybe
           
+          if("prop_obs" %in% type){
           g <- ggplot(df, aes(
-            x = Proportion
+            x = Proportion,
+            fill = Source
           )) +
             scale_fill_viridis(discrete = TRUE) +
             geom_histogram(binwidth = binwidth, alpha = alpha) +
@@ -122,14 +138,32 @@ plot.cosimmr_pred_out <-
           print(g) 
           
           
-        }
+          }
+          
+          if("prop_density" %in% type){
+            g <- ggplot(df, aes(
+              x = Proportion,
+              fill = Source
+            )) +
+              scale_fill_viridis(discrete = TRUE) +
+              geom_density(aes(y = after_stat(density)), alpha = alpha, linetype = 0) +
+              theme_bw() +
+              theme(legend.position = "none") +
+              ggtitle(title[i]) +
+              ylab("Density") +
+              facet_wrap("~ Source")
+            print(g)
+          }
+          
       }
+      
+      
       
 
       
       #Prep data
       #Data needs to be edited I think to make life easier
-      for( i in 1:length(covariates)){
+      for(l in 1:length(covariates)){
         
         
         
@@ -145,7 +179,7 @@ plot.cosimmr_pred_out <-
         
 
         
-        out_all_beta = beta[i,,]
+        out_all_beta = beta[l,,]
         colnames(out_all_beta) = x$input$source_names
         #I don't actually understand what this is doing
         df_beta <- reshape2::melt(out_all_beta)
@@ -159,13 +193,14 @@ plot.cosimmr_pred_out <-
               title[j] = paste("beta histogram plot: covariate", covariates[j])
             }
           } else{title = rep(title_input, length(covariates))}
+          print_title = title[l]
           
           #Histograms
           g <- ggplot(df_beta, aes(x = Beta)) +
             scale_fill_viridis(discrete = TRUE) +
             geom_histogram(binwidth = binwidth, alpha = alpha) +
             theme_bw() +
-            ggtitle(title[i]) +
+            ggtitle(print_title) +
             facet_wrap("~ Source") +
             theme(legend.position = "none", 
                   axis.text.y=element_blank(),
@@ -193,7 +228,7 @@ plot.cosimmr_pred_out <-
             scale_fill_viridis(discrete = TRUE) +
             geom_boxplot() +
             theme_bw() +
-            ggtitle(title[i]) +
+            ggtitle(title[l]) +
             facet_wrap("~ Source")+
             geom_vline(xintercept = 0, colour = "red") +
             theme(axis.text.y=element_blank(),

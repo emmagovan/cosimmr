@@ -6,10 +6,10 @@
 \usage{
 \method{plot}{cosimmr_pred_out}(
   x,
-  type = c("beta_histogram", "beta_boxplot", "prop_obs"),
+  type = c("beta_histogram", "beta_boxplot", "prop_obs", "prop_density"),
   obs = 1,
-  covariates = 1,
-  binwidth = 0.1,
+  cov_name = NULL,
+  binwidth = 0.05,
   alpha = 0.5,
   title = NULL,
   n_output = 3600,
@@ -25,8 +25,6 @@
 
 \item{obs}{The observation you wish to plot}
 
-\item{covariates}{The covariate you wish to plot (for beta plots)}
-
 \item{binwidth}{The width of the bins for the histogram. Defaults to 0.05}
 
 \item{alpha}{The degree of transparency of the plots. Not relevant for
@@ -37,6 +35,8 @@ matrix plots}
 \item{n_output}{The number of theta samples you wish to plot with. Defaults to 3600}
 
 \item{...}{Currently not used}
+
+\item{covariates}{The covariate you wish to plot (for beta plots)}
 }
 \description{
 This function allows for 4 different types of plots of the simmr output

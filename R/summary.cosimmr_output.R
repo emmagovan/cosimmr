@@ -90,7 +90,7 @@ function(object, type = c("quantiles", "statistics", "correlations"), obs = 1, .
         message("\nSummary for Observation ",  obs[i], "\n")
         out_all <- cbind(object$output$BUGSoutput$sims.list$p[obs[i],,],
                          object$output$BUGSoutput$sims.list$sigma)
-        colnames(out_all) = c(object$input$source_names, paste0("sd_", colnames(object$input$mixtures)))
+        colnames(out_all) = c(paste0("P(", object$input$source_names, ")"), paste0("sd_", colnames(object$input$mixtures)))
         
         # Get cosimmr_outs
         out_quantiles[[i]] <- t(apply(out_all, 2, "quantile", probs = c(0.025, 0.25, 0.5, 0.75, 0.975)))

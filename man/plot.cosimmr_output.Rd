@@ -23,9 +23,11 @@
 \code{\link{cosimmr_ffvb}}.}
 
 \item{type}{The type of plot required. Can be one or more of 'isospace', 
-'beta_histogram', 'beta_boxplot', 'covariates_plot'}
+'beta_histogram', 'beta_boxplot', 'prob_histogram', 'prob_density', 'covariates_plot'}
 
 \item{obs}{The observation number you wish to plot}
+
+\item{cov_name}{The name of the covariate you wish to plot (for beta and covariates plot)}
 
 \item{binwidth}{The width of the bins for the histogram. Defaults to 0.05}
 
@@ -40,8 +42,6 @@ matrix plots}
 'covariates_plot', defaults to NULL which means all sources are used}
 
 \item{...}{Currently not used}
-
-\item{covariates}{The covariate you wish to plot (for beta and covariates plot)}
 }
 \description{
 This function allows for 4 different types of plots of the simmr output

@@ -11,12 +11,12 @@
 #' @param x An object of class \code{cosimmr_output} created via
 #'  \code{\link{cosimmr_ffvb}}.
 #' @param type The type of plot required. Can be one or more of 'isospace', 
-#' 'beta_histogram', 'beta_boxplot', 'covariates_plot'
+#' 'beta_histogram', 'beta_boxplot', 'prob_histogram', 'prob_density', 'covariates_plot'
 #' @param binwidth The width of the bins for the histogram. Defaults to 0.05
 #' @param alpha The degree of transparency of the plots. Not relevant for
 #' matrix plots
 #' @param obs The observation number you wish to plot
-#' @param covariates The covariate you wish to plot (for beta and covariates plot)
+#' @param cov_name The name of the covariate you wish to plot (for beta and covariates plot)
 #' @param title The title of the plot.
 #' @param n_output The number of theta samples you wish to plot with. Defaults to 3600
 #' @param source The number or name of the source you wish to plot over for 
@@ -92,21 +92,12 @@ plot.cosimmr_output <-
       #want to extract the right covariate number using the name?
       n_cov = length(cov_name)
       covariates = c(rep(NA, n_cov))
-      if(ncol(x$input$original_x) ==1 & x$input$intercept == TRUE){
-       # message("You have selected `beta_histogram` or `beta_boxplot` but the model does not contain
-        #        covariates. Please reselect model or plots to create and rerun.")
-        stop()
+      if(ncol(x$input$original_x) ==1 & x$input$intercept == TRUE  & (("beta_histogram" %in% type)|("beta_boxplot" %in% type)|("covariates_plot" %in% type))){
+        message("You have selected a plot type that requires covariates but 
+the model does not contain covariates. Please reselect
+model or plots to create and rerun.")
       } else{
-      if(x$input$intercept == FALSE){
-      for(i in 1:n_cov){
-        covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$original_x), value = FALSE)
-      }
-        }else if(x$input$intercept == TRUE){
-          for(i in 1:n_cov){
-            covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$original_x)[-c(1)], value = FALSE)
-          }
-        }
-      }
+      
       
       
       # Iso-space plot is special as all groups go on one plot
@@ -183,7 +174,23 @@ plot.cosimmr_output <-
       #Data needs to be edited I think to make life easier
       
     for(l in 1:length(covariates)){
-      cov_ind =covariates[l]
+      if("beta_histogram" %in% type){
+   
+      if(x$input$intercept == FALSE){
+        for(i in 1:n_cov){
+          covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$covariates_df), value = FALSE)
+        }
+      }else if(x$input$intercept == TRUE){
+        for(i in 1:n_cov){
+          covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$covariates_df), value = FALSE)
+        }
+      }
+      
+      
+      if(x$input$intercept == TRUE){
+      cov_ind =covariates[l] +1} else{
+        cov_ind =covariates[l]
+      }
 
       beta = array(NA, dim = c(x$input$n_covariates, nrow(x$output$beta), x$input$n_sources))
 
@@ -197,18 +204,18 @@ plot.cosimmr_output <-
 
 
 
-      out_all_beta = beta[l,,]
+      out_all_beta = beta[cov_ind,,]
       colnames(out_all_beta) = x$input$source_names
       #I don't actually understand what this is doing
       df_beta <- reshape2::melt(out_all_beta)
       colnames(df_beta) = c("Num", "Source", "Beta")
 
-      if("beta_histogram" %in% type){
+     
  
           if(is.null(title_input) == TRUE){
             title = c(rep(NA, length(covariates)))
             for(c in 1:length(covariates)){
-              title[c] = paste("beta histogram plot: covariate", covariates[c])
+              title[c] = paste("beta histogram plot: covariate", cov_name[c])
             }
           } else{title = rep(title_input, length(covariates))}
         
@@ -218,7 +225,7 @@ plot.cosimmr_output <-
           scale_fill_viridis(discrete = TRUE) +
           geom_histogram(binwidth = binwidth, alpha = alpha) +
           theme_bw() +
-          ggtitle(print_title) +
+          ggtitle(title[l]) +
           facet_wrap("~ Source") +
           theme(legend.position = "none",
                 axis.text.y=element_blank(),
@@ -232,11 +239,46 @@ plot.cosimmr_output <-
       } 
 
       if("beta_boxplot" %in% type){
+        
+        if(x$input$intercept == FALSE){
+          for(i in 1:n_cov){
+            covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$covariates_df), value = FALSE)
+          }
+        }else if(x$input$intercept == TRUE){
+          for(i in 1:n_cov){
+            covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$covariates_df), value = FALSE)
+          }
+        }
+        
+        
+        if(x$input$intercept == TRUE){
+          cov_ind =covariates[l] +1} else{
+            cov_ind =covariates[l]
+          }
+        
+        beta = array(NA, dim = c(x$input$n_covariates, nrow(x$output$beta), x$input$n_sources))
+        
+        for(s in 1:nrow(x$output$theta)){
+          for(c in 1:x$input$n_covariates){
+            for(j in 1:x$input$n_sources){
+              beta[c,s, j] = x$output$beta[s, (c-1)*x$input$n_sources + (j)]
+            }
+          }
+        }
+        
+        
+        
+        out_all_beta = beta[cov_ind,,]
+        colnames(out_all_beta) = x$input$source_names
+        #I don't actually understand what this is doing
+        df_beta <- reshape2::melt(out_all_beta)
+        colnames(df_beta) = c("Num", "Source", "Beta")
+        
 
         if(is.null(title_input) == TRUE){
           title = c(rep(NA, length(covariates)))
           for(c in 1:length(covariates)){
-            title[c] = paste("beta boxplot: covariate", covariates[c])
+            title[c] = paste("beta boxplot: covariate", cov_name[c])
           }
         } else{title = rep(title_input, length(covariates))}
         g <- ggplot(df_beta, aes(x = Beta)) +
@@ -254,7 +296,23 @@ plot.cosimmr_output <-
       }
       
       if("covariates_plot" %in% type){
-       
+        if(x$input$intercept == FALSE){
+          for(i in 1:n_cov){
+            covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$covariates_df), value = FALSE)
+          }
+        }else if(x$input$intercept == TRUE){
+          for(i in 1:n_cov){
+            covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$covariates_df), value = FALSE)
+          }
+        }
+        
+        
+        if(x$input$intercept == TRUE){
+          cov_ind =covariates[l] +1} else{
+            cov_ind =covariates[l]
+          }
+        
+
         #want to let them choose the food source by name?? I guess??
         if(is.null(source)){
           source_loop = x$input$n_sources
@@ -288,9 +346,9 @@ plot.cosimmr_output <-
         box_or_line = NULL
 
 
-          cov_selected_col = matrix(c((x$input$covariates_df)[,cov_ind]), ncol = 1)
+          cov_selected_col = matrix(c((x$input$covariates_df)[,l]), ncol = 1)
 
-          colnames(cov_selected_col) = colnames(x$input$covariates_df)[cov_ind]
+          colnames(cov_selected_col) = colnames(x$input$covariates_df)[l]
         
         #Just chooses which plot we're making
         if(is.numeric(cov_selected_col)){
@@ -383,6 +441,7 @@ plot.cosimmr_output <-
       } #cov loop bracket
     
     if (exists("g")) invisible(g) 
+      }
     }
     
   }

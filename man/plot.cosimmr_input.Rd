@@ -109,7 +109,6 @@ plot(cosimmr_3)
 plot(cosimmr_3, tracers = c(2, 3))
 # and finally d13C vs d34S
 plot(cosimmr_3, tracers = c(1, 3))
-# See vignette('cosimmr') for fancier x-axis labels
 }
 }
 \seealso{

@@ -9,7 +9,7 @@
 #' original covariance matrix was. Important for this to be a data.frame otherwise 
 #' numeric values can be set as characters and this causes incorrect calculations.
 #' @param n_output the number of posterior samples to generate. Defaults to 3600.
-
+#' @param ... Other arguments (not used)
 #'
 #' @author Emma Govan <emmagovan@@gmail.com> Andrew Parnell
 #'
@@ -30,10 +30,11 @@
 #'
 #' # Data set 1: 10 obs on 2 isos, 4 sources, with tefs and concdep
 #' data(geese_data_day1)
+#' cov_1 = c(1,2,3,2,3,1,1,1,2)
 #' simmr_1 <- with(
 #'   geese_data_day1,
 #'   cosimmr_load(
-#'     formula = mixtures ~ c(1,2,3,2,3,1,1,1,2),
+#'     formula = mixtures ~ cov_1,
 #'     source_names = source_names,
 #'     source_means = source_means,
 #'     source_sds = source_sds,
@@ -58,9 +59,9 @@
 #'
 #' # Plot
 #' plot(simmr_1_out, type = "isospace")
-#' plot(simmr_1_out, type = "beta_hist")
+#' plot(simmr_1_out, type = "beta_histogram", cov_name = "cov_1")
 #' 
-#' x_pred = data.frame(pred = c(1,5))
+#' x_pred = data.frame(cov_1 = c(1,5))
 #'
 #'pred_array<-predict(simmr_1_out, x_pred)
 #'

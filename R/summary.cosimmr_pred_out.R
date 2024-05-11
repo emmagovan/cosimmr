@@ -63,7 +63,7 @@
 #' # Summarise
 #' summary(cosimmr_1_out) # This outputs all the summaries
 #' summary(cosimmr_1_out, type = "quantiles") # Just the diagnostics
-#' # Store the output in an
+#' # Store the output in ans
 #' ans <- summary(cosimmr_1_out,
 #'   type = c("quantiles", "statistics")
 #' )

@@ -69,8 +69,7 @@
 #' @export
 predict.cosimmr_output <- function(object,
                           x_pred,
-                          n_output = 3600,
-                          ...) {
+                          n_output = 3600, ...) {
   
 #Makes sure the object is the correct class
   if(inherits(object, "cosimmr_output") == TRUE){

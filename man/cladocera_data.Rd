@@ -3,25 +3,29 @@
 \docType{data}
 \name{cladocera_data}
 \alias{cladocera_data}
-\title{Title}
+\title{Cladocera data from Galloway et al 2015.}
 \format{
-A list etc with elements
+A list with the following elements
 \describe{
-\item{mixtures}{what this is and delta 13C etc etc}
-\item{source_names}{character vector}
-\item{tracer_names}{character vector}
-\item{source_means}{character vector}
-\item{source_sds}{character vector}
-\item{correction_means}{character vector}
-\item{correction_sds}{character vector}
-\item{concentration_means}{character vector}
+\item{id}{numeric vector of ID number}
+\item{group}{character vector of group ID}
+\item{mixtures}{Data frame of tracer values. There are 22 fatty acids as tracers in this dataset.}
+\item{tracer_names}{character vector of tracer names}
+\item{source_means}{data frame of tracer means for each of the 7 food sources}
+\item{source_sds}{data frame of tracer sds for each of the 7 food sources}
+\item{n_sources}{numeric vector of the number of each food source collected}
+\item{correction_means}{data frame with TDF means for each food source on each tracer}
+\item{correction_sds}{data frame with TDF sds for each food source on each tracer}
 
 }
+}
+\source{
+<doi:10.1111/fwb.12394>
 }
 \usage{
 cladocera_data
 }
 \description{
-description
+Cladocera data from Galloway et al 2015. This dataset has 14 individuals on 7 food sources and 22 tracers. The id column can be used as a covariate. This dataset includes TDFs.
 }
 \keyword{datasets}

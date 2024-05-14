@@ -5,7 +5,7 @@
 \alias{alligator_data}
 \title{Alligator Data}
 \format{
-A list etc with elements
+A list with the following elements
 \describe{
 \item{mixtures}{A two column matrix containing delta 13C and delta 15N values respectively}
 \item{ID}{A character vector of unique ID values}
@@ -28,10 +28,13 @@ A list etc with elements
 
 }
 }
+\source{
+<doi:10.1111/1365-2656.12306>
+}
 \usage{
 alligator_data
 }
 \description{
-Dataset from Nifong et al 2015 which includes multiple covariates
+Dataset from Nifong et al 2015 which contains 2 food sources, 181 individuals and 2 isotopes. This dataset includes multiple covariates as well as TDF means and sds.
 }
 \keyword{datasets}

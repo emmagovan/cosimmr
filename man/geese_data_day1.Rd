@@ -3,25 +3,29 @@
 \docType{data}
 \name{geese_data_day1}
 \alias{geese_data_day1}
-\title{Title}
+\title{A smaller version of the Geese stable isotope mixing data set}
 \format{
-A list etc with elements
+A list with the following elements
 \describe{
-\item{mixtures}{what this is and delta 13C etc etc}
-\item{source_names}{character vector}
-\item{tracer_names}{character vector}
-\item{source_means}{character vector}
-\item{source_sds}{character vector}
-\item{correction_means}{character vector}
-\item{correction_sds}{character vector}
-\item{concentration_means}{character vector}
+  \item{mixtures}{A two column matrix containing delta 13C and delta 15N values respectively}
+  \item{source_names}{A character vector of the food source names}
+  \item{tracer_names}{A character vector of the tracer names (d13C, d15N, d34S)}
+  \item{source_means}{A matrix of source mean values for the tracers in the same order as \code{mixtures} above}
+  \item{source_sds}{A matrix of source sd values for the tracers in the same order as \code{mixtures} above}
+  \item{correction_means}{A matrix of TEFs mean values for the tracers in the same order as \code{mixtures} above}
+  \item{correction_sds}{A matrix of TEFs sd values for the tracers in the same order as \code{mixtures} above}
+  \item{concentration_means}{A matrix of concentration dependence mean values for the tracers in the same order as \code{mixtures} above}
+  ...
 
 }
+}
+\source{
+<doi:10.1111/j.1365-2656.2006.01142.x>
 }
 \usage{
 geese_data_day1
 }
 \description{
-description
+A real Geese data set with 9 observations on 2 isotopes, with 4 sources, and with corrections/trophic enrichment factors (TEFs or TDFs), and concentration dependence means. Taken from Inger et al (2016). See link for paper
 }
 \keyword{datasets}

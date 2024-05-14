@@ -3,18 +3,21 @@
 \docType{data}
 \name{simmr_data_1}
 \alias{simmr_data_1}
-\title{Title}
+\title{A simple fake stable isotope mixing data set}
 \format{
-A list etc with elements
+A list with the following elements
 \describe{
-\item{mixtures}{what this is and delta 13C etc etc}
-\item{source_names}{character vector}
-\item{tracer_names}{character vector}
-\item{source_means}{character vector}
-\item{source_sds}{character vector}
-\item{correction_means}{character vector}
-\item{correction_sds}{character vector}
-\item{concentration_means}{character vector}
+  \item{mixtures}{A two column matrix containing delta 13C and delta 15N values respectively}
+  \item{source_names}{A character vector of the food source names}
+  \item{tracer_names}{A character vector of the tracer names (d13C and d15N)}
+  \item{source_means}{A matrix of source mean values for the tracers in the same order as \code{mixtures} above}
+  \item{source_sds}{A matrix of source sd values for the tracers in the same order as \code{mixtures} above}
+  \item{correction_means}{A matrix of TEFs mean values for the tracers in the same order as \code{mixtures} above}
+  \item{correction_sds}{A matrix of TEFs sd values for the tracers in the same order as \code{mixtures} above}
+  \item{concentration_means}{A matrix of concentration dependence mean values for the tracers in the same order as \code{mixtures} above}
+  ...
+
+  @seealso \code{\link{simmr_mcmc}} for an example where it is used
 
 }
 }
@@ -22,6 +25,6 @@ A list etc with elements
 simmr_data_1
 }
 \description{
-description
+A simple fake data set with 10 observations on 2 isotopes, with 4 sources, and with corrections/trophic enrichment factors (TEFs or TDFs), and concentration dependence means
 }
 \keyword{datasets}

@@ -3,25 +3,29 @@
 \docType{data}
 \name{iso_data}
 \alias{iso_data}
-\title{Title}
+\title{Isopod Data}
 \format{
-A list etc with elements
+A list with the following elements
 \describe{
-\item{mixtures}{what this is and delta 13C etc etc}
-\item{source_names}{character vector}
-\item{tracer_names}{character vector}
-\item{source_means}{character vector}
-\item{source_sds}{character vector}
-\item{correction_means}{character vector}
-\item{correction_sds}{character vector}
-\item{concentration_means}{character vector}
+\item{site}{A character vector with name of site for each individual}
+\item{mixtures}{Data frame with 8 tracer values for 30 individuals}
+\item{tracer_names}{character vector of tracer names}
+\item{source_names}{character vector of food source names}
+\item{source_means}{Data frame of source means with values for each food source on each tracer}
+\item{source_sds}{Data frame of source sds with values for each food source on each tracer}
+\item{n_sources}{numeric vector of number of each source obtained}
+\item{correction_means}{Data frame of TDF means for each food source on each tracer}
+\item{correction_sds}{Data frame of TDF sds for each food source on each tracer}
 
 }
+}
+\source{
+<doi:10.3354/meps10860>
 }
 \usage{
 iso_data
 }
 \description{
-description
+Isopod data from Galloway et al 2014. This dataset has 8 tracers (fatty acids), 30 individuals and 3 food sources. This dataset includes TDFs.
 }
 \keyword{datasets}

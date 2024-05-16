@@ -171,7 +171,7 @@ cosimmr_ali <-cosimmr_load(
 
 We then plot our data to make sure our iso-space plot looks good
 ```{r}
-plot(cosimmr_ali, colour_by_cov = TRUE, cov_col_name = "length")
+plot(cosimmr_ali, colour_by_cov = TRUE, cov_name = "length")
 ```
 
 Then we can run the mixing model:

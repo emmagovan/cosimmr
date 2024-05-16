@@ -27,7 +27,7 @@
 #' black and white
 #' @param colour_by_cov if TRUE this allows users to colour the mixtures on the 
 #' isospace plot by a specified covariate. Defaults to FALSE
-#' @param  cov_col_name The name of the covariate the user wishes to colour the 
+#' @param  cov_name The name of the covariate the user wishes to colour the 
 #' mixture points on the plot by
 #' @param ggargs Extra arguments to be included in the ggplot (e.g. axis limits)
 #' @param ...  Not used
@@ -95,13 +95,13 @@ plot.cosimmr_input <-
            mix_name = "Mixtures",
            colour = TRUE,
            colour_by_cov = FALSE,
-           cov_col_name = NULL,
+           cov_name = NULL,
            ggargs = NULL,
            ...) {
     
     #This selects the correct column from the covariates df to colour by
     if(colour_by_cov == TRUE){
-      cov_selected_col = subset(as.matrix(x$covariates_df), select =  cov_col_name)
+      cov_selected_col = subset(as.matrix(x$covariates_df), select =  cov_name)
     }
     
     curr_mix <- x$mixtures 
@@ -236,7 +236,7 @@ plot.cosimmr_input <-
             ggnewscale::new_scale_color() +
             geom_point(data = group_data, aes(x = x, y = y, color = Source), size = 3) +
             scale_color_viridis_c(
-              name = cov_col_name,
+              name = cov_name,
               guide = guide_colorbar(
                 order = 2,
                 frame.colour = "black",

@@ -396,12 +396,14 @@ model or plots to create and rerun.")
           
           
           # l is the covariate number
-          a = matrix(x$output$BUGSoutput$sims.list$p[grep_values,,l], ncol = n_samples)
+         # a = matrix(x$output$BUGSoutput$sims.list$p[grep_values,,l], ncol = n_samples)
           ind_mat = matrix(nrow = n_samples, ncol = n_groups)
           
-          for(i in 1:n_groups){
-            ind_mat[,i] = x$output$BUGSoutput$sims.list$p[i,,s]
-          }
+          ########MISTAKE HERE!!!!!!!!!!!!!!!!!!!!!!
+           for(i in 1:n_groups){
+             ind_val = grep_values[i]
+             ind_mat[,i] = x$output$BUGSoutput$sims.list$p[ind_val,,s]
+           }
           
           ind_vec =c(ind_mat)
           

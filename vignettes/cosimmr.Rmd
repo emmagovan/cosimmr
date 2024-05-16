@@ -94,16 +94,17 @@ plot(cosimmr_1_out, type ="prop_histogram", obs = 1)
 More complex examples can also be run. Here we include the group the geese belong to as a covariate
 ```{r}
 data(geese_data)
-Groups = matrix(geese_data$groups)
+Groups = as.factor(geese_data$groups)
 
 cosimmr_2 <-cosimmr_load(
-    formula = geese_data$mixtures ~ as.factor(Groups) -1,
+    formula = geese_data$mixtures ~ Groups - 1,
     source_names = geese_data$source_names,
     source_means = geese_data$source_means,
     source_sds = geese_data$source_sds,
     correction_means = geese_data$correction_means,
     correction_sds = geese_data$correction_sds,
-    concentration_means = geese_data$concentration_means)
+    concentration_means = geese_data$concentration_means,
+    scale_x = FALSE)
 
 
 cosimmr_2_out = cosimmr_ffvb(cosimmr_2)

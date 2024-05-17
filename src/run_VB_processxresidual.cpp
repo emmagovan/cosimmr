@@ -116,7 +116,9 @@ double hcpp_pxr(int n_sources, int n_isotopes, int n_covariates,
             arma::mat corrsds, arma::mat sourcesds,
             arma::vec theta, arma::mat y, arma::vec c_prior,
             arma::mat sd_prior,
-            arma::mat mu_prior){
+            arma::mat mu_prior,
+            int uni_a_prior,
+            int uni_b_prior){
   
   int n = y.n_rows;
   
@@ -153,6 +155,7 @@ double hcpp_pxr(int n_sources, int n_isotopes, int n_covariates,
       }
       
       mutotal(i, j) = mutop / mubtm;
+      // This is now sigtop/sigbottom x omicron (epsilon from mixsiar) + sigma_j
       sigtotal(i, j) = sqrt(sigsqtop / sigsqbtm * pow(exp(theta(j + n_sources * n_covariates +n_isotopes)), 0.5) + exp(theta(j + n_sources * n_covariates)));
     }
   }
@@ -223,6 +226,9 @@ double hcpp_pxr(int n_sources, int n_isotopes, int n_covariates,
   //   gammaprior += -sqrt(exp(theta(i + n_sources * n_covariates)));
   // }
   
+  double uniformprior = 1/(uni_b_prior-uni_a_prior);
+  
+  
   // Calculate totx
   //double totx = hold + priornorm;//gammaprior + betanorm + hold;
   double totx = gammaprior + betanorm + hold;
@@ -236,7 +242,7 @@ double hcpp_pxr(int n_sources, int n_isotopes, int n_covariates,
 double  log_q_cpp_pxr(arma::vec theta, arma::vec lambda,
                  int n_sources, int n_tracers, int S, int n_cov){
   
-  int ncnsnt = n_sources * n_cov + n_tracers;
+  int ncnsnt = n_sources * n_cov + (n_tracers * 2); // *2 for omicron and sigma
   
   arma::vec mean = lambda.subvec(0, ncnsnt - 1);
   
@@ -359,10 +365,12 @@ double h_lambdacpp_pxr(int n_sources, int n_isotopes,
                    arma::mat x_scaled,
                    arma::vec c_0,
                    arma::mat sd_prior,
-                   arma::mat mu_prior) {
+                   arma::mat mu_prior,
+                   int uni_a_prior,
+                   int uni_b_prior) {
   
   return hcpp_pxr(n_sources, n_isotopes, n_covariates, beta_prior, x_scaled, concentrationmeans, sourcemeans, correctionmeans,
-              corrsds, sourcesds, theta, y, c_0, sd_prior, mu_prior) - log_q_cpp_pxr(theta, lambda, n_sources, n_isotopes, S, n_covariates);
+              corrsds, sourcesds, theta, y, c_0, sd_prior, mu_prior, uni_a_prior, uni_b_prior) - log_q_cpp_pxr(theta, lambda, n_sources, n_isotopes, S, n_covariates);
 }
 
 
@@ -383,7 +391,9 @@ arma::vec delta_h_lambda_cpp_pxr(int n_sources, int n_tracers,
                              arma::vec c_0,
                              arma::mat sd_prior,
                              arma::mat mu_prior,
-                             double eps) {
+                             double eps,
+                             int uni_a_prior,
+                             int uni_b_prior) {
   
   int ncnsnt = n_sources * n_covariates + n_tracers;
   int mat_size = ((ncnsnt) * (ncnsnt+1))/2;
@@ -437,7 +447,9 @@ arma::vec delta_h_lambda_cpp_pxr(int n_sources, int n_tracers,
               thetaplusd, y,
               c_0,
               sd_prior,
-              mu_prior) -
+              mu_prior,
+              uni_a_prior,
+              uni_b_prior) -
                 hcpp_pxr(n_sources, n_tracers,
                      n_covariates,
                      beta_prior,
@@ -448,7 +460,9 @@ arma::vec delta_h_lambda_cpp_pxr(int n_sources, int n_tracers,
                      thetaminusd, y,
                      c_0,
                      sd_prior,
-                     mu_prior))/(2 * eps);
+                     mu_prior,
+                     uni_a_prior,
+                     uni_b_prior))/(2 * eps);
   }
   
   arma::vec log_q_deriv = - arma::inv(chol_var).t() * arma::inv(chol_var)* (theta - lambda.subvec(0, ncnsnt-1));
@@ -475,7 +489,9 @@ arma::vec nabla_LB_cpp_pxr(arma::vec lambda, arma::mat theta,
                        arma::vec c_0,
                        arma::mat sd_prior,
                        arma::mat mu_prior,
-                       arma::mat kappa){
+                       arma::mat kappa,
+                       int uni_a_prior,
+                       int uni_b_prior){
   
   //int thetanrow = theta.n_rows; //THIS IS JUST S OOPS
   int lambdalength = lambda.n_elem;
@@ -494,7 +510,8 @@ arma::vec nabla_LB_cpp_pxr(arma::vec lambda, arma::mat theta,
                            correctionmeans,
                            corrsds,
                            sourcesds,
-                           theta.row(i).t(), y, lambda, x_scaled, c_0, sd_prior, mu_prior, 0.0001).t();
+                           theta.row(i).t(), y, lambda, x_scaled, c_0, sd_prior, mu_prior,
+                           0.0001, uni_a_prior, uni_b_prior).t();
   }
   
   
@@ -581,7 +598,9 @@ double LB_lambda_cpp_pxr(arma::mat theta, arma::vec lambda,
                      arma::mat y,
                      arma::vec c_0,
                      arma::mat sd_prior,
-                     arma::mat mu_prior){
+                     arma::mat mu_prior,
+                     int uni_a_prior,
+                     int uni_b_prior){
   
   int S = theta.n_rows;
   
@@ -593,7 +612,7 @@ double LB_lambda_cpp_pxr(arma::mat theta, arma::vec lambda,
                  concentrationmeans, sourcemeans,
                  correctionmeans, corrsds, sourcesds,
                  theta.row(i).t(), y, lambda,
-                 x_scaled, c_0, sd_prior, mu_prior);
+                 x_scaled, c_0, sd_prior, mu_prior, uni_a_prior, uni_b_prior);
   }
   
   double ans = mean(hlambdaapply);
@@ -629,7 +648,9 @@ List run_VB_cpp_pxr(arma::vec lambdastart,
                 arma::vec c_prior,
                 bool solo,
                 arma::mat sd_prior,
-                arma::mat mu_prior
+                arma::mat mu_prior,
+                int uni_a_prior,
+                int uni_b_prior
 ){
   
   
@@ -656,7 +677,7 @@ List run_VB_cpp_pxr(arma::vec lambdastart,
                                S, n_covariates, x_scaled,
                                concentrationmeans, sourcemeans,
                                correctionmeans, corrsds,
-                               sourcesds, y, c_prior, sd_prior, mu_prior, kappa);
+                               sourcesds, y, c_prior, sd_prior, mu_prior, kappa, uni_a_prior, uni_b_prior);
   
   
   
@@ -703,7 +724,7 @@ List run_VB_cpp_pxr(arma::vec lambdastart,
     g_t = nabla_LB_cpp_pxr(lambda, theta, n_sources, n_tracers, beta_prior,
                        S, n_covariates, x_scaled, concentrationmeans,
                        sourcemeans, correctionmeans, corrsds, sourcesds,
-                       y, c_prior, sd_prior, mu_prior, kappa_loop);
+                       y, c_prior, sd_prior, mu_prior, kappa_loop, uni_a_prior, uni_b_prior);
     //
     //     // This is where we would have gradient clipping
     //     // So it would be some threshold/norm(g_t) * g_t
@@ -778,7 +799,7 @@ List run_VB_cpp_pxr(arma::vec lambdastart,
          n_covariates, x_scaled,
          concentrationmeans, sourcemeans,
          correctionmeans,
-         corrsds,sourcesds, y, c_prior, sd_prior, mu_prior);
+         corrsds,sourcesds, y, c_prior, sd_prior, mu_prior, uni_a_prior, uni_b_prior);
     }
     else{
       for (int i = 0; i<(t_W-1); i++){
@@ -791,7 +812,7 @@ List run_VB_cpp_pxr(arma::vec lambdastart,
          n_covariates, x_scaled,
          concentrationmeans, sourcemeans,
          correctionmeans,
-         corrsds,sourcesds, y, c_prior, sd_prior, mu_prior);
+         corrsds,sourcesds, y, c_prior, sd_prior, mu_prior, uni_a_prior, uni_b_prior);
       
       double LB_bar = arma::mean(LB);
       

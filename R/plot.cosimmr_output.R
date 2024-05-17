@@ -21,6 +21,7 @@
 #' @param n_output The number of theta samples you wish to plot with. Defaults to 3600
 #' @param source The number or name of the source you wish to plot over for 
 #' 'covariates_plot', defaults to NULL which means all sources are used
+#' @param one_plot Whether to plot line covariates plot on one plot. Defaults to FALSE
 #' @param ...  Currently not used
 #'
 #' @import ggplot2
@@ -83,6 +84,7 @@ plot.cosimmr_output <-
            title = NULL,
            n_output = 3600,
            source = NULL,
+           one_plot = FALSE,
            ...) {
     if(inherits(x, "cosimmr_output") == TRUE){
       title_input = title
@@ -325,7 +327,76 @@ model or plots to create and rerun.")
           source_chosen = source
           }
         
-        
+        if(one_plot == TRUE){
+          
+          #so now we have the source name (s_name) and the number of the source (source_n)
+          n_samples = length(x$output$BUGSoutput$sims.list$p[1,,1])
+          n_ind = x$input$n_obs
+          
+          #check which plot we want to make - boxplot or lineplot
+          box_or_line = NULL
+          
+          
+          cov_selected_col = matrix(c((x$input$covariates_df)[,l]), ncol = 1)
+          
+          colnames(cov_selected_col) = colnames(x$input$covariates_df)[l]
+          
+          #Just chooses which plot we're making
+          if(is.numeric(cov_selected_col)){
+            box_or_line = "LINE"
+          }else {
+            box_or_line = "BOX"
+          }
+          
+          if(box_or_line == "LINE"){
+            n_sources = x$input$n_sources
+            line_array = array(NA, dim = c(n_ind, n_samples, n_sources))
+            mean_line_mat = matrix(NA, nrow = n_ind, ncol = n_sources)
+            save_sd =  matrix(NA, nrow = n_ind, ncol = n_sources)
+            for(s in 1:n_sources){
+            line_array[,,s] = matrix(x$output$BUGSoutput$sims.list$p[,,s], nrow = n_ind, ncol = n_samples)
+            mean_line_mat[,s] = rowMeans(line_array[,,s])
+            for(i in 1:n_ind){
+              save_sd[i,s] = sd(line_array[i,,s])
+            }
+            }
+            
+            out_all_mean <- mean_line_mat
+            colnames(out_all_mean) <- x$input$source_names
+            df_mean <- reshape2::melt(out_all_mean)
+            
+            colnames(df_mean) <- c("Num", "Source", "Mean")
+            
+            out_all_sd <- save_sd
+            colnames(out_all_sd) <- x$input$source_names
+            df_sd <- reshape2::melt(out_all_sd)
+            
+            colnames(df_sd) <- c("Num", "Source", "SD")
+            
+            df_plot = data.frame(mean = df_mean$Mean,
+                                 sd = df_sd$SD,
+                                 cov = x$input$covariates_df[,l],
+                                 psd = df_mean$Mean + df_sd$SD,
+                                 nsd = df_mean$Mean - df_sd$SD,
+                                 num = df_mean$Num,
+                                 Source = df_mean$Source)
+            
+
+            
+            g <- ggplot(data = df_plot, aes(x = cov, y = mean, colour = Source)) +
+              geom_ribbon(data = df_plot, aes(ymin = nsd, ymax = psd, fill = Source), alpha = alpha) +
+              geom_line() + xlab(colnames(cov_selected_col)) +
+              ylab("Proportion") + ggtitle(paste0("Change in consumption over ", colnames(cov_selected_col)))
+            
+            print(g)
+            
+            
+          }else if(box_or_line == "BOX"){
+            message("Cannot facet wrap boxplot")
+          
+          }
+        }
+        else if(one_plot == FALSE){
         for(s in 1:source_loop){
          
         
@@ -371,8 +442,11 @@ model or plots to create and rerun.")
                               psd = (mean_line_mat + save_sd),
                               nsd = (mean_line_mat - save_sd))
           
+
+          
+          
           g <- ggplot(data = df_plot, aes(x = cov, y = mean)) +
-            geom_ribbon(data = df_plot, aes(ymin = nsd, ymax = psd), alpha = alpha, fill = "blue") +
+            geom_ribbon(data = df_plot, aes(ymin = nsd, ymax = psd), alpha = alpha) +
             geom_line() + 
             ggtitle(paste0("Proportion changing for ", s_name, " consumption over ", colnames(cov_selected_col))) +
             xlab(paste0(colnames(cov_selected_col))) + ylab("Proportion")
@@ -427,7 +501,7 @@ model or plots to create and rerun.")
           
         }
      
-      
+        }
       
       
       

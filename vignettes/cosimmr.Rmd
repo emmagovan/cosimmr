@@ -91,64 +91,6 @@ The output of this can be plotted, using the plot function. There are several di
 plot(cosimmr_1_out, type ="prop_histogram", obs = 1)
 ```
 
-More complex examples can also be run. Here we include the group the geese belong to as a covariate
-```{r}
-data(geese_data)
-Groups = as.factor(geese_data$groups)
-
-cosimmr_2 <-cosimmr_load(
-    formula = geese_data$mixtures ~ Groups - 1,
-    source_names = geese_data$source_names,
-    source_means = geese_data$source_means,
-    source_sds = geese_data$source_sds,
-    correction_means = geese_data$correction_means,
-    correction_sds = geese_data$correction_sds,
-    concentration_means = geese_data$concentration_means,
-    scale_x = FALSE)
-
-
-cosimmr_2_out = cosimmr_ffvb(cosimmr_2)
-```
-
-Again we can view summary statistics for this run
-```{r}
-summary(cosimmr_2_out, type = "statistics")
-```
-
-
-We can then use the `predict` function to predict for each group
-```{r}
-pred_matrix = data.frame(Groups = c("Period 1", "Period 3"))
-groups_predict = predict(cosimmr_2_out, x_pred = pred_matrix)
-```
-
-The plot and summary functions can be used on the `groups_predict` object
-```{r}
-summary(groups_predict, type = "quantiles")
-```
-
-
-We can also create plots using the `plot` function
-```{r}
-plot(cosimmr_2_out, type = "beta_boxplot", cov_name = "Groups")
-```
-This plot produces histograms of the beta values. This shows the relationship between the covariate and the consumption of each food source.
-
-
-We can also look at the posterior predictive plot at 50%
-```{r}
-post_pred_geese = posterior_predictive(cosimmr_2_out)
-post_pred_geese
-```
-
-We can then create a `covariates_plot`. This shows the change in consumption of
-a food source across a specified covariate
-```{r}
-plot(cosimmr_2_out, type = "covariates_plot", source = c("U.lactuca"), cov_name = "Groups")
-```
-This lets us see the change in consumption of Ulva lactuca over the different Groups.
-
-
 
 For another example, with a continuous covariate, we can look at Alligator data from Nifong et al, 2015.
 For this example we just use Length as the covariate - but the dataset contains other covariates that can be looked at too.

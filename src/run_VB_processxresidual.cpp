@@ -170,35 +170,11 @@ double hcpp_pxr(int n_sources, int n_isotopes, int n_covariates,
     }
   }
   
-  // for (int i = 0; i < n; i++) {
-  //   for (int j = 0; j < n_isotopes; j++) {
-  //     hold += - n * n_isotopes * log(sigtotal(i, j)) - 0.5 * log(2 * M_PI) -
-  //       0.5 * pow((y(i, j) - mutotal(i, j)), 2) / pow(sigtotal(i, j), 2);
-  //   }
-  // }
-  
-  // Calculate priornorm
-  // double priornorm = 0.0;
-  // 
-  // // for(int i = 0; i<(n_covariates*n_sources + n_isotopes); i++){
-  // //   priornorm += -(n_covariates * n_sources + n_isotopes) * log(sd_prior(i)) - 0.5 * log(2 * M_PI) -
-  // //     0.5 * pow((theta(i)), 2) /pow(sd_prior(i),2);
-  // // }
-  // 
-  // for(int i = 0; i<(n_covariates*n_sources + n_isotopes); i++){
-  //   priornorm += -log(sd_prior(i)) - 0.5 * log(2 * M_PI) -
-  //     0.5 * pow((theta(i)), 2) /pow(sd_prior(i),2);
-  // }
+
   
   double betanorm = 0.0;
   
-  //Zero here is prior for mu
-  // for (int i = 0; i < n_covariates; i++) {
-  //   for (int j = 0; j < n_sources; j++) {
-  //     betanorm += -n_covariates * n_sources * log(1) - 0.5 * log(2 * M_PI) -
-  //       0.5 * pow((beta(i, j) - 0), 2) / pow(1, 2);
-  //   }
-  // }
+
   
   for (int i = 0; i < n_covariates; i++) {
     for (int j = 0; j < n_sources; j++) {
@@ -206,12 +182,7 @@ double hcpp_pxr(int n_sources, int n_isotopes, int n_covariates,
         0.5 * pow(beta(i, j) - mu_prior(i,j), 2) / pow(sd_prior(i,j), 2);
     }
   }
-  // for (int i = 0; i < n_covariates; i++) {
-  //   for (int j = 0; j < n_sources; j++) {
-  //     betanorm += - log(1) - 0.5 * log(2 * M_PI) -
-  //       0.5 * pow((beta(i, j) - 0), 2) / pow(1, 2);
-  //   }
-  // }
+ 
   
   // Calculate gammaprior
   double gammaprior = 0.0;
@@ -222,16 +193,14 @@ double hcpp_pxr(int n_sources, int n_isotopes, int n_covariates,
       d_prior(i) * sqrt(exp(theta(i + n_sources * n_covariates)));
   }
   
-  // for (int i = 0; i < n_isotopes; i++) {
-  //   gammaprior += -sqrt(exp(theta(i + n_sources * n_covariates)));
-  // }
+
   
-  double uniformprior = 1/(uni_b_prior-uni_a_prior);
+  double uniformprior = n_isotopes * 1/(uni_b_prior-uni_a_prior);
   
   
   // Calculate totx
   //double totx = hold + priornorm;//gammaprior + betanorm + hold;
-  double totx = gammaprior + betanorm + hold;
+  double totx = gammaprior + betanorm + hold + uniformprior;
   return totx;
 }
 
@@ -284,34 +253,12 @@ double  log_q_cpp_pxr(arma::vec theta, arma::vec lambda,
     thetaminusmean(i,0) = theta(i) - lambda(i);
   }
   
-  // arma::mat tcholprec = chol_prec.t();
-  // arma::mat Z = betaminusmean * tcholprec;
-  // arma::mat tZ = Z.t();
-  //
-  //
-  // NumericMatrix ZtZmat(1,1);
-  //
-  // ZtZmat = matmult(Z, tZ);
-  //
-  // double ZtZ = ZtZmat(0,0);
-  
-  
-  
-  // Z <- (y - mu)%*%cholPrec
-  // return(- (m/2) * log(2* pi) + log(det(cholPrec)) - 0.5 * Z%*%t(Z))
-  //
-  
+
   arma::mat Z = arma::inv(chol_var) * thetaminusmean; //* betaminusmean.t();
   arma::mat ZtZ = Z.t() * Z;
   
   double ZtZ_scalar = ZtZ(0, 0);
-  //arma::mat Sigma = chol_var * chol_var.t();
-  //arma::double logdetSigma = log(det(Sigma));
-  
-  //NumericVector sig(n_cov*n_sources);
-  
-  
-  // prod_sig = log(proddiag(tcholprec));
+
   
   // This is just the log determinant - so the log of the product of the diagonal
   double prod_sig = log(arma::prod(chol_var.diag()));
@@ -321,30 +268,7 @@ double  log_q_cpp_pxr(arma::vec theta, arma::vec lambda,
   //thetanorm = -  (ncnsnt/2) * log(2 * M_PI) - prod_sig - 0.5 * ZtZ_scalar;
   thetanorm = -  (ncnsnt/2) * log(2 * M_PI) - prod_sig - 0.5 * ZtZ_scalar;
   
-  //thetanorm = -ncnsnt/2 * log(2 * M_PI) - 0.5 * logdetSigma - 0.5 *(thetaminusmean).t() *(Sigma/thetaminusmean);
-  
-  // double gamman = 0;
-  // for (int i=0; i <(n_tracers); i++){
-  //   gamman += lambda(mat_size + ncns +i) *
-  //     log(lambda(mat_size + ncns +i + n_tracers))  -
-  //     log(tgamma(lambda(mat_size + ncns +i)))  +
-  //     (lambda(mat_size + ncns +i) - 1) * log(theta(i+ncns)) -
-  //     lambda(mat_size + ncns +i + n_tracers) * theta((i+ncns));
-  // }
-  
-  //Don't really understand this
-  // arma::uvec indices = arma::regspace<arma::uvec>(mat_size + n_cov * n_sources, mat_size + n_cov * n_sources + n_tracers - 1);
-  //
-  // arma::vec gamman_vec = lambda.subvec(indices) % log(lambda.subvec(indices + n_tracers)) -
-  //   lgamma(lambda.subvec(indices)) +
-  //   (lambda.subvec(indices) - 1) % log(theta.subvec(arma::uvec(indices))) -
-  //   lambda.subvec(indices + n_tracers) % theta.subvec(arma::uvec(arma::regspace(n_sources * n_cov, n_sources * n_cov + n_tracers - 1)));
-  //
-  // double gamman = arma::accu(gamman_vec);
-  //
-  
-  //double x = sum_p+ gamman;
-  //double x = thetanorm +gamman;
+ 
   
   return (thetanorm);
   
@@ -395,7 +319,7 @@ arma::vec delta_h_lambda_cpp_pxr(int n_sources, int n_tracers,
                              int uni_a_prior,
                              int uni_b_prior) {
   
-  int ncnsnt = n_sources * n_covariates + n_tracers;
+  int ncnsnt = n_sources * n_covariates + (n_tracers * 2); //times 2 for sigma and omicron
   int mat_size = ((ncnsnt) * (ncnsnt+1))/2;
   // eps = 0.001;
   
@@ -495,7 +419,7 @@ arma::vec nabla_LB_cpp_pxr(arma::vec lambda, arma::mat theta,
   
   //int thetanrow = theta.n_rows; //THIS IS JUST S OOPS
   int lambdalength = lambda.n_elem;
-  int ncnsnt = n_sources * n_covariates + n_tracers;
+  int ncnsnt = n_sources * n_covariates + (n_tracers *2);
   int mat_size = ncnsnt * (ncnsnt +1)/2;
   arma::mat kappa_transpose = kappa.t();
   arma::vec ans(lambdalength);
@@ -656,7 +580,7 @@ List run_VB_cpp_pxr(arma::vec lambdastart,
   
   
   int lsl = lambdastart.n_elem;
-  int ncnsnt = n_sources * n_covariates + n_tracers;
+  int ncnsnt = n_sources * n_covariates + (n_tracers *2);
   
   //// NEED TO GENERATE EPS HERE
   // CAlling it kappa instead

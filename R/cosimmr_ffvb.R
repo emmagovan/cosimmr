@@ -18,6 +18,7 @@
 #' and \code{beta_2} (adaptive learning weights), \code{tau} (threshold for
 #' exploring learning space), \code{eps_0} (fixed learning rate),
 #' \code{t_W} (rolling window size)
+#' @param error_type Option to choose "processxresidual" or "process+residual"
 #' @return An object of class \code{cosimmr_output} with two named top-level
 #' components: \item{input }{The \code{cosimmr_input} object given to the
 #' \code{cosimmr_ffvb} function} \item{output }{A set of outputs produced by
@@ -94,8 +95,9 @@
 cosimmr_ffvb <- function(cosimmr_in,
                          prior_control = list(
                            mu_0 = rep(0, (cosimmr_in$n_sources * cosimmr_in$n_covariates)), #this is currently both the prior value AND the starting lambda value - should change?
-                           mu_log_sig_sq_0 = rep(0, cosimmr_in$n_tracers),
-                           sigma_0 = 1,
+                           mu_log_sig_sq_0 = rep(0, cosimmr_in$n_tracers), #starting value for sigma mean
+                           mu_log_sig_omi_0 = rep(0, cosimmr_in$n_tracers), #starting value for omicron mean
+                           sigma_0 = 1, #repeated starting value for all sig and omicron
                            tau_shape = rep(1, cosimmr_in$n_tracers),
                            tau_rate = rep(1, cosimmr_in$n_tracers),
                            uniform_a = 0,
@@ -117,6 +119,161 @@ cosimmr_ffvb <- function(cosimmr_in,
   
   ## Just throw in a if else to make this two separate functions??
   if(error_type == "processxresidual"){
+    output <- list #vector("list", length = cosimmr_in$n_groups)
+    # names(output) <- levels(cosimmr_in$group)
+    K <- cosimmr_in$n_sources
+    n_tracers <- cosimmr_in$n_tracers
+    n_output <- ffvb_control$n_output
+    mu_a <- prior_control$mu_0
+    sigma_a <- prior_control$sigma_0
+    n_covariates<- cosimmr_in$n_covariates
+    x_scaled = cosimmr_in$x_scaled
+    uniform_a = prior_control$uniform_a
+    uniform_b = prior_control$uniform_b
+    
+  
+    
+    #Regular
+    beta_lambda <-c(mu_a, prior_control$mu_log_sig_sq_0,   prior_control$mu_log_sig_omi_0, rep(sigma_a, (((K*n_covariates +n_tracers*2) * ((K*n_covariates +n_tracers*2) +1))/2)))
+    
+
+    lambda <- c(beta_lambda)
+    # ,
+    #             prior_control$tau_shape, 
+    #             prior_control$tau_rate)
+    
+    
+    ll = length(lambda)
+    
+    lambdares <- c(rep(NA, ll))
+    
+    
+    thetares <- matrix(rep(NA, ((K * n_covariates + n_tracers* 2 * cosimmr_in$n_obs) * n_output)),
+                       ncol = (K * n_covariates + n_tracers * 2 * cosimmr_in$n_obs),
+                       nrow = n_output
+    )
+    
+    mylist <- list#vector("list", length = cosimmr_in$n_groups)
+    
+    # names(mylist) <- levels(cosimmr_in$group)
+    
+    p_fun <- function(x) exp(x) / sum(exp(x))
+
+    
+    # Determine if a single observation or not
+    if (nrow(cosimmr_in$mixtures) == 1) {
+      message("Only 1 mixture value, performing a simmr solo run...\n")
+      solo <- TRUE
+      beta_prior = c(rep(100, n_tracers))
+    } else {
+      solo <- FALSE
+      beta_prior = prior_control$tau_rate
+    }
+    
+    n_tracers <- cosimmr_in$n_tracers
+    n_sources <- cosimmr_in$n_sources
+    s_names <- cosimmr_in$source_names
+    K <- cosimmr_in$n_sources
+    source_means <- cosimmr_in$source_means
+    source_sds <- cosimmr_in$source_sds
+    correction_means <- cosimmr_in$correction_means
+    correction_sds <- cosimmr_in$correction_sds
+    concentration_means <- cosimmr_in$concentration_means
+    y <- cosimmr_in$mixtures
+    n = nrow(y)
+    
+    lambdaprior <- c(lambda)
+    
+    
+
+    lambdastart = lambdaprior
+   
+    l_l = length(lambdastart)
+
+
+    mu_beta_prior = matrix(prior_control$mu_0, nrow = cosimmr_in$n_covariates)
+    sigma_beta_prior = matrix(c(rep(prior_control$sigma_0, cosimmr_in$n_covariates * cosimmr_in$n_sources)), nrow = cosimmr_in$n_covariates)
+    
+    
+    lambdares <- run_VB_cpp_pxr(
+      lambdastart, K, n_tracers, n_covariates, n, beta_prior, 
+      concentration_means,
+      source_means, correction_means, correction_sds,
+      source_sds, y, (x_scaled), ffvb_control$S,
+      ffvb_control$P, ffvb_control$beta_1,
+      ffvb_control$beta_2, ffvb_control$tau,
+      ffvb_control$eps_0, ffvb_control$t_W,
+      prior_control$tau_shape, solo, sigma_beta_prior, mu_beta_prior,
+      uniform_a, uniform_b)
+    
+    
+    iteration = (lambdares$iteration) 
+    a = which.max(lambdares$mean_LB_bar[(ffvb_control$t_W +2):iteration]) # +2 here for same reason, start from 0 and then greater than
+    use_this = lambdares$lambda_save[(ffvb_control$t_W +1)+a,]
+
+    kappa2 = rMVNormCpp(K*n_covariates + n_tracers, c(rep(0, n_output)), diag(n_output))
+    thetares <- sim_thetacpp(n_output, use_this, K, n_tracers, n_covariates, solo, kappa2)
+
+    sigma <- sqrt(exp((thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)])))
+    
+    p_sample = array(NA, dim = c(cosimmr_in$n_obs, n_output, K))
+    p_mean_sample = matrix(NA, nrow = n_output, ncol = K)
+
+    beta = thetares[,1:(n_covariates * K)]
+    
+    f <- array(NA, dim = c(cosimmr_in$n_obs, K, n_output)) 
+
+    f_mean_sample = matrix(NA, nrow = K, ncol = n_output)
+    
+    if(cosimmr_in$intercept == TRUE){
+      x_sample_mean = c(1, rep(0, (ncol(cosimmr_in$x_scaled) - 1)))
+    } else if(cosimmr_in$intercept == FALSE){
+      x_sample_mean = c(rep(0, (ncol(cosimmr_in$x_scaled))))
+    }
+    
+    for(s in 1:n_output){
+      f[,,s] = as.matrix(cosimmr_in$x_scaled) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
+      f_mean_sample[,s] = matrix(x_sample_mean, nrow = 1) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE) 
+    }
+    
+    for(j in 1:n_output){
+      for (n_obs in 1:cosimmr_in$n_obs) {
+        p_sample[n_obs,j, ] <- exp(f[n_obs,1:K, j]) / (sum((exp(f[n_obs,1:K, j]))))
+      }
+    }
+    
+    for(j in 1:n_output){
+      p_mean_sample[j,] = exp(f_mean_sample[1:K,j]) /(sum(exp(f_mean_sample[1:K,j])))
+    }
+    
+    
+    mylist <- list(
+      source_names = cosimmr_in$source_names,
+      theta = thetares,
+      groupnames = cosimmr_in$group,
+      lambdares = lambdares,#$lambda,
+      # mean_LB = lambdares$mean_LB,
+      beta = beta,
+      BUGSoutput = list(
+        sims.list = list(
+          p = p_sample,
+          p_mean = p_mean_sample,
+          sigma = sigma
+        )),
+      model = list(data = list(
+        mu_f_mean = c(mu_a),
+        sigma_f_sd = c(rep(sigma_a, K)),
+        ffvb_control = ffvb_control,
+        prior_control = prior_control
+      ))
+    )
+    
+    
+    output_all <- list(input = cosimmr_in, output = mylist)
+    
+    class(output_all) <- c("cosimmr_output", "ffvb")
+    
+    return(output_all)
     
   }
   else if(error_type == "process+residual"){

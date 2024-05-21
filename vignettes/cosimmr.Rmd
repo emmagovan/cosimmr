@@ -79,6 +79,7 @@ The data can then be run through `cosimmr_ffvb`, the main function of the `cosim
 package.
 ```{r}
 cosimmr_1_out = cosimmr_ffvb(cosimmr_1)
+cosimmr_1_out1 = cosimmr_ffvb(cosimmr_1, error_type = "process+residual")
 ```
 
 Summary statistics for the run can then be viewed, several options are available, such as "statistics" and "quantiles"

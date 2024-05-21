@@ -386,7 +386,7 @@ model or plots to create and rerun.")
             g <- ggplot(data = df_plot, aes(x = cov, y = mean, colour = Source)) +
               geom_ribbon(data = df_plot, aes(ymin = nsd, ymax = psd, fill = Source), alpha = alpha) +
               geom_line() + xlab(colnames(cov_selected_col)) +
-              ylab("Proportion") + ggtitle(paste0("Change in consumption over ", colnames(cov_selected_col)))
+              ylab("Proportion ± 1sd") + ggtitle(paste0("Change in consumption over ", colnames(cov_selected_col)))
             
             print(g)
             

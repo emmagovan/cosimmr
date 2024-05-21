@@ -224,8 +224,9 @@ plot.cosimmr_input <-
             geom_point(
               data = non_group_data_extended[non_group_data_extended$Source == "Mixtures", ],
               aes(x = x, y = y, shape = Source, color = Source), size = 3
-            ) + # Mixtures point
-            scale_color_manual(
+            ) + 
+       #     theme(legend.title = element_blank(), legend.key = element_blank())+
+            scale_color_manual(  # Mixtures point
               name = "",
               values = cols
             ) +
@@ -242,8 +243,7 @@ plot.cosimmr_input <-
                 frame.colour = "black",
                 ticks.colour = "black"
               )
-            ) + labs(x = xlab, y = ylab, title = title)
-          
+            ) + labs(x = xlab, y = ylab, title = title) 
           
           # due to the way im adding Mixtures as a kind of non-existent point, this will produce a warning saying:
           # Removed 1 row containing missing values or values outside the scale range. To suppress ggplot warnings, you gotta 
@@ -264,7 +264,8 @@ plot.cosimmr_input <-
             geom_pointrange(data = non_group_data, aes(x = x, y = y, ymax = y_upper, ymin = y_lower, shape = Source, color = Source)) +
             geom_point(data = group_data, aes(x = x, y = y, shape = Source, color = Source), size = 3) +
             scale_colour_viridis(discrete = TRUE) +  labs(x = xlab, y = ylab, title = title) + 
-            scale_shape_manual(values = c(1:nlevels(df$Source)))
+            scale_shape_manual(values = c(1:nlevels(df$Source))) +
+            theme(legend.title = element_blank(), legend.key = element_blank())
           
 
             
@@ -282,7 +283,8 @@ plot.cosimmr_input <-
           theme(legend.title = element_blank(), legend.key = element_blank()) +
           guides(color = guide_legend(override.aes = list(linetype = c(rep(0, 1), rep(1, x$n_sources))))) +
           scale_colour_grey() +
-          ggargs
+          ggargs  +
+          theme(legend.title = element_blank(), legend.key = element_blank())
       }
     }
     
@@ -300,7 +302,8 @@ plot.cosimmr_input <-
           scale_shape_manual(values = 1:nlevels(df$Source)) +
           theme(legend.position = "None") +
           guides(color = guide_legend(override.aes = list(linetype = c(rep(0, 1), rep(1, x$n_sources))))) +
-          ggargs
+          ggargs  +
+          theme(legend.title = element_blank(), legend.key = element_blank())
       } else {
         g <- ggplot(data = df, aes(x = x, y = y, colour = Source)) +
           scale_color_grey() +
@@ -317,7 +320,8 @@ plot.cosimmr_input <-
           scale_shape_manual(values = 1:nlevels(df$Source)) +
           theme(legend.title = element_blank(), legend.key = element_blank()) +
           guides(color = guide_legend(override.aes = list(linetype = c(rep(0, 1), rep(1, x$n_sources))))) +
-          ggargs
+          ggargs  +
+          theme(legend.title = element_blank(), legend.key = element_blank())
       }
     }
    #  if(colour_by_cov == TRUE){

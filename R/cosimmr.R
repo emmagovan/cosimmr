@@ -9,6 +9,10 @@
 #' @name cosimmr
 #' @author Emma Govan <emmagovan@@gmail.com>, Andrew Parnell
 #' @import Rcpp 
+#' @import methods
+#' @importFrom rstan sampling
+#' @importFrom rstantools rstan_config
+#' @importFrom RcppParallel RcppParallelLibs
 #' @importFrom Rcpp evalCpp
 #' @useDynLib cosimmr
 #' @aliases cosimmr-package

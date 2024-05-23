@@ -8,7 +8,8 @@ posterior_predictive(
   cosimmr_out,
   prob = 0.5,
   plot_ppc = TRUE,
-  n_samples = 3600
+  n_samples = 3600,
+  sort_data = TRUE
 )
 }
 \arguments{

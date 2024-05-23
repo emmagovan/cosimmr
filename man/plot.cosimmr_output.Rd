@@ -15,6 +15,7 @@
   title = NULL,
   n_output = 3600,
   source = NULL,
+  one_plot = FALSE,
   ...
 )
 }
@@ -40,6 +41,8 @@ matrix plots}
 
 \item{source}{The number or name of the source you wish to plot over for 
 'covariates_plot', defaults to NULL which means all sources are used}
+
+\item{one_plot}{Whether to plot line covariates plot on one plot. Defaults to FALSE}
 
 \item{...}{Currently not used}
 }

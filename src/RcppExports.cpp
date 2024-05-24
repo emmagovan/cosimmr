@@ -2,6 +2,7 @@
 // Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #include <RcppArmadillo.h>
+#include <RcppEigen.h>
 #include <Rcpp.h>
 
 using namespace Rcpp;
@@ -493,6 +494,8 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport SEXP _rcpp_module_boot_stan_fit4STAN_VB_mod();
+
 static const R_CallMethodDef CallEntries[] = {
     {"_cosimmr_digamma_wrapper", (DL_FUNC) &_cosimmr_digamma_wrapper, 1},
     {"_cosimmr_rMVNormCpp", (DL_FUNC) &_cosimmr_rMVNormCpp, 3},
@@ -515,6 +518,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_cosimmr_nabla_LB_cpp_pxr", (DL_FUNC) &_cosimmr_nabla_LB_cpp_pxr, 20},
     {"_cosimmr_LB_lambda_cpp_pxr", (DL_FUNC) &_cosimmr_LB_lambda_cpp_pxr, 18},
     {"_cosimmr_run_VB_cpp_pxr", (DL_FUNC) &_cosimmr_run_VB_cpp_pxr, 26},
+    {"_rcpp_module_boot_stan_fit4STAN_VB_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4STAN_VB_mod, 0},
     {NULL, NULL, 0}
 };
 

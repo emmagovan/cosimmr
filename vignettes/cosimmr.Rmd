@@ -90,6 +90,7 @@ summary(cosimmr_1_out, type = "statistics")
 The output of this can be plotted, using the plot function. There are several different options available in the plot function.
 ```{r}
 plot(cosimmr_1_out, type ="prop_histogram", obs = 1)
+plot(cosimmr_1_out1, type ="prop_histogram", obs = 1)
 ```
 
 For another example, with a continuous covariate, we can look at Alligator data from Nifong et al, 2015.

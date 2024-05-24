@@ -16,6 +16,7 @@
   n_output = 3600,
   source = NULL,
   one_plot = FALSE,
+  n_pred = 1000,
   ...
 )
 }
@@ -43,6 +44,8 @@ matrix plots}
 'covariates_plot', defaults to NULL which means all sources are used}
 
 \item{one_plot}{Whether to plot line covariates plot on one plot. Defaults to FALSE}
+
+\item{n_pred}{Number of points to use when plotting line covariates plot. Defaults to 1000.}
 
 \item{...}{Currently not used}
 }

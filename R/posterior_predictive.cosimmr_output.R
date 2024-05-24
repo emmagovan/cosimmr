@@ -9,6 +9,7 @@
 #' @param prob The probability interval for the posterior predictives. The default is 0.5 (i.e. 50pc intervals)
 #' @param plot_ppc Whether to create a bayesplot of the posterior predictive or not.
 #' @param n_samples The number of samples you wish to generate for y_pred. Defaults to 3600.
+#' @param sort_data Whether to order the data from lowest to highest predicted mean or not. Defaults to TRUE.
 #'
 #'@return plot of posterior predictives and simulated values
 #'

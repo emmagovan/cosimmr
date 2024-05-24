@@ -22,6 +22,7 @@
 #' @param source The number or name of the source you wish to plot over for 
 #' 'covariates_plot', defaults to NULL which means all sources are used
 #' @param one_plot Whether to plot line covariates plot on one plot. Defaults to FALSE
+#' @param n_pred Number of points to use when plotting line covariates plot. Defaults to 1000.
 #' @param ...  Currently not used
 #'
 #' @import ggplot2
@@ -85,6 +86,7 @@ plot.cosimmr_output <-
            n_output = 3600,
            source = NULL,
            one_plot = FALSE,
+           n_pred = 1000,
            ...) {
     if(inherits(x, "cosimmr_output") == TRUE){
       title_input = title
@@ -349,14 +351,108 @@ model or plots to create and rerun.")
           }
           
           if(box_or_line == "LINE"){
+            #Want to use predict function and a regular grid of the covariate that we want
+            min_cov = min(cov_selected_col)
+            max_cov = max(cov_selected_col)
+            col_n = colnames(cov_selected_col)
+            x_pred = data.frame(seq(from = min_cov, to = max_cov, length.out = n_pred))
+            colnames(x_pred) = col_n
+            
+            
+            #Same code from predict function just with checks removed
+                scale_x = x$input$scale_x
+                max_vec = c(rep(NA, ncol(x$input$x_scaled)))
+                min_vec = c(rep(NA, ncol(x$input$x_scaled)))
+                
+                for(i in 1:(ncol(x$input$x_scaled))){
+                  max_vec[i] = max(x$input$x_scaled[,i])
+                  min_vec[i] = min(x$input$x_scaled[,i])
+                }
+                
+                
+                thetares= x$output$theta
+                K = x$input$n_sources
+                n_tracers = x$input$n_tracers
+                n_covariates = ncol(x$input$x_scaled)
+                mixtures = x$input$mixtures
+                
+                
+                original_x = data.frame(x$input$covariates_df)
+                
+                colnames(original_x) = colnames(x_pred)
+                
+                new_x = rbind(original_x, x_pred)
+                
+                
+    
+                
+
+                  if(scale_x == TRUE){
+                    if(x$input$intercept == TRUE){
+                      # Original code
+                      ncol_scaled =  (ncol(stats::model.matrix(~ ., data=new_x))) - 1
+                      scaled_full_mat = matrix(scale(stats::model.matrix(~ ., data=new_x), 
+                                                     center = c(1,x$input$scaled_center),
+                                                     scale = c(1, x$input$scaled_scale))[,-c(1)], ncol = ncol_scaled)
+                      scaled_full_mat = cbind(c(rep(1,nrow(scaled_full_mat))), scaled_full_mat)
+                      
+                      x_pred_mat = matrix(scaled_full_mat[-c(1:nrow(original_x)),], ncol = ncol(scaled_full_mat))
+                      
+                    }else if(x$input$intercept == FALSE){
+                      scaled_full_mat = scale(stats::model.matrix(~ . -1, data=new_x), 
+                                              center = x$input$scaled_center,
+                                              scale = x$input$scaled_scale)
+                      
+                      
+                      x_pred_mat = matrix(scaled_full_mat[-c(1:nrow(original_x)),], ncol = ncol(scaled_full_mat))
+                      
+                    }
+                    
+                  }else if(scale_x == FALSE){
+                    if(x$input$intercept == TRUE){
+                      scaled_full_mat = (stats::model.matrix(~ ., data=new_x))
+                      
+                      x_pred_mat = scaled_full_mat[-c(1:nrow(original_x)),]
+                    }else if(x$input$intercept == FALSE){
+                      scaled_full_mat = stats::model.matrix(~ .-1, data=new_x)
+                      
+                      x_pred_mat = scaled_full_mat[-c(1:nrow(original_x)),]
+                    }
+                    
+                  }
+                
+                
+    
+
+                
+                p_sample = array(NA, dim =  c(nrow(x_pred_mat), n_output, K))
+                
+                beta = thetares[,1:(n_covariates * K)]
+                
+                f <- array(NA, dim = c(nrow(x_pred_mat), K, n_output)) 
+                
+                for(s in 1:n_output){
+                  f[,,s] = as.matrix(x_pred_mat) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
+                }
+                
+                for(j in 1:n_output){
+                  for (n_obs in 1:nrow(x_pred_mat)) {
+                    p_sample[n_obs,j, ] <- exp(f[n_obs,1:K, j]) / (sum((exp(f[n_obs,1:K, j]))))
+                  }
+                }
+                
+
+
+            
             n_sources = x$input$n_sources
-            line_array = array(NA, dim = c(n_ind, n_samples, n_sources))
-            mean_line_mat = matrix(NA, nrow = n_ind, ncol = n_sources)
-            save_sd =  matrix(NA, nrow = n_ind, ncol = n_sources)
+            line_array = array(NA, dim = c(n_pred, n_samples, n_sources))
+            mean_line_mat = matrix(NA, nrow = n_pred, ncol = n_sources)
+            save_sd =  matrix(NA, nrow = n_pred, ncol = n_sources)
+            
             for(s in 1:n_sources){
-            line_array[,,s] = matrix(x$output$BUGSoutput$sims.list$p[,,s], nrow = n_ind, ncol = n_samples)
+            line_array[,,s] = matrix(p_sample[,,s], nrow = n_pred, ncol = n_samples)
             mean_line_mat[,s] = rowMeans(line_array[,,s])
-            for(i in 1:n_ind){
+            for(i in 1:n_pred){
               save_sd[i,s] = sd(line_array[i,,s])
             }
             }
@@ -375,9 +471,9 @@ model or plots to create and rerun.")
             
             df_plot = data.frame(mean = df_mean$Mean,
                                  sd = df_sd$SD,
-                                 cov = x$input$covariates_df[,l],
-                                 psd = df_mean$Mean + df_sd$SD,
-                                 nsd = df_mean$Mean - df_sd$SD,
+                                 cov = x_pred[,1],
+                                 psd = df_mean$Mean + 2*df_sd$SD,
+                                 nsd = df_mean$Mean - 2*df_sd$SD,
                                  num = df_mean$Num,
                                  Source = df_mean$Source)
             
@@ -386,7 +482,7 @@ model or plots to create and rerun.")
             g <- ggplot(data = df_plot, aes(x = cov, y = mean, colour = Source)) +
               geom_ribbon(data = df_plot, aes(ymin = nsd, ymax = psd, fill = Source), alpha = alpha) +
               geom_line() + xlab(colnames(cov_selected_col)) +
-              ylab("Proportion (± 1sd)") + ggtitle(paste0("Change in consumption over ", colnames(cov_selected_col)))
+              ylab(paste("Proportion (\u00B1 2sd)")) + ggtitle(paste0("Change in consumption over ", colnames(cov_selected_col)))
             
             print(g)
             
@@ -429,18 +525,112 @@ model or plots to create and rerun.")
         }
         
         if(box_or_line == "LINE"){
-          line_mat = matrix(x$output$BUGSoutput$sims.list$p[,,s], nrow = n_ind, ncol = n_samples)
-          mean_line_mat = rowMeans(line_mat)
-          save_sd = c(rep(NA, n_ind))
-          for(i in 1:n_ind){
-            save_sd[i] = sd(line_mat[i,])
+          
+          min_cov = min(cov_selected_col)
+          max_cov = max(cov_selected_col)
+          col_n = colnames(cov_selected_col)
+          x_pred = data.frame(seq(from = min_cov, to = max_cov, length.out = n_pred))
+          colnames(x_pred) = col_n
+        
+          #Same code from predict function just with checks removed
+          scale_x = x$input$scale_x
+          max_vec = c(rep(NA, ncol(x$input$x_scaled)))
+          min_vec = c(rep(NA, ncol(x$input$x_scaled)))
+          
+          for(i in 1:(ncol(x$input$x_scaled))){
+            max_vec[i] = max(x$input$x_scaled[,i])
+            min_vec[i] = min(x$input$x_scaled[,i])
           }
+          
+          
+          thetares= x$output$theta
+          K = x$input$n_sources
+          n_tracers = x$input$n_tracers
+          n_covariates = ncol(x$input$x_scaled)
+          mixtures = x$input$mixtures
+          
+          
+          original_x = data.frame(x$input$covariates_df)
+          
+          colnames(original_x) = colnames(x_pred)
+          
+          new_x = rbind(original_x, x_pred)
+          
+          
+          
+          
+          
+          if(scale_x == TRUE){
+            if(x$input$intercept == TRUE){
+              # Original code
+              ncol_scaled =  (ncol(stats::model.matrix(~ ., data=new_x))) - 1
+              scaled_full_mat = matrix(scale(stats::model.matrix(~ ., data=new_x), 
+                                             center = c(1,x$input$scaled_center),
+                                             scale = c(1, x$input$scaled_scale))[,-c(1)], ncol = ncol_scaled)
+              scaled_full_mat = cbind(c(rep(1,nrow(scaled_full_mat))), scaled_full_mat)
+              
+              x_pred_mat = matrix(scaled_full_mat[-c(1:nrow(original_x)),], ncol = ncol(scaled_full_mat))
+              
+            }else if(x$input$intercept == FALSE){
+              scaled_full_mat = scale(stats::model.matrix(~ . -1, data=new_x), 
+                                      center = x$input$scaled_center,
+                                      scale = x$input$scaled_scale)
+              
+              
+              x_pred_mat = matrix(scaled_full_mat[-c(1:nrow(original_x)),], ncol = ncol(scaled_full_mat))
+              
+            }
+            
+          }else if(scale_x == FALSE){
+            if(x$input$intercept == TRUE){
+              scaled_full_mat = (stats::model.matrix(~ ., data=new_x))
+              
+              x_pred_mat = scaled_full_mat[-c(1:nrow(original_x)),]
+            }else if(x$input$intercept == FALSE){
+              scaled_full_mat = stats::model.matrix(~ .-1, data=new_x)
+              
+              x_pred_mat = scaled_full_mat[-c(1:nrow(original_x)),]
+            }
+            
+          }
+          
+          
+          
+          
+          
+          p_sample = array(NA, dim =  c(nrow(x_pred_mat), n_output, K))
+          
+          beta = thetares[,1:(n_covariates * K)]
+          
+          f <- array(NA, dim = c(nrow(x_pred_mat), K, n_output)) 
+          
+          for(s in 1:n_output){
+            f[,,s] = as.matrix(x_pred_mat) %*% matrix(beta[s,], nrow = n_covariates, ncol = K, byrow = TRUE)
+          }
+          
+          for(j in 1:n_output){
+            for (n_obs in 1:nrow(x_pred_mat)) {
+              p_sample[n_obs,j, ] <- exp(f[n_obs,1:K, j]) / (sum((exp(f[n_obs,1:K, j]))))
+            }
+          }
+          
+          
+
+    
+            line_mat= matrix(p_sample[,,source_n], nrow = n_pred, ncol = n_samples)
+            mean_line_mat = c(rep(NA, n_pred))
+            mean_line_mat = rowMeans(line_mat)
+            save_sd = c(rep(NA, n_pred))
+            for(i in 1:n_pred){
+              save_sd[i] = sd(line_mat[i,])
+            }
+          
           
           df_plot = data.frame(mean = mean_line_mat,
                                sd = save_sd,
-                               cov = x$input$covariates_df[,l],
-                              psd = (mean_line_mat + save_sd),
-                              nsd = (mean_line_mat - save_sd))
+                              cov = x_pred[,1],
+                              psd = (mean_line_mat + 2*save_sd),
+                              nsd = (mean_line_mat - 2*save_sd))
           
 
           
@@ -449,7 +639,7 @@ model or plots to create and rerun.")
             geom_ribbon(data = df_plot, aes(ymin = nsd, ymax = psd), alpha = alpha) +
             geom_line() + 
             ggtitle(paste0("Proportion changing for ", s_name, " consumption over ", colnames(cov_selected_col))) +
-            xlab(paste0(colnames(cov_selected_col))) + ylab("Proportion")
+            xlab(paste0(colnames(cov_selected_col))) + ylab(paste("Proportion (\u00B1 2sd)"))
             
             print(g)
           
@@ -473,10 +663,10 @@ model or plots to create and rerun.")
          # a = matrix(x$output$BUGSoutput$sims.list$p[grep_values,,l], ncol = n_samples)
           ind_mat = matrix(nrow = n_samples, ncol = n_groups)
           
-          ########MISTAKE HERE!!!!!!!!!!!!!!!!!!!!!!
+        
            for(i in 1:n_groups){
              ind_val = grep_values[i]
-             ind_mat[,i] = x$output$BUGSoutput$sims.list$p[ind_val,,s]
+             ind_mat[,i] = x$output$BUGSoutput$sims.list$p[ind_val,,source_n]
            }
           
           ind_vec =c(ind_mat)

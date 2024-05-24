@@ -147,6 +147,12 @@ plot(alli_pred, type = "prop_density")
 
 We can create a `covariates_plot` to show the change in consumption of Freshwater as an individual increases in Length
 ```{r}
-plot(cosimmr_ali_out, type = "covariates_plot", source = "Freshwater", cov_name = "Length", one_plot = TRUE) 
+plot(cosimmr_ali_out, type = "covariates_plot", source = "Freshwater", cov_name = "Length")
 ```
+
+Alternatively we can look at the change in both sources on one plot
+```{r}
+plot(cosimmr_ali_out, type = "covariates_plot", cov_name = "Length", one_plot = TRUE, n_pred = 100)
+```
+
 

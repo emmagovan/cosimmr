@@ -20,6 +20,8 @@ posterior_predictive(
 \item{plot_ppc}{Whether to create a bayesplot of the posterior predictive or not.}
 
 \item{n_samples}{The number of samples you wish to generate for y_pred. Defaults to 3600.}
+
+\item{sort_data}{Whether to order the data from lowest to highest predicted mean or not. Defaults to TRUE.}
 }
 \value{
 plot of posterior predictives and simulated values

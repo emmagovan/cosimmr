@@ -39,7 +39,7 @@
 #' 
 #' @examples
 #'
-#' \dontrun{
+#' \donttest{
 #' # A simple example with 10 observations, 2 tracers and 4 sources
 #'
 #' # The data

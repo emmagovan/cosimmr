@@ -54,7 +54,7 @@
 #' @author Emma Govan <emmagovan@@gmail.com>, Andrew Parnell
 #' @seealso See \code{\link{cosimmr_ffvb}} for complete examples.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #' # A simple example with 10 observations, 2 tracers and 4 sources
 #' data(geese_data_day1)

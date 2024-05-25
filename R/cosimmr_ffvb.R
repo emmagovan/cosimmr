@@ -44,7 +44,7 @@
 #' @importFrom R2jags jags
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' ## See the package vignette for a detailed run through of these examples
 #'
 #' # Data set 1: 10 obs on 2 isos, 4 sources, with tefs and concdep

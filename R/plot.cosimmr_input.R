@@ -43,7 +43,7 @@
 #' simmr run. See \code{\link{cosimmr_ffvb}} for running a cosimmr object once the
 #' iso-space is deemed acceptable.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # A simple example with 10 observations, 4 food sources and 2 tracers
 #' data(geese_data_day1)
 #' cosimmr_1 <- with(

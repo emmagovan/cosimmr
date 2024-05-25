@@ -156,7 +156,7 @@ double hcpp_pxr(int n_sources, int n_isotopes, int n_covariates,
       
       mutotal(i, j) = mutop / mubtm;
       // This is now sigtop/sigbottom x omicron (epsilon from mixsiar) + sigma_j
-      sigtotal(i, j) = sqrt(sigsqtop / sigsqbtm * pow(exp(theta(j + n_sources * n_covariates +n_isotopes)), 0.5) + exp(theta(j + n_sources * n_covariates)));
+      sigtotal(i, j) = sqrt(sigsqtop / sigsqbtm * (exp(theta(j + n_sources * n_covariates +n_isotopes))) + exp(theta(j + n_sources * n_covariates)));
     }
   }
   

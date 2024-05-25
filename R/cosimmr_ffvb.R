@@ -96,7 +96,7 @@ cosimmr_ffvb <- function(cosimmr_in,
                          prior_control = list(
                            mu_0 = rep(0, (cosimmr_in$n_sources * cosimmr_in$n_covariates)), #this is currently both the prior value AND the starting lambda value - should change?
                            mu_log_sig_sq_0 = rep(0, cosimmr_in$n_tracers), #starting value for sigma mean
-                           mu_log_sig_omi_0 = rep(0, cosimmr_in$n_tracers), #starting value for omicron mean
+                           mu_log_sig_omi_0 = rep(2, cosimmr_in$n_tracers), #starting value for omicron mean
                            sigma_0 = 1, #repeated starting value for all sig and omicron
                            tau_shape = rep(1, cosimmr_in$n_tracers),
                            tau_rate = rep(1, cosimmr_in$n_tracers),

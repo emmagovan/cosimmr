@@ -49,10 +49,11 @@
 #'
 #' # Data set 1: 10 obs on 2 isos, 4 sources, with tefs and concdep
 #' data(geese_data_day1)
+#' x = c(1,2,3,2,1,3,2,1,2)
 #' cosimmr_1 <- with(
 #'   geese_data_day1,
 #'   cosimmr_load(
-#'     formula = mixtures ~ c(1,2,3,2,1,3,2,1,2),
+#'     formula = mixtures ~ x,
 #'     source_names = source_names,
 #'     source_means = source_means,
 #'     source_sds = source_sds,
@@ -80,14 +81,8 @@
 #' ans <- summary(cosimmr_1_out, type = c("quantiles", "statistics"))
 #'
 #' # Plot
-#' plot(cosimmr_1_out, type = "beta_boxplot")
-#' plot(cosimmr_1_out, type = "beta_histogram")
-#'
-#' # Compare two sources
-#' compare_sources(cosimmr_1_out, source_names = c("Zostera", "Enteromorpha"))
-#'
-#' # Compare multiple sources
-#' compare_sources(cosimmr_1_out)
+#' plot(cosimmr_1_out, type = "beta_boxplot", cov_name = "x")
+#' plot(cosimmr_1_out, type = "beta_histogram", cov_name = "x")
 #'
 #'}
 #' @export cosimmr_ffvb

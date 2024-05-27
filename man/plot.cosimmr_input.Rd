@@ -69,7 +69,7 @@ the different pairs of the food sources. See the vignette for further
 details of richer plots.
 }
 \examples{
-\dontrun{
+\donttest{
 # A simple example with 10 observations, 4 food sources and 2 tracers
 data(geese_data_day1)
 cosimmr_1 <- with(

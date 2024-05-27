@@ -122,7 +122,7 @@ scale_x = TRUE) {
         scaled_center = attr(scaled_mat, "scaled:center")
         
         scaled_scale = attr(scaled_mat, "scaled:scale")
-        print("Cannot scale when using mixtures ~1")
+        message("Cannot scale when using mixtures ~1")
       } else if(ncol(stats::model.matrix(formula)) != 1){
         # Original code
         intercept = TRUE

@@ -17,7 +17,9 @@ numeric values can be set as characters and this causes incorrect calculations.}
 
 \item{n_output}{the number of posterior samples to generate. Defaults to 3600.}
 
-\item{...}{Other arguments (not used)}
+\item{...}{Other arguments (not used)
+
+#' @return object of class 'cosimmr_pred_out'}
 }
 \description{
 Predicts proportion of each source in a mixture, based on values provided for covariates

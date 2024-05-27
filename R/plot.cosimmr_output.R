@@ -24,6 +24,8 @@
 #' @param one_plot Whether to plot line covariates plot on one plot. Defaults to FALSE
 #' @param n_pred Number of points to use when plotting line covariates plot. Defaults to 1000.
 #' @param ...  Currently not used
+#' 
+#' @return one or more of 'isospace', 'beta_histogram', 'beta_boxplot', 'prop_histogram', 'prop_density', or 'covariates_plot'
 #'
 #' @import ggplot2
 #' @import graphics

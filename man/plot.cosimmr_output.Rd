@@ -49,6 +49,9 @@ matrix plots}
 
 \item{...}{Currently not used}
 }
+\value{
+one or more of 'isospace', 'beta_histogram', 'beta_boxplot', 'prop_histogram', 'prop_density', or 'covariates_plot'
+}
 \description{
 This function allows for 4 different types of plots of the simmr output
 created from \code{\link{cosimmr_ffvb}}. The 
@@ -61,7 +64,7 @@ Further detail about these plots is provided in the vignette.
 }
 \examples{
 
-\dontrun{
+\donttest{
 # A simple example with 10 observations, 2 tracers and 4 sources
 
 # The data

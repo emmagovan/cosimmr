@@ -43,7 +43,7 @@ outputs a \code{cosimmr_output} object for further analysis and plotting
 via \code{\link{plot.cosimmr_output}}.
 }
 \examples{
-\dontrun{
+\donttest{
 ## See the package vignette for a detailed run through of these examples
 
 # Data set 1: 10 obs on 2 isos, 4 sources, with tefs and concdep

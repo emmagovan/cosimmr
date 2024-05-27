@@ -20,6 +20,8 @@
 #' @param cov_name The name of the covariate you wish to plot (for beta and covariate plots)
 #' @param n_output The number of theta samples you wish to plot with. Defaults to 3600
 #' @param ...  Currently not used
+#' 
+#' @return one or more of 'isospace', 'beta_histogram', 'beta_boxplot', 'prop_histogram', 'prop_density', or 'covariates_plot'
 #'
 #' @import ggplot2
 #' @import graphics
@@ -169,6 +171,11 @@ plot.cosimmr_pred_out <-
           covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$original_x)[-c(1)], value = FALSE)
         }
       }
+          
+          if(x$input$intercept == TRUE){
+            cov_ind =covariates[l] +1} else{
+              cov_ind =covariates[l]
+            }
         
         
         beta = array(NA, dim = c(x$input$n_covariates, nrow(x$beta), x$input$n_sources))
@@ -183,7 +190,7 @@ plot.cosimmr_pred_out <-
         
 
         
-        out_all_beta = beta[l,,]
+        out_all_beta = beta[cov_ind,,]
         colnames(out_all_beta) = x$input$source_names
         #I don't actually understand what this is doing
         df_beta <- reshape2::melt(out_all_beta)
@@ -193,8 +200,8 @@ plot.cosimmr_pred_out <-
           
           if(is.null(title_input) == TRUE){
             title = c(rep(NA, length(covariates)))
-            for(j in 1:length(covariates)){
-              title[j] = paste("beta histogram plot: covariate", cov_name[j])
+            for(c in 1:length(covariates)){
+              title[c] = paste("beta histogram plot: covariate", cov_name[c])
             }
           } else{title = rep(title_input, length(covariates))}
           print_title = title[l]
@@ -230,7 +237,11 @@ plot.cosimmr_pred_out <-
             covariates[i] = grep(paste0(cov_name[i]), colnames(x$input$original_x)[-c(1)], value = FALSE)
           }
         }
-        
+          
+          if(x$input$intercept == TRUE){
+            cov_ind =covariates[l] +1} else{
+              cov_ind =covariates[l]
+            }
         
         beta = array(NA, dim = c(x$input$n_covariates, nrow(x$beta), x$input$n_sources))
         
@@ -244,7 +255,7 @@ plot.cosimmr_pred_out <-
         
         
         
-        out_all_beta = beta[l,,]
+        out_all_beta = beta[cov_ind,,]
         colnames(out_all_beta) = x$input$source_names
         #I don't actually understand what this is doing
         df_beta <- reshape2::melt(out_all_beta)
@@ -253,8 +264,8 @@ plot.cosimmr_pred_out <-
           
           if(is.null(title_input) == TRUE){
             title = c(rep(NA, length(covariates)))
-            for(j in 1:length(covariates)){
-              title[j] = paste("beta boxplot: covariate", cov_name[j])
+            for(c in 1:length(covariates)){
+              title[c] = paste("beta boxplot: covariate", cov_name[c])
             }
           } else{title = rep(title_input, length(covariates))}
           g <- ggplot(df_beta, aes(x = Beta)) +

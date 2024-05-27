@@ -76,7 +76,7 @@ source in question and should be given in proportion format between 0 and 1.
 At present there is no means to include concentration standard deviations.
 }
 \examples{
-\dontrun{
+\donttest{
 
 # A simple example with 10 observations, 2 tracers and 4 sources
 data(geese_data_day1)

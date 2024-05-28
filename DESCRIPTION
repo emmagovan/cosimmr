@@ -1,11 +1,11 @@
 Package: cosimmr
 Type: Package
 Title: Fast Fitting of Stable Isotope Mixing Models with Covariates
-Version: 1.0.1
-Date: 2024-04-25
+Version: 1.0.11
+Date: 2024-05-27
 Authors@R: c(person("Emma", "Govan", email = "emmagovan@gmail.com", role = c("cre","aut")),
           person("Andrew", "Parnell", role = "aut"), person("Ahmed", "Shalaby", role = "ctb"), person("Alan", "Inglis", role = "ctb"))
-Description: Fast fitting of Stable Isotope Mixing Models in R. Allows for the inclusion of covariates. Also has built-in summary functions and plot functions which allow for the creation of isospace plots. Variational Bayes is used to fit these models, methods as described in: Tran et al., (2021) <arXiv:2103.01327>. 
+Description: Fast fitting of Stable Isotope Mixing Models in R. Allows for the inclusion of covariates. Also has built-in summary functions and plot functions which allow for the creation of isospace plots. Variational Bayes is used to fit these models, methods as described in: Tran et al., (2021) <doi:10.48550/arXiv.2103.01327>. 
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.10),
          R2jags,

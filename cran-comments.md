@@ -8,6 +8,9 @@ There were no notes, errors or warnings.
 
 ##Previous CRAN package checks
 Updated version number
+Fixed missing value in predict.cosimmr_output
+
+##Older fixes
 Have removed "a package for" in title
 Added references to FFVB paper in description
 Added values to Rd files stating function results

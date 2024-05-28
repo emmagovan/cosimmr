@@ -27,7 +27,7 @@
 #' black and white
 #' @param colour_by_cov if TRUE this allows users to colour the mixtures on the 
 #' isospace plot by a specified covariate. Defaults to FALSE
-#' @param  cov_col_name The name of the covariate the user wishes to colour the 
+#' @param  cov_name The name of the covariate the user wishes to colour the 
 #' mixture points on the plot by
 #' @param ggargs Extra arguments to be included in the ggplot (e.g. axis limits)
 #' @param ...  Not used
@@ -43,7 +43,7 @@
 #' simmr run. See \code{\link{cosimmr_ffvb}} for running a cosimmr object once the
 #' iso-space is deemed acceptable.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # A simple example with 10 observations, 4 food sources and 2 tracers
 #' data(geese_data_day1)
 #' cosimmr_1 <- with(
@@ -95,13 +95,13 @@ plot.cosimmr_input <-
            mix_name = "Mixtures",
            colour = TRUE,
            colour_by_cov = FALSE,
-           cov_col_name = NULL,
+           cov_name = NULL,
            ggargs = NULL,
            ...) {
     
     #This selects the correct column from the covariates df to colour by
     if(colour_by_cov == TRUE){
-      cov_selected_col = subset(as.matrix(x$covariates_df), select =  cov_col_name)
+      cov_selected_col = subset(as.matrix(x$covariates_df), select =  cov_name)
     }
     
     curr_mix <- x$mixtures 
@@ -236,7 +236,7 @@ plot.cosimmr_input <-
             ggnewscale::new_scale_color() +
             geom_point(data = group_data, aes(x = x, y = y, color = Source), size = 3) +
             scale_color_viridis_c(
-              name = cov_col_name,
+              name = cov_name,
               guide = guide_colorbar(
                 order = 2,
                 frame.colour = "black",
@@ -264,7 +264,8 @@ plot.cosimmr_input <-
             geom_pointrange(data = non_group_data, aes(x = x, y = y, ymax = y_upper, ymin = y_lower, shape = Source, color = Source)) +
             geom_point(data = group_data, aes(x = x, y = y, shape = Source, color = Source), size = 3) +
             scale_colour_viridis(discrete = TRUE) +  labs(x = xlab, y = ylab, title = title) + 
-            scale_shape_manual(values = c(1:nlevels(df$Source)))
+            scale_shape_manual(values = c(1:nlevels(df$Source))) +
+            theme(legend.title = element_blank(), legend.key = element_blank())
           
 
             
@@ -282,7 +283,8 @@ plot.cosimmr_input <-
           theme(legend.title = element_blank(), legend.key = element_blank()) +
           guides(color = guide_legend(override.aes = list(linetype = c(rep(0, 1), rep(1, x$n_sources))))) +
           scale_colour_grey() +
-          ggargs
+          ggargs  +
+          theme(legend.title = element_blank(), legend.key = element_blank())
       }
     }
     
@@ -300,7 +302,8 @@ plot.cosimmr_input <-
           scale_shape_manual(values = 1:nlevels(df$Source)) +
           theme(legend.position = "None") +
           guides(color = guide_legend(override.aes = list(linetype = c(rep(0, 1), rep(1, x$n_sources))))) +
-          ggargs
+          ggargs +
+          theme(legend.title = element_blank(), legend.key = element_blank())
       } else {
         g <- ggplot(data = df, aes(x = x, y = y, colour = Source)) +
           scale_color_grey() +
@@ -317,7 +320,8 @@ plot.cosimmr_input <-
           scale_shape_manual(values = 1:nlevels(df$Source)) +
           theme(legend.title = element_blank(), legend.key = element_blank()) +
           guides(color = guide_legend(override.aes = list(linetype = c(rep(0, 1), rep(1, x$n_sources))))) +
-          ggargs
+          ggargs +
+          theme(legend.title = element_blank(), legend.key = element_blank())
       }
     }
    #  if(colour_by_cov == TRUE){

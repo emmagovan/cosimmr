@@ -19,6 +19,9 @@ numeric values can be set as characters and this causes incorrect calculations.}
 
 \item{...}{Other arguments (not used)}
 }
+\value{
+object of class 'cosimmr_pred_out'
+}
 \description{
 Predicts proportion of each source in a mixture, based on values provided for covariates
 }

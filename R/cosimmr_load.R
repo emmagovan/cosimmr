@@ -54,7 +54,7 @@
 #' @author Emma Govan <emmagovan@@gmail.com>, Andrew Parnell
 #' @seealso See \code{\link{cosimmr_ffvb}} for complete examples.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #' # A simple example with 10 observations, 2 tracers and 4 sources
 #' data(geese_data_day1)
@@ -88,7 +88,6 @@ scale_x = TRUE) {
   # Function to load in data for simmr and check whether it's appropriate for running through simmr_mcmc
   
   
-  
   #Possibly need covariate data frame
   #c_df = data.frame(colour_cat = colour_cat, letter_cat = letter_cat, numeric_cov = numeric_cov)
   # Go through each object and check that it matches the requirements
@@ -101,11 +100,7 @@ scale_x = TRUE) {
   colnames(covariates) = cnames
   
   
-  # model.matrix(~ ., data=c_df, 
-  # contrasts.arg = lapply(c_df[sapply(c_df, is.factor)],
-  #                        contrasts,
-  #                        contrasts=FALSE))
-  # 
+
   
   if(nrow(mixtures) == 1){
     #This is if its just 1 entry
@@ -122,7 +117,7 @@ scale_x = TRUE) {
         scaled_center = attr(scaled_mat, "scaled:center")
         
         scaled_scale = attr(scaled_mat, "scaled:scale")
-        print("Cannot scale when using mixtures ~1")
+        message("Cannot scale when using mixtures ~1")
       } else if(ncol(stats::model.matrix(formula)) != 1){
         # Original code
         intercept = TRUE

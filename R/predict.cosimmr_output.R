@@ -10,6 +10,8 @@
 #' numeric values can be set as characters and this causes incorrect calculations.
 #' @param n_output the number of posterior samples to generate. Defaults to 3600.
 #' @param ... Other arguments (not used)
+#' 
+#' @return object of class 'cosimmr_pred_out'
 #'
 #' @author Emma Govan <emmagovan@@gmail.com> Andrew Parnell
 #'

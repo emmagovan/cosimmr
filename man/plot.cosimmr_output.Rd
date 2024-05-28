@@ -15,6 +15,8 @@
   title = NULL,
   n_output = 3600,
   source = NULL,
+  one_plot = FALSE,
+  n_pred = 1000,
   ...
 )
 }
@@ -41,7 +43,14 @@ matrix plots}
 \item{source}{The number or name of the source you wish to plot over for 
 'covariates_plot', defaults to NULL which means all sources are used}
 
+\item{one_plot}{Whether to plot line covariates plot on one plot. Defaults to FALSE}
+
+\item{n_pred}{Number of points to use when plotting line covariates plot. Defaults to 1000.}
+
 \item{...}{Currently not used}
+}
+\value{
+one or more of 'isospace', 'beta_histogram', 'beta_boxplot', 'prop_histogram', 'prop_density', or 'covariates_plot'
 }
 \description{
 This function allows for 4 different types of plots of the simmr output
@@ -55,7 +64,7 @@ Further detail about these plots is provided in the vignette.
 }
 \examples{
 
-\dontrun{
+\donttest{
 # A simple example with 10 observations, 2 tracers and 4 sources
 
 # The data

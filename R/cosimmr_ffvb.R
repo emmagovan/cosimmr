@@ -45,15 +45,16 @@
 #' @importFrom R2jags jags
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' ## See the package vignette for a detailed run through of these examples
 #'
 #' # Data set 1: 10 obs on 2 isos, 4 sources, with tefs and concdep
 #' data(geese_data_day1)
+#' x =  c(1,2,3,2,1,3,2,1,2)
 #' cosimmr_1 <- with(
 #'   geese_data_day1,
 #'   cosimmr_load(
-#'     formula = mixtures ~ c(1,2,3,2,1,3,2,1,2),
+#'     formula = mixtures ~ x,
 #'     source_names = source_names,
 #'     source_means = source_means,
 #'     source_sds = source_sds,
@@ -83,12 +84,6 @@
 #' # Plot
 #' plot(cosimmr_1_out, type = "beta_boxplot")
 #' plot(cosimmr_1_out, type = "beta_histogram")
-#'
-#' # Compare two sources
-#' compare_sources(cosimmr_1_out, source_names = c("Zostera", "Enteromorpha"))
-#'
-#' # Compare multiple sources
-#' compare_sources(cosimmr_1_out)
 #'
 #'}
 #' @export cosimmr_ffvb

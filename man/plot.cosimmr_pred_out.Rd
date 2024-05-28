@@ -38,6 +38,9 @@ matrix plots}
 
 \item{...}{Currently not used}
 }
+\value{
+one or more of 'isospace', 'beta_histogram', 'beta_boxplot', 'prop_histogram', 'prop_density', or 'covariates_plot'
+}
 \description{
 This function allows for 4 different types of plots of the simmr output
 created from \code{\link{cosimmr_ffvb}}. The 

@@ -14,7 +14,7 @@
   mix_name = "Mixtures",
   colour = TRUE,
   colour_by_cov = FALSE,
-  cov_col_name = NULL,
+  cov_name = NULL,
   ggargs = NULL,
   ...
 )
@@ -46,7 +46,7 @@ black and white}
 \item{colour_by_cov}{if TRUE this allows users to colour the mixtures on the 
 isospace plot by a specified covariate. Defaults to FALSE}
 
-\item{cov_col_name}{The name of the covariate the user wishes to colour the 
+\item{cov_name}{The name of the covariate the user wishes to colour the 
 mixture points on the plot by}
 
 \item{ggargs}{Extra arguments to be included in the ggplot (e.g. axis limits)}
@@ -69,7 +69,7 @@ the different pairs of the food sources. See the vignette for further
 details of richer plots.
 }
 \examples{
-\dontrun{
+\donttest{
 # A simple example with 10 observations, 4 food sources and 2 tracers
 data(geese_data_day1)
 cosimmr_1 <- with(

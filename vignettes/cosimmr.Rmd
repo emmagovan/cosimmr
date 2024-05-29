@@ -55,10 +55,13 @@ This data can then be loaded into cosimmr using the function `cosimmr_load`
 library(cosimmr)
 ```
 ```{r}
+
+c1 = c(1:9)
+c2 = c(2:10)
 cosimmr_1 <- with(
   geese_data_day1,
   cosimmr_load(
-    formula = mixtures ~ 1,
+    formula = mixtures ~ c1 + c2,
     source_names = source_names,
     source_means = source_means,
     source_sds = source_sds,
@@ -96,12 +99,12 @@ plot(cosimmr_1_out1, type ="prop_histogram", obs = 1)
 For another example, with a continuous covariate, we can look at Alligator data from Nifong et al, 2015.
 For this example we just use Length as the covariate - but the dataset contains other covariates that can be looked at too.
 First we load in the data into R - this data is included in cosimmr:
-```{r}
+```{r, eval = FALSE}
 data("alligator_data")
 ```
 
 Then we use `cosimmr_load` to create a "cosimmr_in" object
-```{r}
+```{r, eval = FALSE}
 Length = alligator_data$length
 cosimmr_ali <-cosimmr_load(
     formula = as.matrix(alligator_data$mixtures) ~ Length,
@@ -113,47 +116,51 @@ cosimmr_ali <-cosimmr_load(
 ```
 
 We then plot our data to make sure our iso-space plot looks good
-```{r}
-plot(cosimmr_ali, colour_by_cov = TRUE, cov_col_name = "Length")
+```{r, eval = FALSE}
+plot(cosimmr_ali, colour_by_cov = TRUE, cov_name = "Length")
 ```
 
 Then we can run the mixing model:
-```{r}
+```{r, eval = FALSE}
 cosimmr_ali_out = cosimmr_ffvb(cosimmr_ali, error_type = "process+residual")
 cosimmr_ali_out2 = cosimmr_ffvb(cosimmr_ali)
 ```
 
 We can then look at a summary of the data. This defaults to individual 1
-```{r}
+```{r, eval = FALSE}
 summary(cosimmr_ali_out, type = "statistics")
 summary(cosimmr_ali_out2, type = "statistics")
 ```
 
 We can create plots of our data. This code creates a proportion plot and a histogram plot of beta value for individuals 1 and 2
-```{r}
-plot(cosimmr_ali_out, type = c("prop_histogram"), obs = c(1,2), cov_name = "Length")
-plot(cosimmr_ali_out2, type = c("prop_histogram"), obs = c(1,2), cov_name = "Length")
+```{r, eval = FALSE}
+plot(cosimmr_ali_out, type = c("prop_histogram"), obs = c(1), cov_name = "Length")
+plot(cosimmr_ali_out2, type = c("prop_histogram"), obs = c(1), cov_name = "Length")
 plot(cosimmr_ali_out, type = c("beta_histogram"), obs = c(1), cov_name = "Length")
 plot(cosimmr_ali_out2, type = c("beta_histogram"), obs = c(1), cov_name = "Length")
 
 ```
 
 We can use the predict function to predict proportions for individuals of lengths 100, 210, and 203 by creating a data frame and then using the `predict` function
-```{r}
+```{r, eval = FALSE}
 x_pred = data.frame(length = c(100,210,302))
 alli_pred = predict(cosimmr_ali_out, x_pred)
+alli_pred2 = predict(cosimmr_ali_out2, x_pred)
 ```
 
 "alli_pred" can be treated like a normal cosimmr_out object - we can get summary values for each individual or we can create plots
-```{r}
+```{r, eval = FALSE}
 summary(alli_pred, obs = c(1,2,3), type = "statistics")
+summary(alli_pred2, obs = c(1,2,3), type = "statistics")
 
 plot(alli_pred, type = "prop_density")
+plot(alli_pred2, type = "prop_density")
 ```
 
 
 We can create a `covariates_plot` to show the change in consumption of Freshwater as an individual increases in Length
-```{r}
-g = plot(cosimmr_ali_out, type = "covariates_plot", source = "Freshwater", cov_name = "length") 
+```{r, eval = FALSE}
+plot(cosimmr_ali_out, type = "covariates_plot", source = "Freshwater", cov_name = "Length") 
+plot(cosimmr_ali_out2, type = "covariates_plot", source = "Freshwater", cov_name = "Length") 
 ```
 

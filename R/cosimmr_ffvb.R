@@ -91,7 +91,7 @@ cosimmr_ffvb <- function(cosimmr_in,
                          prior_control = list(
                            mu_0 = rep(0, (cosimmr_in$n_sources * cosimmr_in$n_covariates)), #this is currently both the prior value AND the starting lambda value - should change?
                            mu_log_sig_sq_0 = rep(0, cosimmr_in$n_tracers), #starting value for sigma mean
-                           mu_log_sig_omi_0 = rep(2, cosimmr_in$n_tracers), #starting value for omicron mean
+                           mu_log_sig_omi_0 = rep(1, cosimmr_in$n_tracers), #starting value for omicron mean
                            sigma_0 = 1, #repeated starting value for all sig and omicron
                            tau_shape = rep(1, cosimmr_in$n_tracers),
                            tau_rate = rep(1, cosimmr_in$n_tracers),
@@ -143,10 +143,12 @@ cosimmr_ffvb <- function(cosimmr_in,
     lambdares <- c(rep(NA, ll))
     
     
-    thetares <- matrix(rep(NA, ((K * n_covariates + n_tracers* 2 * cosimmr_in$n_obs) * n_output)),
-                       ncol = (K * n_covariates + n_tracers * 2 * cosimmr_in$n_obs),
-                       nrow = n_output
-    )
+    #Theta is all the betas (so K * n_obs * n_cov + 2*n_tracers)
+    
+    # thetares <- matrix(rep(NA, ((K * n_covariates + n_tracers* 2 * cosimmr_in$n_obs) * n_output)),
+    #                    ncol = (K * n_covariates + n_tracers * 2 * cosimmr_in$n_obs),
+    #                    nrow = n_output
+    # )
     
     mylist <- list#vector("list", length = cosimmr_in$n_groups)
     
@@ -206,10 +208,13 @@ cosimmr_ffvb <- function(cosimmr_in,
     a = which.max(lambdares$mean_LB_bar[(ffvb_control$t_W +2):iteration]) # +2 here for same reason, start from 0 and then greater than
     use_this = lambdares$lambda_save[(ffvb_control$t_W +1)+a,]
 
-    kappa2 = rMVNormCpp(K*n_covariates + n_tracers, c(rep(0, n_output)), diag(n_output))
-    thetares <- sim_thetacpp(n_output, use_this, K, n_tracers, n_covariates, solo, kappa2)
+    kappa2 = rMVNormCpp(K*n_covariates + n_tracers*2, c(rep(0, n_output)), diag(n_output))
+    
+    thetares <- sim_thetacpp_pxr(n_output, use_this, K, n_tracers, n_covariates, solo, kappa2)
 
     sigma <- sqrt(exp((thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)])))
+    
+    omicron <- exp((thetares[,(K*n_covariates + n_tracers + 1):(K*n_covariates + n_tracers*2)]))
     
     p_sample = array(NA, dim = c(cosimmr_in$n_obs, n_output, K))
     p_mean_sample = matrix(NA, nrow = n_output, ncol = K)
@@ -253,7 +258,8 @@ cosimmr_ffvb <- function(cosimmr_in,
         sims.list = list(
           p = p_sample,
           p_mean = p_mean_sample,
-          sigma = sigma
+          sigma = sigma,
+          omicron = omicron
         )),
       model = list(data = list(
         mu_f_mean = c(mu_a),
@@ -327,10 +333,10 @@ cosimmr_ffvb <- function(cosimmr_in,
   lambdares <- c(rep(NA, ll))
   
   
-  thetares <- matrix(rep(NA, ((K * n_covariates + n_tracers * cosimmr_in$n_obs) * n_output)),
-                     ncol = (K * n_covariates + n_tracers * cosimmr_in$n_obs),
-                     nrow = n_output
-  )
+  # thetares <- matrix(rep(NA, ((K * n_covariates + n_tracers * cosimmr_in$n_obs) * n_output)),
+  #                    ncol = (K * n_covariates + n_tracers * cosimmr_in$n_obs),
+  #                    nrow = n_output
+  # )
   
   mylist <- list#vector("list", length = cosimmr_in$n_groups)
   

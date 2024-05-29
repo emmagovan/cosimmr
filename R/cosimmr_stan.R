@@ -6,7 +6,7 @@
 #' outputs a \code{cosimmr_output} object for further analysis and plotting
 #' via \code{\link{plot.cosimmr_output}}.
 #'
-#'
+#'@param cosimmr_in An object created via the function \code{\link{cosimmr_load}}
 #'@param type What type of model to run using STAN. Options are 'STAN_VB
 #'@param error_type Whether to use 'processxresidual' error term or 
 #''process+residual' term. Defaults to 'processxresidual'
@@ -133,7 +133,7 @@ cosimmr_stan <- function(cosimmr_in,
   # Fit using VB
   # Get good starting value sby optimizing first
 
-  fit_opt <- optimizing(stanmodels$STAN_VB,
+  fit_opt <- rstan::optimizing(stanmodels$STAN_VB,
                         data = stan_dat)
   
   which_beta <- grep('beta', names(fit_opt$par))
@@ -145,7 +145,7 @@ cosimmr_stan <- function(cosimmr_in,
   sigma_raw_start_opt <- fit_opt$par[which_sigma][1:2]
   
   
-  fit_vb <- vb(
+  fit_vb <- rstan::vb(
     stanmodels$STAN_VB, data = stan_dat,
     algorithm = 'fullrank',
     pars = c('beta', 'sigma'),
@@ -185,9 +185,8 @@ sigma = sigma_ans
 
   } else if(type == "STAN_MCMC"){
     #I think this is calling the model - need to check that it calls what I actually need
-    model = stan_model(stanmodels$STAN_VB)
-    fit_mcmc <- sampling(
-      model,
+    fit_mcmc <- rstan::sampling(
+      stanmodels$STAN_VB, #This is named stan VB but the VB is the algorithm - model is just generic!
       data = stan_dat,
       seed = 1
     )

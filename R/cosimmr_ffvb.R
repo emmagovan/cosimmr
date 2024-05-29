@@ -82,8 +82,8 @@
 #' ans <- summary(cosimmr_1_out, type = c("quantiles", "statistics"))
 #'
 #' # Plot
-#' plot(cosimmr_1_out, type = "beta_boxplot")
-#' plot(cosimmr_1_out, type = "beta_histogram")
+#' plot(cosimmr_1_out, type = "beta_boxplot", cov_name = "x")
+#' plot(cosimmr_1_out, type = "beta_histogram", cov_name = "x")
 #'
 #'}
 #' @export cosimmr_ffvb

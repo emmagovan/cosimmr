@@ -19,7 +19,7 @@ types are: plot of beta values"><!-- mathjax --><script src="https://cdnjs.cloud
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cosimmr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.11</span>
       </span>
     </div>
 
@@ -54,10 +54,10 @@ types are: plot of beta values</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for cosimmr_pred_out</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"beta_histogram"</span>, <span class="st">"beta_boxplot"</span>, <span class="st">"p_ind"</span><span class="op">)</span>,</span>
-<span>  individuals <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  covariates <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  binwidth <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"beta_histogram"</span>, <span class="st">"beta_boxplot"</span>, <span class="st">"prop_obs"</span>, <span class="st">"prop_density"</span><span class="op">)</span>,</span>
+<span>  obs <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  cov_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  binwidth <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_output <span class="op">=</span> <span class="fl">3600</span>,</span>
@@ -74,15 +74,15 @@ types are: plot of beta values</p>
 
 <dt>type</dt>
 <dd><p>The type of plot required. Can be one or more of 'isospace', 
-'betahistogram'</p></dd>
+'beta_histogram', 'beta_boxplot', 'prob_histogram', 'prob_density', 'covariates_plot'</p></dd>
 
 
-<dt>individuals</dt>
-<dd><p>The individual number you wish to plot</p></dd>
+<dt>obs</dt>
+<dd><p>The observation you wish to plot</p></dd>
 
 
-<dt>covariates</dt>
-<dd><p>The covariate you wish to plot (for beta plots)</p></dd>
+<dt>cov_name</dt>
+<dd><p>The name of the covariate you wish to plot (for beta and covariate plots)</p></dd>
 
 
 <dt>binwidth</dt>
@@ -106,6 +106,12 @@ matrix plots</p></dd>
 <dd><p>Currently not used</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>one or more of 'isospace', 'beta_histogram', 'beta_boxplot', 'prop_histogram', 'prop_density', or 'covariates_plot'</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
     <p>The matrix plot should form a necessary part of any SIMM analysis since it
@@ -146,7 +152,7 @@ also <code><a href="cosimmr_load.html">cosimmr_load</a></code> for creating simm
 <span class="r-in"><span>    concentration_means <span class="op">=</span> <span class="va">concentration_means</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Cannot scale when using mixtures ~1"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Cannot scale when using mixtures ~1</span>
 <span class="r-in"><span><span class="co"># Plot</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cosimmr_1</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.cosimmr_pred_out-1.png" alt="" width="700" height="433"></span>
@@ -1198,14 +1204,12 @@ also <code><a href="cosimmr_load.html">cosimmr_load</a></code> for creating simm
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1041</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1042</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1043</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1044</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1045</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1046</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cosimmr_1_out</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"isospace"</span>, <span class="st">"beta_hist"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="plot.cosimmr_pred_out-2.png" alt="" width="700" height="433"></span>
-<span class="r-plt img"><img src="plot.cosimmr_pred_out-3.png" alt="" width="700" height="433"></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> You have selected a plot type that requires covariates but </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> the model does not contain covariates. Please reselect</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> model or plots to create and rerun.</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

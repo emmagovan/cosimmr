@@ -77,7 +77,7 @@ plot(cosimmr_1)
 
 The data can then be run through `cosimmr_ffvb`, the main function of the `cosimmr` 
 package.
-```{r}
+```{r, echo=TRUE, results='hide'}
 cosimmr_1_out = cosimmr_ffvb(cosimmr_1)
 ```
 

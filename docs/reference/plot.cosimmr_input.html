@@ -19,7 +19,7 @@ SIMM."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cosimmr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.11</span>
       </span>
     </div>
 
@@ -59,10 +59,11 @@ SIMM.</p>
 <span>  xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">mixtures</span><span class="op">)</span><span class="op">[</span><span class="va">tracers</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>  ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">mixtures</span><span class="op">)</span><span class="op">[</span><span class="va">tracers</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>  sigmas <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  group <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">x</span><span class="op">$</span><span class="va">n_groups</span>,</span>
 <span>  mix_name <span class="op">=</span> <span class="st">"Mixtures"</span>,</span>
-<span>  ggargs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  colour <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  colour_by_cov <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cov_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ggargs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -98,22 +99,28 @@ per mil but can be changed as with the x-axis label</p></dd>
 values. Defaults to 1.</p></dd>
 
 
-<dt>group</dt>
-<dd><p>Which groups to plot. Can be a single group or multiple groups</p></dd>
-
-
 <dt>mix_name</dt>
 <dd><p>A optional string containing the name of the mixture
 objects, e.g. Geese.</p></dd>
 
 
-<dt>ggargs</dt>
-<dd><p>Extra arguments to be included in the ggplot (e.g. axis limits)</p></dd>
-
-
 <dt>colour</dt>
 <dd><p>If TRUE (default) creates a plot. If not, puts the plot in
 black and white</p></dd>
+
+
+<dt>colour_by_cov</dt>
+<dd><p>if TRUE this allows users to colour the mixtures on the 
+isospace plot by a specified covariate. Defaults to FALSE</p></dd>
+
+
+<dt>cov_name</dt>
+<dd><p>The name of the covariate the user wishes to colour the 
+mixture points on the plot by</p></dd>
+
+
+<dt>ggargs</dt>
+<dd><p>Extra arguments to be included in the ggplot (e.g. axis limits)</p></dd>
 
 
 <dt>...</dt>
@@ -147,7 +154,7 @@ iso-space is deemed acceptable.</p></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># A simple example with 10 observations, 4 food sources and 2 tracers</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">geese_data_day1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cosimmr_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span></span></span>
@@ -165,6 +172,7 @@ iso-space is deemed acceptable.</p></div>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cosimmr_1</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.cosimmr_input-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### A more complicated example with 30 obs, 3 tracers and 4 sources</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">simmr_data_2</span><span class="op">)</span></span></span>
@@ -180,15 +188,18 @@ iso-space is deemed acceptable.</p></div>
 <span class="r-in"><span>    concentration_means <span class="op">=</span> <span class="va">concentration_means</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Cannot scale when using mixtures ~1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot 3 times - first default d13C vs d15N</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cosimmr_3</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.cosimmr_input-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># Now plot d15N vs d34S</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cosimmr_3</span>, tracers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.cosimmr_input-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># and finally d13C vs d34S</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cosimmr_3</span>, tracers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># See vignette('cosimmr') for fancier x-axis labels</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-plt img"><img src="plot.cosimmr_input-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>

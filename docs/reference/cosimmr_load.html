@@ -21,7 +21,7 @@ object of class cosimmr_input."><!-- mathjax --><script src="https://cdnjs.cloud
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cosimmr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.11</span>
       </span>
     </div>
 
@@ -172,7 +172,7 @@ At present there is no means to include concentration standard deviations.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A simple example with 10 observations, 2 tracers and 4 sources</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">geese_data_day1</span><span class="op">)</span></span></span>
@@ -189,11 +189,119 @@ At present there is no means to include concentration standard deviations.</p>
 <span class="r-in"><span>    scale_x <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Cannot scale when using mixtures ~1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">simmr_1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $mixtures</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       d13C_Pl d15N_Pl</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]  -11.36   10.22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]  -11.88   10.37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]  -10.60   10.44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]  -11.25   10.52</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]  -11.66   10.19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]  -10.41   10.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]  -10.88    9.91</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]  -14.73   11.27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]  -11.52    9.34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $x_scaled</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (Intercept)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"assign")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $source_names</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Zostera"      "Grass"        "U.lactuca"    "Enteromorpha"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $source_means</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      meand13CPl meand15NPl</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  -11.17023   6.488984</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  -30.87984   4.432160</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  -11.17090  11.192613</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  -14.05701   9.816280</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $source_sds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SDd13C   SDd15N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.2149562 1.459463</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.6413182 2.268071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 1.9593306 1.112438</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 1.1724677 0.827104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $correction_means</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      meand13CPl meand15NPl</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]       1.63       3.54</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]       1.63       3.54</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]       1.63       3.54</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]       1.63       3.54</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $correction_sds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      SDd13C SDd15N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]   0.63   0.74</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]   0.63   0.74</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]   0.63   0.74</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]   0.63   0.74</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $concentration_means</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      d13CPl d15NPl</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.3593 0.0297</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.4026 0.0355</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.2098 0.0192</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.1844 0.0139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_obs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_tracers</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_sources</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $scale_x</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $scaled_center</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $scaled_scale</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $intercept</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $covariates_df</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> data frame with 0 columns and 9 rows</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_covariates</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $original_x</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (Intercept)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"assign")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cosimmr_input"</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>

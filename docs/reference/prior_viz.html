@@ -21,7 +21,7 @@ the prior on the posterior distribution."><!-- mathjax --><script src="https://c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cosimmr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.11</span>
       </span>
     </div>
 
@@ -117,7 +117,7 @@ function</p></div>
 <span class="r-in"><span>    concentration_means <span class="op">=</span> <span class="va">concentration_means</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Cannot scale when using mixtures ~1"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Cannot scale when using mixtures ~1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cosimmr_1</span><span class="op">)</span></span></span>
@@ -1281,27 +1281,29 @@ function</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1043</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1044</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1045</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1046</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1047</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Prior predictive</span></span></span>
 <span class="r-in"><span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu">prior_viz</span><span class="op">(</span><span class="va">cosimmr_1_out</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="prior_viz-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">prior</span><span class="op">$</span><span class="va">p_prior_sim</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         Zostera      Grass  U.lactuca Enteromorpha</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.05713834 0.15981874 0.38524925   0.39779366</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.14176583 0.50832276 0.05478136   0.29513005</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.62397298 0.24862087 0.06580359   0.06160256</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.25001241 0.08787632 0.50611134   0.15599993</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.25692112 0.36032068 0.09451807   0.28824014</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 0.32473688 0.27049983 0.23336800   0.17139528</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Zostera      Grass U.lactuca Enteromorpha</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.16432514 0.13599872 0.1183052   0.58137097</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.02135679 0.19804874 0.1182302   0.66236428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.27439412 0.06336592 0.6322211   0.03001882</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.20868453 0.06643997 0.6787180   0.04615747</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.46703839 0.08421217 0.1590413   0.28970812</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 0.03892195 0.09041722 0.7180265   0.15263434</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">prior</span><span class="op">$</span><span class="va">p_prior_sim</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Zostera             Grass            U.lactuca         Enteromorpha      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Min.   :0.001964   Min.   :0.003221   Min.   :0.002622   Min.   :0.0006058  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1st Qu.:0.101119   1st Qu.:0.101185   1st Qu.:0.102902   1st Qu.:0.1019909  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Median :0.199469   Median :0.200188   Median :0.202416   Median :0.2066135  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Mean   :0.249287   Mean   :0.246756   Mean   :0.249007   Mean   :0.2549510  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3rd Qu.:0.353174   3rd Qu.:0.347209   3rd Qu.:0.351925   3rd Qu.:0.3657408  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Max.   :0.946250   Max.   :0.944417   Max.   :0.945847   Max.   :0.9596246  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Zostera             Grass             U.lactuca         Enteromorpha     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Min.   :0.002701   Min.   :0.0006893   Min.   :0.003832   Min.   :0.001888  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1st Qu.:0.101312   1st Qu.:0.1013077   1st Qu.:0.101374   1st Qu.:0.101925  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Median :0.200014   Median :0.2009604   Median :0.200354   Median :0.199180  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Mean   :0.250890   Mean   :0.2486814   Mean   :0.251515   Mean   :0.248914  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3rd Qu.:0.360332   3rd Qu.:0.3511086   3rd Qu.:0.360316   3rd Qu.:0.354730  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Max.   :0.943985   Max.   :0.9619480   Max.   :0.960838   Max.   :0.952130  </span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

@@ -22,7 +22,7 @@ parameters."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cosimmr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.11</span>
       </span>
     </div>
 
@@ -61,7 +61,7 @@ parameters.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quantiles"</span>, <span class="st">"statistics"</span>, <span class="st">"correlations"</span><span class="op">)</span>,</span>
-<span>  individual <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  obs <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -78,8 +78,8 @@ function <code><a href="cosimmr_ffvb.html">cosimmr_ffvb</a></code></p></dd>
 'statistics', or 'correlations'.</p></dd>
 
 
-<dt>individual</dt>
-<dd><p>The individual to generate a summary for. Defaults to 1.</p></dd>
+<dt>obs</dt>
+<dd><p>The observation to generate a summary for. Defaults to 1.</p></dd>
 
 
 <dt>...</dt>
@@ -142,7 +142,7 @@ See also <code><a href="cosimmr_load.html">cosimmr_load</a></code> for creating 
 <span class="r-in"><span>    concentration_means <span class="op">=</span> <span class="va">concentration_means</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Cannot scale when using mixtures ~1"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Cannot scale when using mixtures ~1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cosimmr_1</span><span class="op">)</span></span></span>
@@ -1160,63 +1160,106 @@ See also <code><a href="cosimmr_load.html">cosimmr_load</a></code> for creating 
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1006</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1007</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1009</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1010</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1011</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1012</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1013</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1014</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1015</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1016</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1017</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1018</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1019</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1021</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1023</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1024</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1025</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1026</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1027</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1028</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1029</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1030</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1031</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1033</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1034</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1035</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1036</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1037</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1038</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1039</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1040</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1041</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1042</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1043</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1044</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Summarise</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cosimmr_1_out</span><span class="op">)</span> <span class="co"># This outputs all the summaries</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Summary for Individual 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               2.5%   25%   50%   75% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zostera      0.137 0.342 0.472 0.613 0.816</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grass        0.038 0.060 0.073 0.088 0.120</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> U.lactuca    0.055 0.142 0.230 0.334 0.581</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Enteromorpha 0.032 0.096 0.168 0.265 0.532</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d13C_Pl      0.222 0.540 0.854 1.402 3.629</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d15N_Pl      0.152 0.388 0.626 1.038 2.795</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               mean    sd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zostera      0.476 0.181</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grass        0.075 0.021</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> U.lactuca    0.253 0.143</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Enteromorpha 0.197 0.131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d13C_Pl      1.123 0.949</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d15N_Pl      0.835 0.716</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              Zostera  Grass U.lactuca Enteromorpha d13C_Pl d15N_Pl</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zostera        1.000  0.044    -0.723       -0.599  -0.252  -0.424</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grass          0.044  1.000     0.123       -0.352   0.118  -0.072</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> U.lactuca     -0.723  0.123     1.000       -0.109   0.249   0.388</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Enteromorpha  -0.599 -0.352    -0.109        1.000   0.058   0.174</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d13C_Pl       -0.252  0.118     0.249        0.058   1.000   0.315</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d15N_Pl       -0.424 -0.072     0.388        0.174   0.315   1.000</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Summary for Observation 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  2.5%   25%   50%   75% 97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)      0.163 0.356 0.491 0.620 0.807</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)        0.038 0.058 0.071 0.085 0.116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)    0.055 0.143 0.219 0.323 0.567</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha) 0.031 0.096 0.162 0.260 0.523</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl      0.212 0.524 0.821 1.321 3.307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl      0.157 0.387 0.621 1.005 2.485</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean    sd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)      0.489 0.173</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)        0.073 0.020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)    0.246 0.136</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha) 0.193 0.129</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl      1.060 0.829</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl      0.803 0.642</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 P(Zostera) P(Grass) P(U.lactuca) P(Enteromorpha) sd_d13C_Pl</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)           1.000    0.018       -0.705          -0.599     -0.225</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)             0.018    1.000        0.171          -0.359      0.166</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)        -0.705    0.171        1.000          -0.135      0.242</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha)     -0.599   -0.359       -0.135           1.000      0.020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl          -0.225    0.166        0.242           0.020      1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl          -0.395   -0.014        0.390           0.120      0.262</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 sd_d15N_Pl</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)          -0.395</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)            -0.014</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)         0.390</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha)      0.120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl           0.262</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl           1.000</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cosimmr_1_out</span>, type <span class="op">=</span> <span class="st">"quantiles"</span><span class="op">)</span> <span class="co"># Just the diagnostics</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Summary for Individual 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               2.5%   25%   50%   75% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zostera      0.137 0.342 0.472 0.613 0.816</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grass        0.038 0.060 0.073 0.088 0.120</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> U.lactuca    0.055 0.142 0.230 0.334 0.581</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Enteromorpha 0.032 0.096 0.168 0.265 0.532</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d13C_Pl      0.222 0.540 0.854 1.402 3.629</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d15N_Pl      0.152 0.388 0.626 1.038 2.795</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Summary for Observation 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  2.5%   25%   50%   75% 97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)      0.163 0.356 0.491 0.620 0.807</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)        0.038 0.058 0.071 0.085 0.116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)    0.055 0.143 0.219 0.323 0.567</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha) 0.031 0.096 0.162 0.260 0.523</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl      0.212 0.524 0.821 1.321 3.307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl      0.157 0.387 0.621 1.005 2.485</span>
 <span class="r-in"><span><span class="co"># Store the output in an</span></span></span>
 <span class="r-in"><span><span class="va">ans</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cosimmr_1_out</span>,</span></span>
 <span class="r-in"><span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quantiles"</span>, <span class="st">"statistics"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Summary for Individual 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               2.5%   25%   50%   75% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zostera      0.137 0.342 0.472 0.613 0.816</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grass        0.038 0.060 0.073 0.088 0.120</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> U.lactuca    0.055 0.142 0.230 0.334 0.581</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Enteromorpha 0.032 0.096 0.168 0.265 0.532</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d13C_Pl      0.222 0.540 0.854 1.402 3.629</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d15N_Pl      0.152 0.388 0.626 1.038 2.795</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               mean    sd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zostera      0.476 0.181</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grass        0.075 0.021</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> U.lactuca    0.253 0.143</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Enteromorpha 0.197 0.131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d13C_Pl      1.123 0.949</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d15N_Pl      0.835 0.716</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Summary for Observation 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  2.5%   25%   50%   75% 97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)      0.163 0.356 0.491 0.620 0.807</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)        0.038 0.058 0.071 0.085 0.116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)    0.055 0.143 0.219 0.323 0.567</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha) 0.031 0.096 0.162 0.260 0.523</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl      0.212 0.524 0.821 1.321 3.307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl      0.157 0.387 0.621 1.005 2.485</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean    sd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)      0.489 0.173</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)        0.073 0.020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)    0.246 0.136</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha) 0.193 0.129</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl      1.060 0.829</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl      0.803 0.642</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

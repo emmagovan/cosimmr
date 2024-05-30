@@ -22,7 +22,7 @@ parameters."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cosimmr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.11</span>
       </span>
     </div>
 
@@ -61,7 +61,7 @@ parameters.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quantiles"</span>, <span class="st">"statistics"</span>, <span class="st">"correlations"</span><span class="op">)</span>,</span>
-<span>  individual <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  obs <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -69,8 +69,8 @@ parameters.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
-<dd><p>An object of class <code>cosimmr_output</code> produced by the
-function  <code><a href="cosimmr_ffvb.html">cosimmr_ffvb</a></code></p></dd>
+<dd><p>An object of class <code>cosimmr_pred_output</code> produced by the
+function  <code><a href="predict.cosimmr_output.html">predict.cosimmr_output</a></code></p></dd>
 
 
 <dt>type</dt>
@@ -78,8 +78,8 @@ function  <code><a href="cosimmr_ffvb.html">cosimmr_ffvb</a></code></p></dd>
 'statistics', or 'correlations'.</p></dd>
 
 
-<dt>individual</dt>
-<dd><p>The individual to generate a summary for. Defaults to 1.</p></dd>
+<dt>obs</dt>
+<dd><p>The observation to generate a summary for. Defaults to 1.</p></dd>
 
 
 <dt>...</dt>
@@ -1199,510 +1199,70 @@ See also <code><a href="cosimmr_load.html">cosimmr_load</a></code> for creating 
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1046</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1047</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1048</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1049</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1050</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1051</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1052</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1053</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1054</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1055</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1056</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1057</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1058</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1059</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1060</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1061</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1062</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1063</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1064</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1066</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1067</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1068</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1069</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1070</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1071</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1072</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1073</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1074</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1075</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1076</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1077</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1078</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1079</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1080</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1081</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1082</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1083</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1084</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1085</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1086</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1087</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1088</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1089</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1090</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1091</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1092</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1093</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1094</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1095</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1096</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1097</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1098</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1099</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1102</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1103</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1104</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1105</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1106</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1107</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1108</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1109</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1110</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1111</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1112</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1113</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1115</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1116</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1117</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1118</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1119</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1120</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1121</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1122</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1123</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1124</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1125</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1126</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1127</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1128</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1129</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1130</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1132</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1133</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1134</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1135</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1137</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1138</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1139</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1140</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1141</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1142</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1143</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1145</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1146</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1147</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1148</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1149</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1150</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1151</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1152</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1153</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1154</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1155</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1156</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1157</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1158</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1159</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1160</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1161</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1162</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1163</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1164</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1165</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1166</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1167</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1168</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1169</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1170</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1171</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1172</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1173</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1174</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1175</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1176</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1177</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1178</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1179</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1180</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1181</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1182</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1183</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1184</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1185</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1186</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1188</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1189</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1190</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1191</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1192</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1193</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1194</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1195</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1196</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1197</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1198</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1199</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1200</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1201</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1202</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1203</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1204</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1205</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1206</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1207</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1208</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1209</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1210</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1211</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1212</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1213</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1214</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1215</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1216</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1217</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1218</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1219</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1220</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1221</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1222</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1223</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1224</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1225</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1226</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1227</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1228</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1229</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1230</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1231</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1232</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1233</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1234</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1235</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1236</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1237</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1238</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1239</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1240</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1241</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1242</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1243</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1244</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1245</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1246</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1247</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1248</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1249</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1250</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1251</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1252</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1253</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1254</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1255</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1256</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1257</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1258</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1259</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1260</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1261</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1262</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1263</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1264</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1265</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1266</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1267</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1268</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1269</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1270</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1271</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1272</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1273</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1274</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1275</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1276</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1277</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1278</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1279</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1280</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1281</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1282</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1283</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1284</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1285</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1286</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1287</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1288</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1289</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1290</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1291</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1292</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1293</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1294</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1295</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1296</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1297</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1298</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1299</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1301</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1302</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1303</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1304</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1305</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1306</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1307</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1308</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1309</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1310</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1311</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1312</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1313</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1314</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1315</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1316</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1317</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1318</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1319</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1320</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1321</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1322</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1323</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1324</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1325</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1326</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1327</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1328</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1329</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1330</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1331</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1332</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1334</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1335</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1336</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1337</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1338</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1339</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1340</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1341</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1342</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1343</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1344</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1345</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1346</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1347</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1348</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1349</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1350</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1351</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1352</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1353</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1354</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1355</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1356</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1357</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1358</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1359</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1360</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1361</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1362</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1363</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1364</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1365</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1366</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1367</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1368</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1369</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1370</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1371</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1372</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1373</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1374</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1375</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1376</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1377</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1378</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1379</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1380</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1381</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1382</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1383</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1384</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1385</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1386</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1387</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1388</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1389</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1390</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1391</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1392</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1393</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1394</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1395</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1396</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1397</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1398</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1399</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1401</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1402</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1403</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1404</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1405</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1406</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1407</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1408</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1409</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1410</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1411</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1412</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1413</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1414</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1415</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1416</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1417</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1418</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1419</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1420</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1421</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1422</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1423</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1424</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1425</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1426</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1427</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1428</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1429</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1430</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1431</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1432</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1433</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1434</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1435</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1436</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1437</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1438</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1439</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1441</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1442</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1443</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1445</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1446</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1447</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1448</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1449</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1450</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1451</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1452</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1453</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1454</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1455</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1456</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1457</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1458</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1459</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1460</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1461</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1462</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1463</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1464</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1465</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1466</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1467</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1468</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1469</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1470</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1471</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1472</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1473</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1474</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1475</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1476</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1477</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1478</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1479</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1480</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1481</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1482</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1483</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1484</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1485</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1486</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1487</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1489</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1490</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1491</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1492</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1493</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1494</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration : 1495</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Summarise</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cosimmr_1_out</span><span class="op">)</span> <span class="co"># This outputs all the summaries</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Summary for Individual 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               2.5%   25%   50%   75% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zostera      0.129 0.393 0.574 0.725 0.901</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grass        0.025 0.052 0.071 0.094 0.150</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> U.lactuca    0.018 0.074 0.148 0.265 0.588</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Enteromorpha 0.007 0.046 0.114 0.250 0.685</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d13C_Pl      0.209 0.479 0.710 1.079 2.424</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d15N_Pl      0.147 0.354 0.574 0.892 2.183</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               mean    sd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zostera      0.555 0.212</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grass        0.076 0.033</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> U.lactuca    0.191 0.153</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Enteromorpha 0.179 0.181</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d13C_Pl      0.863 0.601</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d15N_Pl      0.714 0.543</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              Zostera  Grass U.lactuca Enteromorpha d13C_Pl d15N_Pl</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zostera        1.000 -0.125    -0.581       -0.654  -0.041  -0.180</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grass         -0.125  1.000     0.300       -0.287   0.113   0.024</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> U.lactuca     -0.581  0.300     1.000       -0.219   0.000   0.109</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Enteromorpha  -0.654 -0.287    -0.219        1.000   0.028   0.114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d13C_Pl       -0.041  0.113     0.000        0.028   1.000   0.057</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d15N_Pl       -0.180  0.024     0.109        0.114   0.057   1.000</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Summary for Observation 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  2.5%   25%   50%   75% 97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)      0.054 0.272 0.472 0.686 0.923</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)        0.019 0.050 0.072 0.098 0.158</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)    0.015 0.090 0.196 0.347 0.696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha) 0.007 0.049 0.135 0.302 0.733</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl      0.218 0.500 0.809 1.278 3.013</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl      0.153 0.384 0.632 1.017 2.654</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean    sd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)      0.479 0.253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)        0.076 0.036</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)    0.241 0.188</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha) 0.204 0.200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl      1.027 0.802</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl      0.828 0.740</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 P(Zostera) P(Grass) P(U.lactuca) P(Enteromorpha) sd_d13C_Pl</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)           1.000   -0.191       -0.652          -0.617     -0.079</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)            -0.191    1.000        0.373          -0.287      0.123</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)        -0.652    0.373        1.000          -0.182      0.014</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha)     -0.617   -0.287       -0.182           1.000      0.064</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl          -0.079    0.123        0.014           0.064      1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl          -0.158    0.031        0.068           0.130      0.237</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 sd_d15N_Pl</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)          -0.158</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)             0.031</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)         0.068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha)      0.130</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl           0.237</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl           1.000</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cosimmr_1_out</span>, type <span class="op">=</span> <span class="st">"quantiles"</span><span class="op">)</span> <span class="co"># Just the diagnostics</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Summary for Individual 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               2.5%   25%   50%   75% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zostera      0.129 0.393 0.574 0.725 0.901</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grass        0.025 0.052 0.071 0.094 0.150</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> U.lactuca    0.018 0.074 0.148 0.265 0.588</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Enteromorpha 0.007 0.046 0.114 0.250 0.685</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d13C_Pl      0.209 0.479 0.710 1.079 2.424</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d15N_Pl      0.147 0.354 0.574 0.892 2.183</span>
-<span class="r-in"><span><span class="co"># Store the output in an</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Summary for Observation 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  2.5%   25%   50%   75% 97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)      0.054 0.272 0.472 0.686 0.923</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)        0.019 0.050 0.072 0.098 0.158</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)    0.015 0.090 0.196 0.347 0.696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha) 0.007 0.049 0.135 0.302 0.733</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl      0.218 0.500 0.809 1.278 3.013</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl      0.153 0.384 0.632 1.017 2.654</span>
+<span class="r-in"><span><span class="co"># Store the output in ans</span></span></span>
 <span class="r-in"><span><span class="va">ans</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cosimmr_1_out</span>,</span></span>
 <span class="r-in"><span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quantiles"</span>, <span class="st">"statistics"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Summary for Individual 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               2.5%   25%   50%   75% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zostera      0.129 0.393 0.574 0.725 0.901</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grass        0.025 0.052 0.071 0.094 0.150</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> U.lactuca    0.018 0.074 0.148 0.265 0.588</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Enteromorpha 0.007 0.046 0.114 0.250 0.685</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d13C_Pl      0.209 0.479 0.710 1.079 2.424</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d15N_Pl      0.147 0.354 0.574 0.892 2.183</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               mean    sd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zostera      0.555 0.212</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grass        0.076 0.033</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> U.lactuca    0.191 0.153</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Enteromorpha 0.179 0.181</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d13C_Pl      0.863 0.601</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d15N_Pl      0.714 0.543</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Summary for Observation 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  2.5%   25%   50%   75% 97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)      0.054 0.272 0.472 0.686 0.923</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)        0.019 0.050 0.072 0.098 0.158</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)    0.015 0.090 0.196 0.347 0.696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha) 0.007 0.049 0.135 0.302 0.733</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl      0.218 0.500 0.809 1.278 3.013</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl      0.153 0.384 0.632 1.017 2.654</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean    sd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Zostera)      0.479 0.253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Grass)        0.076 0.036</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(U.lactuca)    0.241 0.188</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> P(Enteromorpha) 0.204 0.200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d13C_Pl      1.027 0.802</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd_d15N_Pl      0.828 0.740</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

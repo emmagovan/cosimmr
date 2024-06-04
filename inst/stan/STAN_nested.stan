@@ -1,9 +1,9 @@
-// So what we want here is the option to do hierarchical or regular, or process x residual for both!!
 data {
   int<lower=1> J; // Number of isotopes
   int<lower=1> N; // Number of observations per group
   int<lower=1> K; // Dimension of p and q
-  int<lower=1> L; // Number of covariates per element in f
+  int<lower=1> L1; // Number of covariates in inner
+  int<lower=1> L2; //Number of covariates in outer
   matrix[N, J] y; // Data matrix
   matrix[K, J] q; // q matrix
   matrix[K, J] s_mean; // s_mean matrix
@@ -13,13 +13,16 @@ data {
   vector[J] sigma_shape; // Prior shape for sigma
   vector[J] sigma_rate; // Prior rate for sigma
   real<lower=0> not_solo; // Adjustment factor for sigma
-  matrix[N, L] X; // Covariates matrix
+  matrix[N, L1] X_inner; // Covariates matrix for pack/inside/nested one
+    matrix[N, L2] X_outer; // Covariates matrix for pack/inside/nested one
+  real<lower=0> hierarchical; // check that data is hierarchical??
 }
 
 parameters {
   vector<lower=0>[J] sigma_raw; // log raw sigma values
-  matrix[K, L] beta; // Matrix of coefficients
-  // matrix[N, K] f; // f matrix for CLR prior on p
+  matrix[K, L1] beta1; // Matrix of coefficients for inside values (also have intercept here I guess??)
+   matrix[K, L2] beta2; // Matrix of coefficients for outside values
+
 }
 
 transformed parameters {
@@ -30,7 +33,10 @@ transformed parameters {
 
   for (i in 1:N) {
     for (k in 1:K) {
-      f[i, k] = dot_product(X[i,:], beta[k,:]);
+      f[i,k] = dot_product(X_inner[i,:], beta1[k,:]) + dot_product(X_outer[i,:], beta2[k,:]);
+     // f[i, k] = dot_product(X[i,:], beta[k,:]);
+     //F is bo + b_region + b_pack (or whatever the nests are)
+     // Need to split up X here?? Easier to do it in R i think
     }
   }
 
@@ -50,8 +56,14 @@ transformed parameters {
  model {
   // Prior on betas
   for (k in 1:K) {
-    for (l in 1:L) {
-      beta[k,l] ~ normal(0, 1); // Prior for beta
+    for (l in 1:L1) {
+      beta1[k,l] ~ normal(0, 1); // Prior for beta
+    }
+  }
+  
+    for (k in 1:K) {
+    for (l in 1:L2) {
+      beta2[k,l] ~ normal(0, 1); // Prior for beta
     }
   }
 

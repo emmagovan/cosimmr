@@ -1,4 +1,3 @@
-// So what we want here is the option to do hierarchical or regular, or process x residual for both!!
 data {
   int<lower=1> J; // Number of isotopes
   int<lower=1> N; // Number of observations per group

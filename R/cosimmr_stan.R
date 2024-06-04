@@ -13,6 +13,8 @@
 #'@param prior_control A list of values including arguments named \code{sigma_shape} 
 #'(prior values for sigma shape), \code{sigma_rate} (prior values for sigma rate)
 #'@param n_samples Number of samples to output. Defaults to 3600.
+#'@param nested Whether or not your model is hierarchical, i.e. has covariates 
+#'nested within each other. Defaults to FALSE.
 #'
 #'@return an object of class \code{cosimmr_output} with two named top-level 
 #'components: \item{input }{The \code{cosimmr_input} object given to the
@@ -88,8 +90,8 @@ cosimmr_stan <- function(cosimmr_in,
                           sigma_shape = c(rep(1, cosimmr_in$n_tracers)),
                           sigma_rate = c(rep(1, cosimmr_in$n_tracers))
                          ),
-                         n_samples = 3600
-                         
+                         n_samples = 3600,
+                         nested = FALSE
                          ){
   
   #Core detection - potentially have this as an option people can turn on and off?

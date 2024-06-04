@@ -494,7 +494,9 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport SEXP _rcpp_module_boot_stan_fit4CopyOfSTAN_VB_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4STAN_VB_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4STAN_nested_mod();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_cosimmr_digamma_wrapper", (DL_FUNC) &_cosimmr_digamma_wrapper, 1},
@@ -518,7 +520,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_cosimmr_nabla_LB_cpp_pxr", (DL_FUNC) &_cosimmr_nabla_LB_cpp_pxr, 20},
     {"_cosimmr_LB_lambda_cpp_pxr", (DL_FUNC) &_cosimmr_LB_lambda_cpp_pxr, 18},
     {"_cosimmr_run_VB_cpp_pxr", (DL_FUNC) &_cosimmr_run_VB_cpp_pxr, 26},
+    {"_rcpp_module_boot_stan_fit4CopyOfSTAN_VB_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4CopyOfSTAN_VB_mod, 0},
     {"_rcpp_module_boot_stan_fit4STAN_VB_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4STAN_VB_mod, 0},
+    {"_rcpp_module_boot_stan_fit4STAN_nested_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4STAN_nested_mod, 0},
     {NULL, NULL, 0}
 };
 

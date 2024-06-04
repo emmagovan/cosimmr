@@ -1,4 +1,3 @@
-
 #' Run a \code{cosimmr_input} object through the Fixed Form Variational
 #' Bayes(FFVB) function
 #'
@@ -214,7 +213,7 @@ cosimmr_ffvb <- function(cosimmr_in,
 
     sigma <- sqrt(exp((thetares[,(K*n_covariates + 1):(K*n_covariates + n_tracers)])))
     
-    omicron <- exp((thetares[,(K*n_covariates + n_tracers + 1):(K*n_covariates + n_tracers*2)]))
+    omicron <- 1/(1+exp(-(thetares[,(K*n_covariates + n_tracers + 1):(K*n_covariates + n_tracers*2)])))
     
     p_sample = array(NA, dim = c(cosimmr_in$n_obs, n_output, K))
     p_mean_sample = matrix(NA, nrow = n_output, ncol = K)

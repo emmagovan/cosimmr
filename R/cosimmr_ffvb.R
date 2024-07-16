@@ -17,7 +17,8 @@
 #' and \code{beta_2} (adaptive learning weights), \code{tau} (threshold for
 #' exploring learning space), \code{eps_0} (fixed learning rate),
 #' \code{t_W} (rolling window size)
-#' @param error_type Option to choose "processxresidual" or "process+residual"
+#' @param error_type Option to choose "process+residual" or "processxresidual". 
+#' Defaults to "process+residual"
 #' @return An object of class \code{cosimmr_output} with two named top-level
 #' components: \item{input }{The \code{cosimmr_input} object given to the
 #' \code{cosimmr_ffvb} function} \item{output }{A set of outputs produced by

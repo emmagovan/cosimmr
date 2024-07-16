@@ -13,7 +13,7 @@ cosimmr_ffvb(
     tau_rate = rep(1, cosimmr_in$n_tracers), uniform_a = 0, uniform_b = 20),
   ffvb_control = list(n_output = 3600, S = 500, P = 50, beta_1 = 0.75, beta_2 = 0.75, tau
     = 500, eps_0 = 0.0011, t_W = 500),
-  error_type = "processxresidual"
+  error_type = "process+residual"
 )
 }
 \arguments{
@@ -29,7 +29,8 @@ and \code{beta_2} (adaptive learning weights), \code{tau} (threshold for
 exploring learning space), \code{eps_0} (fixed learning rate),
 \code{t_W} (rolling window size)}
 
-\item{error_type}{Option to choose "processxresidual" or "process+residual"}
+\item{error_type}{Option to choose "process+residual" or "processxresidual". 
+Defaults to "process+residual"}
 }
 \value{
 An object of class \code{cosimmr_output} with two named top-level

@@ -8,10 +8,12 @@ Bayes(FFVB) function}
 cosimmr_ffvb(
   cosimmr_in,
   prior_control = list(mu_0 = rep(0, (cosimmr_in$n_sources * cosimmr_in$n_covariates)),
-    mu_log_sig_sq_0 = rep(0, cosimmr_in$n_tracers), sigma_0 = 1, tau_shape = rep(1,
-    cosimmr_in$n_tracers), tau_rate = rep(1, cosimmr_in$n_tracers)),
+    mu_log_sig_sq_0 = rep(0, cosimmr_in$n_tracers), mu_log_sig_omi_0 = rep(1,
+    cosimmr_in$n_tracers), sigma_0 = 1, tau_shape = rep(1, cosimmr_in$n_tracers),
+    tau_rate = rep(1, cosimmr_in$n_tracers), uniform_a = 0, uniform_b = 20),
   ffvb_control = list(n_output = 3600, S = 500, P = 50, beta_1 = 0.75, beta_2 = 0.75, tau
-    = 500, eps_0 = 0.0011, t_W = 500)
+    = 500, eps_0 = 0.0011, t_W = 500),
+  error_type = "processxresidual"
 )
 }
 \arguments{
@@ -26,6 +28,8 @@ iteration of the algorithm), \code{P} (patience parameter), \code{beta_1}
 and \code{beta_2} (adaptive learning weights), \code{tau} (threshold for
 exploring learning space), \code{eps_0} (fixed learning rate),
 \code{t_W} (rolling window size)}
+
+\item{error_type}{Option to choose "processxresidual" or "process+residual"}
 }
 \value{
 An object of class \code{cosimmr_output} with two named top-level
@@ -48,7 +52,7 @@ via \code{\link{plot.cosimmr_output}}.
 
 # Data set 1: 10 obs on 2 isos, 4 sources, with tefs and concdep
 data(geese_data_day1)
-x = c(1,2,3,2,1,3,2,1,2)
+x =  c(1,2,3,2,1,3,2,1,2)
 cosimmr_1 <- with(
   geese_data_day1,
   cosimmr_load(

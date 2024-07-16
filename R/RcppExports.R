@@ -45,3 +45,43 @@ run_VB_cpp <- function(lambdastart, n_sources, n_tracers, n_covariates, n, beta_
     .Call(`_cosimmr_run_VB_cpp`, lambdastart, n_sources, n_tracers, n_covariates, n, beta_prior, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, eps_0, t_W, c_prior, solo, sd_prior, mu_prior)
 }
 
+rMVNormCpp_pxr <- function(n, Mean, Var) {
+    .Call(`_cosimmr_rMVNormCpp_pxr`, n, Mean, Var)
+}
+
+sim_thetacpp_pxr <- function(S, lambda, n_sources, n_tracers, n_cov, solo, kappa) {
+    .Call(`_cosimmr_sim_thetacpp_pxr`, S, lambda, n_sources, n_tracers, n_cov, solo, kappa)
+}
+
+hfn_pxr <- function(theta, n_sources, n, n_cov, x_scaled) {
+    .Call(`_cosimmr_hfn_pxr`, theta, n_sources, n, n_cov, x_scaled)
+}
+
+hcpp_pxr <- function(n_sources, n_isotopes, n_covariates, d_prior, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, c_prior, sd_prior, mu_prior, uni_a_prior, uni_b_prior) {
+    .Call(`_cosimmr_hcpp_pxr`, n_sources, n_isotopes, n_covariates, d_prior, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, c_prior, sd_prior, mu_prior, uni_a_prior, uni_b_prior)
+}
+
+log_q_cpp_pxr <- function(theta, lambda, n_sources, n_tracers, S, n_cov) {
+    .Call(`_cosimmr_log_q_cpp_pxr`, theta, lambda, n_sources, n_tracers, S, n_cov)
+}
+
+h_lambdacpp_pxr <- function(n_sources, n_isotopes, beta_prior, n_covariates, S, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, lambda, x_scaled, c_0, sd_prior, mu_prior, uni_a_prior, uni_b_prior) {
+    .Call(`_cosimmr_h_lambdacpp_pxr`, n_sources, n_isotopes, beta_prior, n_covariates, S, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, lambda, x_scaled, c_0, sd_prior, mu_prior, uni_a_prior, uni_b_prior)
+}
+
+delta_h_lambda_cpp_pxr <- function(n_sources, n_tracers, beta_prior, n_covariates, S, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, lambda, x_scaled, c_0, sd_prior, mu_prior, eps, uni_a_prior, uni_b_prior) {
+    .Call(`_cosimmr_delta_h_lambda_cpp_pxr`, n_sources, n_tracers, beta_prior, n_covariates, S, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, theta, y, lambda, x_scaled, c_0, sd_prior, mu_prior, eps, uni_a_prior, uni_b_prior)
+}
+
+nabla_LB_cpp_pxr <- function(lambda, theta, n_sources, n_tracers, beta_prior, S, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c_0, sd_prior, mu_prior, kappa, uni_a_prior, uni_b_prior) {
+    .Call(`_cosimmr_nabla_LB_cpp_pxr`, lambda, theta, n_sources, n_tracers, beta_prior, S, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c_0, sd_prior, mu_prior, kappa, uni_a_prior, uni_b_prior)
+}
+
+LB_lambda_cpp_pxr <- function(theta, lambda, n_sources, n_isotopes, beta_prior, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c_0, sd_prior, mu_prior, uni_a_prior, uni_b_prior) {
+    .Call(`_cosimmr_LB_lambda_cpp_pxr`, theta, lambda, n_sources, n_isotopes, beta_prior, n_covariates, x_scaled, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, c_0, sd_prior, mu_prior, uni_a_prior, uni_b_prior)
+}
+
+run_VB_cpp_pxr <- function(lambdastart, n_sources, n_tracers, n_covariates, n, beta_prior, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, eps_0, t_W, c_prior, solo, sd_prior, mu_prior, uni_a_prior, uni_b_prior) {
+    .Call(`_cosimmr_run_VB_cpp_pxr`, lambdastart, n_sources, n_tracers, n_covariates, n, beta_prior, concentrationmeans, sourcemeans, correctionmeans, corrsds, sourcesds, y, x_scaled, S, P, beta_1, beta_2, tau, eps_0, t_W, c_prior, solo, sd_prior, mu_prior, uni_a_prior, uni_b_prior)
+}
+

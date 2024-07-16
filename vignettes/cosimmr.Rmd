@@ -91,6 +91,12 @@ The output of this can be plotted, using the plot function. There are several di
 plot(cosimmr_1_out, type ="prop_histogram", obs = 1)
 ```
 
+The posterior values can also be accessed to make more unique plots
+```{r}
+dim(cosimmr_1_out$output$BUGSoutput$sims.list$p)
+head(cosimmr_1_out$output$BUGSoutput$sims.list$sigma)
+```
+
 
 For another example, with a continuous covariate, we can look at Alligator data from Nifong et al, 2015.
 For this example we just use Length as the covariate - but the dataset contains other covariates that can be looked at too.

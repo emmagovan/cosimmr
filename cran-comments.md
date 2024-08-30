@@ -5,7 +5,7 @@
 
 ## R CMD check results
 There were no notes, errors or warnings.
-Updated url in description and updated vignette outputs.
+
 
 ##Older fixes
 Updated version number

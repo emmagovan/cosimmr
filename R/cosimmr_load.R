@@ -78,15 +78,14 @@
 #' }
 #' @export cosimmr_load
 cosimmr_load <- function(formula,
-source_names,
-source_means,
-source_sds,
-correction_means = NULL,
-correction_sds = NULL,
-concentration_means = NULL,
-scale_x = TRUE) {
-  # Function to load in data for simmr and check whether it's appropriate for running through simmr_mcmc
-  
+                         source_names,
+                         source_means,
+                         source_sds,
+                         correction_means = NULL,
+                         correction_sds = NULL,
+                         concentration_means = NULL,
+                         scale_x = TRUE) {
+  # Function to load in data for cosimmr and check whether it's appropriate for running through cosimmr_ffvb
   
   
   #Possibly need covariate data frame
@@ -101,11 +100,7 @@ scale_x = TRUE) {
   colnames(covariates) = cnames
   
   
-  # model.matrix(~ ., data=c_df, 
-  # contrasts.arg = lapply(c_df[sapply(c_df, is.factor)],
-  #                        contrasts,
-  #                        contrasts=FALSE))
-  # 
+  
   
   if(nrow(mixtures) == 1){
     #This is if its just 1 entry

@@ -10,7 +10,9 @@ if (getRversion() >= "2.15.1") {
       "cov",
       "nsd",
       "psd",
-      "samples"
+      "samples",
+      "n",
+      "Mean_LB"
     ),
     package = "cosimmr",
     add = FALSE
